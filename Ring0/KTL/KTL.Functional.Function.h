@@ -2,6 +2,7 @@
 #ifndef Function_$196042EF_9259_402B_9606_932D5BA69C2B
 #define Function_$196042EF_9259_402B_9606_932D5BA69C2B 1
 
+#include "KTL.Memory.New.h"
 #include "KTL.Functional.h"
 
 namespace ktl

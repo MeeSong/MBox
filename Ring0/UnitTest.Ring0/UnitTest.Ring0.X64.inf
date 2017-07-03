@@ -1,0 +1,70 @@
+;
+; UnitTest.Ring0.X64.inf
+;
+
+[Version]
+Signature	= "$WINDOWS NT$"
+Class		= "ActivityMonitor"
+ClassGuid	= {b86dff51-a31e-4bac-b3cf-e8cfe75c9fc2}
+Provider	= "UnitTest"
+CatalogFile	= UnitTest.Ring0.X64.cat
+DriverVer	= 07/01/2017;
+
+[DestinationDirs]
+DefaultDestDir = 12
+UnitTest.DriverFiles = 12
+
+[DefaultInstall]
+OptionDesc = %UnitTestServiceDesc%
+CopyFiles  = UnitTest.DriverFiles
+
+[DefaultInstall.Services]
+AddService = %UnitTestServiceName%,,UnitTest.Service
+
+[UnitTest.Service]
+DisplayName    = %UnitTestServiceName%
+Description    = %UnitTestServiceDesc%
+ServiceBinary  = %12%\UnitTest.Ring0.X64.sys
+ServiceType    = 2 ;    SERVICE_FILE_SYSTEM_DRIVER
+StartType      = 3 ;    SERVICE_DEMAND_START
+ErrorControl   = 1 ;    SERVICE_ERROR_NORMAL%
+LoadOrderGroup = "FSFilter Activity Monitor"
+AddReg         = UnitTest.AddRegistry
+Dependencies   = FltMgr
+
+[UnitTest.AddRegistry]
+HKR,%RegInstancesSubkeyName%,%RegDefaultInstanceValueName%,0x00000000,%DefaultInstance%
+HKR,%RegInstancesSubkeyName%"\"%Instance1.Name%,%RegAltitudeValueName%,0x00000000,%Instance1.Altitude%
+HKR,%RegInstancesSubkeyName%"\"%Instance1.Name%,%RegFlagsValueName%,0x00010001,%Instance1.Flags%
+
+[UnitTest.DriverFiles]
+%DriverName%.sys
+
+[SourceDisksFiles]
+UnitTest.Ring0.X64.sys = 1,,
+
+[SourceDisksNames]
+1 = %DiskId1%,,,
+
+[DefaultUninstall]
+DelFiles   = UnitTest.DriverFiles
+DelReg     = UnitTest.DelRegistry
+
+[DefaultUninstall.Services]
+DelService = UnitTest,0x200
+
+[Strings]
+DriverName						= "UnitTest.Ring0.X64"
+UnitTestServiceDesc				= "UnitTest mini-filter driver"
+UnitTestServiceName				= "UnitTest"
+DiskId1							= "UnitTest Device Installation Disk"
+
+RegInstancesSubkeyName			= "Instances"
+RegDefaultInstanceValueName		= "DefaultInstance"
+RegAltitudeValueName			= "Altitude"
+RegFlagsValueName				= "Flags"
+
+DefaultInstance    = "UnitTest - Top Instance"
+Instance1.Name     = "UnitTest - Top Instance"
+Instance1.Altitude = "370021"
+Instance1.Flags    = 0x0

@@ -2,6 +2,7 @@
 #ifndef Allocator_$A8F38098_1E72_4B5E_9D8D_0D1FCFF0DC93
 #define Allocator_$A8F38098_1E72_4B5E_9D8D_0D1FCFF0DC93 1
 
+#include "KTL.Memory.New.h"
 #include "KTL.Memory.h"
 #include "KTL.Functional.Function.h"
 

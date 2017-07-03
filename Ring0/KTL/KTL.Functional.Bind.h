@@ -209,15 +209,14 @@ namespace ktl
             -> decltype(_Invoke_ret(
                 aForcedRetType,
                 aFunctor,
-                __fix_args(get<_Index>(aBoundArgs),
-                    forward<_Tuple_unbound_args>(aUnboundArgs))...))
+                __fix_args(get<_Index>(aBoundArgs), move(aUnboundArgs))...))
         {
             // bind() and bind<R>() invocation
 
             return (_Invoke_ret(
                 aForcedRetType,
                 aFunctor,
-                __fix_args(get<_Index>(aBoundArgs), forward<_Tuple_unbound_args>(aUnboundArgs))...));
+                __fix_args(get<_Index>(aBoundArgs), move(aUnboundArgs))...));
         }
 
 
