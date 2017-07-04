@@ -162,7 +162,7 @@ namespace MBox
                 }
                 else
                 {
-                    vStatus = FltGetFileContext(
+                    vStatus = FltGetFileContextShims(
                         aFltObjects->Instance,
                         aFltObjects->FileObject,
                         (PFLT_CONTEXT*)&vFileContextsArray);
@@ -193,7 +193,7 @@ namespace MBox
                 }
                 else
                 {
-                    vStatus = FltGetTransactionContext(
+                    vStatus = FltGetTransactionContextShims(
                         aFltObjects->Instance,
                         aFltObjects->Transaction,
                         (PFLT_CONTEXT*)&vTransactionContextsArray);
@@ -619,7 +619,7 @@ namespace MBox
                 }
                 else
                 {
-                    vStatus = FltGetFileContext(
+                    vStatus = FltGetFileContextShims(
                         aFltObjects->Instance,
                         aFltObjects->FileObject,
                         (PFLT_CONTEXT*)&vFileContextsArray);
@@ -663,7 +663,7 @@ namespace MBox
                 }
                 else
                 {
-                    vStatus = FltGetTransactionContext(
+                    vStatus = FltGetTransactionContextShims(
                         aFltObjects->Instance,
                         aFltObjects->Transaction,
                         (PFLT_CONTEXT*)&vTransactionContextsArray);

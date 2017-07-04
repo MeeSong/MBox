@@ -7,10 +7,12 @@
 namespace MBox
 {
     namespace MiniFlt
-    {
-        extern FLT_CONTEXT_TYPE g_ContextSupportedType;
+    {   
+        //
+        // Shims 函数用来兼容低版本系统
+        //
 
-        BOOLEAN IsSupportedFileContexts(PFILE_OBJECT aFileObject)
+        BOOLEAN __stdcall FltSupportsFileContextsShims(PFILE_OBJECT aFileObject)
         {
             using FltSupportsFileContexts$Fun = BOOLEAN(__stdcall *)(PFILE_OBJECT aFileObject);
             static FltSupportsFileContexts$Fun sFltSupportsFileContexts = nullptr;
@@ -26,10 +28,63 @@ namespace MBox
 
                 sFltSupportsFileContexts = (FltSupportsFileContexts$Fun)FltGetRoutineAddress("FltSupportsFileContexts");
             }
+            if (sFltSupportsFileContexts)
+            {
+                return sFltSupportsFileContexts(aFileObject);
+            }
 
+            return FALSE;
+        }
+
+        NTSTATUS __stdcall FltSetFileContextShims(
+            PFLT_INSTANCE aInstance, 
+            PFILE_OBJECT aFileObject, 
+            FLT_SET_CONTEXT_OPERATION aOperation, 
+            PFLT_CONTEXT aNewContext, 
+            PFLT_CONTEXT *aOldContext)
+        {
+            using FltSetFileContext$Fun = NTSTATUS(__stdcall *)(
+                PFLT_INSTANCE, PFILE_OBJECT, FLT_SET_CONTEXT_OPERATION, PFLT_CONTEXT, PFLT_CONTEXT*);
+            static FltSetFileContext$Fun sFltSetFileContext = nullptr;
+
+            if (nullptr == sFltSetFileContext)
+            {
+                sFltSetFileContext = (FltSetFileContext$Fun)FltGetRoutineAddress("FltSetFileContext");
+            }
+            if (sFltSetFileContext)
+            {
+                return sFltSetFileContext(aInstance, aFileObject, aOperation, aNewContext, aOldContext);
+            }
+
+            return STATUS_NOT_SUPPORTED;
+        }
+
+        NTSTATUS __stdcall FltGetFileContextShims(
+            PFLT_INSTANCE aInstance, 
+            PFILE_OBJECT aFileObject, 
+            PFLT_CONTEXT *aContext)
+        {
+            using FltGetFileContext$Fun = NTSTATUS(__stdcall *)(PFLT_INSTANCE, PFILE_OBJECT, PFLT_CONTEXT*);
+            static FltGetFileContext$Fun sFltGetFileContext = nullptr;
+
+            if (nullptr == sFltGetFileContext)
+            {
+                sFltGetFileContext = (FltGetFileContext$Fun)FltGetRoutineAddress("FltGetFileContext");
+            }
+            if (sFltGetFileContext)
+            {
+                return sFltGetFileContext(aInstance, aFileObject, aContext);
+            }
+
+            return STATUS_NOT_SUPPORTED;
+        }
+
+        extern FLT_CONTEXT_TYPE g_ContextSupportedType;
+
+        BOOLEAN IsSupportedFileContexts(PFILE_OBJECT aFileObject)
+        {
             if ((g_ContextSupportedType & FLT_FILE_CONTEXT)
-                && sFltSupportsFileContexts
-                && sFltSupportsFileContexts(aFileObject))
+                && FltSupportsFileContextsShims(aFileObject))
             {
                 return TRUE;
             }
@@ -73,7 +128,7 @@ namespace MBox
             else
             {
                 RtlSecureZeroMemory(vContextArray, vContextArrayBytes);
-                vStatus = FltSetFileContext(
+                vStatus = FltSetFileContextShims(
                     aFltObject->Instance,
                     aFltObject->FileObject,
                     FLT_SET_CONTEXT_KEEP_IF_EXISTS,
