@@ -178,9 +178,48 @@ namespace MBox
             }
 
             aParameter->m_FileContext->m_Context = PVOID(aParameter->m_FltObjects->FileObject);
-            UnitTest$CompileTime$Log$Macro(DPFLTR_ERROR_LEVEL,
+            UnitTest$CompileTime$Log$Macro(DPFLTR_INFO_LEVEL,
                 "Create...FileContext...File = %p, Name = %wZ",
                 aParameter->m_FltObjects->FileObject, &(aParameter->m_FltObjects->FileObject->FileName));
+
+            break;
+        }
+
+        return vStatus;
+    }
+
+    NTSTATUS StorageController::TransactionNotificationCallback(MiniFlt::TransactionNotificationCallbackParameterPacket * aParameter)
+    {
+        UnitTest$CompileTime$Log$Macro(DPFLTR_INFO_LEVEL,
+            "Notification...TransactionContext...Transaction = %p, Mask = 0x%08X",
+            aParameter->m_TransactionContext.m_Context, aParameter->m_NotificationMask);
+
+        return STATUS_SUCCESS;
+    }
+
+    NTSTATUS StorageController::TransactionContextCreateCallback(MiniFlt::TransactionContextCreateCallbackParameterPacket * aParameter)
+    {
+        NTSTATUS vStatus = STATUS_SUCCESS;
+
+        for (;;)
+        {
+            if (aParameter->m_TransactionContext->m_FltAllocateContextFailed
+                || !NT_SUCCESS(aParameter->m_TransactionContext->m_Status))
+            {
+                vStatus = aParameter->m_TransactionContext->m_Status;
+
+                UnitTest$CompileTime$Log$Macro(DPFLTR_ERROR_LEVEL,
+                    "Status = %08X, Instance = %p, Transaction = %p, Transaction Context Request failed!",
+                    aParameter->m_FltObjects->Instance, aParameter->m_FltObjects->Transaction);
+
+                break;
+            }
+
+            aParameter->m_TransactionContext->m_TransactionNotificationMask = FLT_MAX_TRANSACTION_NOTIFICATIONS;
+            aParameter->m_TransactionContext->m_Context = PVOID(aParameter->m_FltObjects->Transaction);
+            UnitTest$CompileTime$Log$Macro(DPFLTR_INFO_LEVEL,
+                "Create...TransactionContext...Transaction = %p",
+                aParameter->m_FltObjects->Transaction);
 
             break;
         }
@@ -224,9 +263,15 @@ namespace MBox
         }
         else if (FLT_FILE_CONTEXT == aParameter->m_FltContextType)
         {
-            UnitTest$CompileTime$Log$Macro(DPFLTR_ERROR_LEVEL,
+            UnitTest$CompileTime$Log$Macro(DPFLTR_INFO_LEVEL,
                 "Cleanup...FileContext...File = %p, Name = %wZ",
                 aParameter->m_Context, &(PFILE_OBJECT(aParameter->m_Context)->FileName));
+        }
+        else if (FLT_TRANSACTION_CONTEXT == aParameter->m_FltContextType)
+        {
+            UnitTest$CompileTime$Log$Macro(DPFLTR_INFO_LEVEL,
+                "Cleanup...TransactionContext...Transaction = %p",
+                aParameter->m_Context);
         }
     }
 
@@ -237,6 +282,7 @@ namespace MBox
         m_CallbackPacket.m_StreamCallbackFunction           = &m_StreamCallbackFunction;
         m_CallbackPacket.m_StreamHandleCallbackFunction     = &m_StreamHandleCallbackFunction;
         m_CallbackPacket.m_FileCallbackFunction             = &m_FileCallbackFunction;
+        m_CallbackPacket.m_TransactionCallbackFunction      = &m_TransactionCallbackFunction;
         m_CallbackPacket.m_ContextCleanupCallbackFunction   = &m_ContextCleanupCallbackFunction;
 
         //
@@ -291,6 +337,19 @@ namespace MBox
         auto vFileCreateCallback = ktl::bind(&StorageController::FileContextCreateCallback, this, ktl::_1);
 
         m_FileCallbackFunction.m_FileContextCreate.attach(vFileCreateCallback);
+
+        //
+        // Transaction Callback
+        //
+
+        m_TransactionCallbackFunction.m_IsEnableTransactionContextCreateCallback = TRUE;
+        m_TransactionCallbackFunction.m_IsEnableTransactionNotificationCallback = TRUE;
+
+        auto vTransactionCreate = ktl::bind(&StorageController::TransactionContextCreateCallback, this, ktl::_1);
+        auto vTransactionNotifiction = ktl::bind(&StorageController::TransactionNotificationCallback, this, ktl::_1);
+
+        m_TransactionCallbackFunction.m_TransactionContextCreate.attach(vTransactionCreate);
+        m_TransactionCallbackFunction.m_TransactionNotification.attach(vTransactionNotifiction);
 
         //
         // ContextCleanup Callback

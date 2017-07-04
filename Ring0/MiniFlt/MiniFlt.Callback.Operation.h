@@ -1,9 +1,11 @@
 #pragma once
+#include "MiniFlt.Callback.Packet.h"
 #include "MiniFlt.Macro.h"
-#include "MiniFlt.Callback.Instance.h"
-#include "MiniFlt.Callback.Stream.h"
-#include "MiniFlt.Callback.StreamHandle.h"
-#include "MiniFlt.Callback.File.h"
+#include "MiniFlt.Callback.InstanceContext.h"
+#include "MiniFlt.Callback.StreamContext.h"
+#include "MiniFlt.Callback.StreamHandleContext.h"
+#include "MiniFlt.Callback.FileContext.h"
+#include "MiniFlt.Callback.TransactionContext.h"
 
 #include <KTL\Ktl.Functional.Function.h>
 
@@ -27,7 +29,8 @@ namespace MBox
             FltInstanceContext  m_InstanceContext{};
             FltStreamContext    m_StreamContext{};
             FltStreamHandleContext  m_StreamHandleContext{};
-            FltFileContext      m_FileContext{};
+            FltFileContext          m_FileContext{};
+            FltTransactionContext   m_TransactionContext{};
         };
 
         struct OperationCallbackParameterPacket

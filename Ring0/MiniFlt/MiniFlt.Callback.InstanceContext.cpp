@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "MiniFlt.Callback.Instance.h"
+#include "MiniFlt.Callback.InstanceContext.h"
 #include "MiniFlt.Callback.Packet.h"
 
 namespace MBox
@@ -75,7 +75,6 @@ namespace MBox
                     vParameter.m_InstanceContext->m_FltSetContextFailed = TRUE;
                     vParameter.m_InstanceContext->m_Status = vStatus;
 
-                    FltDeleteContext(vContextArray);
                     FltReleaseContext(vContextArray);
                     vContextArray = nullptr;
                 }
@@ -109,11 +108,6 @@ namespace MBox
 
             if (vContextArray)
             {
-                if (!NT_SUCCESS(vStatus))
-                {
-                    FltDeleteContext(vContextArray);
-                }
-
                 FltReleaseContext(vContextArray);
             }
 

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "MiniFlt.Callback.File.h"
+#include "MiniFlt.Callback.FileContext.h"
 #include "MiniFlt.Callback.Packet.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -84,7 +84,6 @@ namespace MBox
                     vParameter.m_FileContext->m_FltSetContextFailed = TRUE;
                     vParameter.m_FileContext->m_Status = vStatus;
 
-                    FltDeleteContext(vContextArray);
                     FltReleaseContext(vContextArray);
                     vContextArray = nullptr;
                 }
@@ -111,12 +110,6 @@ namespace MBox
 
             if (vContextArray)
             {
-                if (!NT_SUCCESS(vStatus))
-                {
-                    FltDeleteContext(vContextArray);
-                    FltReleaseContext(vContextArray);
-                }
-
                 // Reference == 2, 调用者需要 FltReleaseContext
                 *aContext = vContextArray;
             }

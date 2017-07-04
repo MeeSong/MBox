@@ -14,6 +14,7 @@ namespace MBox
         struct StreamCallbackFunction;
         struct StreamHandleCallbackFunction;
         struct FileCallbackFunction;
+        struct TransactionCallbackFunction;
         struct ContextCleanupCallbackFunction;
 
         struct CallbackPacket
@@ -23,6 +24,7 @@ namespace MBox
             StreamCallbackFunction*     m_StreamCallbackFunction{};
             StreamHandleCallbackFunction*   m_StreamHandleCallbackFunction{};
             FileCallbackFunction*           m_FileCallbackFunction{};
+            TransactionCallbackFunction*    m_TransactionCallbackFunction{};
             ContextCleanupCallbackFunction* m_ContextCleanupCallbackFunction{};
         };
 

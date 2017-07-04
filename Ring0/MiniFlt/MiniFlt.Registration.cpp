@@ -2,9 +2,9 @@
 #include "MiniFlt.Registration.h"
 #include "MiniFlt.Callback.ContextCleanup.h"
 #include "MiniFlt.Callback.Operation.h"
-#include "MiniFlt.Callback.Instance.h"
 #include "MiniFlt.Callback.Name.h"
-#include "MiniFlt.Callback.Notification.h"
+#include "MiniFlt.Callback.TransactionContext.h"
+#include "MiniFlt.Callback.SectionContext.h"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -530,8 +530,11 @@ namespace MBox
             //GenerateFileNameCallback,
             //NormalizeNameComponentCallback,
             //NormalizeNameComponentContextCleanupCallback,
+            nullptr,
+            nullptr,
+            nullptr,
 
-            //TransactionNotificationCallback,
+            TransactionNotificationCallback,
             //NormalizeNameComponentCallbackEx
         };
 
@@ -577,8 +580,11 @@ namespace MBox
             //GenerateFileNameCallback,
             //NormalizeNameComponentCallback,
             //NormalizeNameComponentContextCleanupCallback,
+            nullptr,
+            nullptr,
+            nullptr,
 
-            //TransactionNotificationCallback,
+            TransactionNotificationCallback,
             //NormalizeNameComponentCallbackEx,
 
             //SectionNotificationCallback

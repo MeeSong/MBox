@@ -1,9 +1,11 @@
 #include "stdafx.h"
 #include "MiniFlt.Callback.ContextCleanup.h"
-#include "MiniFlt.Callback.Instance.h"
-#include "MiniFlt.Callback.Stream.h"
-#include "MiniFlt.Callback.StreamHandle.h"
-#include "MiniFlt.Callback.File.h"
+#include "MiniFlt.Callback.InstanceContext.h"
+#include "MiniFlt.Callback.StreamContext.h"
+#include "MiniFlt.Callback.StreamHandleContext.h"
+#include "MiniFlt.Callback.FileContext.h"
+#include "MiniFlt.Callback.TransactionContext.h"
+#include "MiniFlt.Callback.SectionContext.h"
 
 namespace MBox
 {
@@ -80,6 +82,23 @@ namespace MBox
             TraverseContextCleanupCallback(vCallback);
         }
 
+        static void TransactionContextCleanup(FltTransactionContext* aContext)
+        {
+            ContextCleanupCallbackParameterPacket vParameter{};
+            vParameter.m_FltContextType = FLT_TRANSACTION_CONTEXT;
+
+            auto vCallback = [aContext, &vParameter](ContextCleanupCallbackFunction* aContextCleanupCallbackFunction, UINT32 aIndex) -> BOOLEAN
+            {
+                vParameter.m_Context = aContext[aIndex].m_Context;
+                vParameter.m_RegisterContext = aContextCleanupCallbackFunction->m_RegisterContext;
+                aContextCleanupCallbackFunction->m_ContextCleanupCallback(&vParameter);
+                aContext[aIndex].m_Context = nullptr;
+
+                return FALSE;
+            };
+            TraverseContextCleanupCallback(vCallback);
+        }
+
         void __stdcall ContextCleanupCallback(
             PFLT_CONTEXT aContext,
             FLT_CONTEXT_TYPE aContextType)
@@ -111,6 +130,7 @@ namespace MBox
                 break;
 
             case FLT_TRANSACTION_CONTEXT:
+                TransactionContextCleanup((FltTransactionContext*)aContext);
                 break;
 
             case FLT_SECTION_CONTEXT:

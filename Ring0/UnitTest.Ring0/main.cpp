@@ -96,7 +96,7 @@ extern "C" NTSTATUS DriverEntry(
 
         vStatus = MBox::MiniFlt::RegisterFilter(
             MBox::System::SystemVersion::Windows7,
-            FLT_INSTANCE_CONTEXT | FLT_FILE_CONTEXT,
+            FLT_INSTANCE_CONTEXT,
             0);
         if (!NT_SUCCESS(vStatus))
         {

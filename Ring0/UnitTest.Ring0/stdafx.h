@@ -16,9 +16,10 @@
 
 #include <MiniFlt\MiniFlt.h>
 #include <MiniFlt\MiniFlt.Callback.Operation.h>
-#include <MiniFlt\MiniFlt.Callback.Instance.h>
-#include <MiniFlt\MiniFlt.Callback.Stream.h>
-#include <MiniFlt\MiniFlt.Callback.StreamHandle.h>
+#include <MiniFlt\MiniFlt.Callback.InstanceContext.h>
+#include <MiniFlt\MiniFlt.Callback.StreamContext.h>
+#include <MiniFlt\MiniFlt.Callback.StreamHandleContext.h>
+#include <MiniFlt\MiniFlt.Callback.TransactionContext.h>
 #include <MiniFlt\MiniFlt.Callback.ContextCleanup.h>
 
 #include "Macro.h"

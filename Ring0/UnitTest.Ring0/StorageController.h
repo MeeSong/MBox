@@ -26,6 +26,9 @@ namespace MBox
         virtual NTSTATUS StreamContextCreateCallback(MiniFlt::StreamContextCreateCallbackParameterPacket* aParameter);
         virtual NTSTATUS StreamHandleContextCreateCallback(MiniFlt::StreamHandleContextCreateCallbackParameterPacket* aParameter);
         virtual NTSTATUS FileContextCreateCallback(MiniFlt::FileContextCreateCallbackParameterPacket* aParameter);
+        
+        virtual NTSTATUS TransactionNotificationCallback(MiniFlt::TransactionNotificationCallbackParameterPacket* aParameter);
+        virtual NTSTATUS TransactionContextCreateCallback(MiniFlt::TransactionContextCreateCallbackParameterPacket* aParameter);
 
         virtual void ContextCleanupCallback(MiniFlt::ContextCleanupCallbackParameterPacket* aParameter);
 
@@ -35,7 +38,8 @@ namespace MBox
         MiniFlt::InstanceCallbackFunction   m_InstanceCallbackFunction{};
         MiniFlt::StreamCallbackFunction     m_StreamCallbackFunction{};
         MiniFlt::StreamHandleCallbackFunction   m_StreamHandleCallbackFunction{};
-        MiniFlt::FileCallbackFunction   m_FileCallbackFunction{};
+        MiniFlt::FileCallbackFunction           m_FileCallbackFunction{};
+        MiniFlt::TransactionCallbackFunction    m_TransactionCallbackFunction{};
         MiniFlt::ContextCleanupCallbackFunction m_ContextCleanupCallbackFunction{};
 
         MiniFlt::CallbackPacket             m_CallbackPacket{};

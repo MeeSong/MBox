@@ -1,10 +1,10 @@
-# mbox
+# Mbox
 
-Windows tool box library
+MeeSong Box : Windows tool box library
 
 License : MIT
 
-IDE : Visual Studio 15
+IDE : Visual Studio 2015
 
 Language : C++11/14
 

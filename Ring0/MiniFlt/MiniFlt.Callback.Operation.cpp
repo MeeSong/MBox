@@ -36,8 +36,9 @@ namespace MBox
 
             FltInstanceContext* vInstanceContextsArray  = nullptr;
             FltStreamContext*   vStreamContextsArray    = nullptr;
-            FltStreamHandleContext* vStreamHandleContextsArray = nullptr;
-            FltFileContext*     vFileContextsArray = nullptr;
+            FltStreamHandleContext* vStreamHandleContextsArray  = nullptr;
+            FltFileContext*         vFileContextsArray          = nullptr;
+            FltTransactionContext*  vTransactionContextsArray   = nullptr;
             if (vParameter.m_IRQL > APC_LEVEL)
             {
                 vParameter.m_HighIRQL = TRUE;
@@ -171,6 +172,37 @@ namespace MBox
                         vParameter.m_FltContexts.m_FileContext.m_Status = vStatus;
                     }
                 }
+
+                //
+                // Transaction Context
+                //
+
+                if ((IRP_MJ_CREATE == aData->Iopb->MajorFunction)
+                    || !aFltObjects
+                    || !(aFltObjects->Transaction))
+                {
+                    vParameter.m_FltContexts.m_TransactionContext.m_TransactionIsNull = TRUE;
+                    vParameter.m_FltContexts.m_TransactionContext.m_FltGetContextFailed = TRUE;
+                    vParameter.m_FltContexts.m_TransactionContext.m_Status = STATUS_UNSUCCESSFUL;
+                }
+                else if ((IRP_MJ_NETWORK_QUERY_OPEN == aData->Iopb->MajorFunction)
+                    || (FALSE == IsSupportedTransactionContexts()))
+                {
+                    vParameter.m_FltContexts.m_TransactionContext.m_FltGetContextFailed = TRUE;
+                    vParameter.m_FltContexts.m_TransactionContext.m_Status = STATUS_NOT_SUPPORTED;
+                }
+                else
+                {
+                    vStatus = FltGetTransactionContext(
+                        aFltObjects->Instance,
+                        aFltObjects->Transaction,
+                        (PFLT_CONTEXT*)&vTransactionContextsArray);
+                    if (STATUS_SUCCESS != vStatus)
+                    {
+                        vParameter.m_FltContexts.m_TransactionContext.m_FltGetContextFailed = TRUE;
+                        vParameter.m_FltContexts.m_TransactionContext.m_Status = vStatus;
+                    }
+                }
             }
 
             //
@@ -178,7 +210,7 @@ namespace MBox
             //
 
             auto vPreNotifyCallback = [vInstanceContextsArray, vStreamContextsArray, 
-                vStreamHandleContextsArray, vFileContextsArray, &vParameter](
+                vStreamHandleContextsArray, vFileContextsArray, vTransactionContextsArray, &vParameter](
                 PreOperationCallbackFunction* aOperation, UINT32 aIndex) -> BOOLEAN
             {
                 if (!aOperation->m_IsEnable
@@ -207,6 +239,10 @@ namespace MBox
                 {
                     vParameter.m_FltContexts.m_FileContext.m_Context = vFileContextsArray[aIndex].m_Context;
                 }
+                if (vTransactionContextsArray)
+                {
+                    vParameter.m_FltContexts.m_TransactionContext.m_Context = vTransactionContextsArray[aIndex].m_Context;
+                }
 
                 vParameter.m_RegisterContext = aOperation->m_RegisterContext;
                 aOperation->m_PreOperation(&vParameter);
@@ -220,7 +256,7 @@ namespace MBox
             //
 
             auto vFilterCallback = [vInstanceContextsArray, vStreamContextsArray, 
-                vStreamHandleContextsArray, vFileContextsArray, &vParameter, &vFltStatus](
+                vStreamHandleContextsArray, vFileContextsArray, vTransactionContextsArray, &vParameter, &vFltStatus](
                 PreOperationCallbackFunction* aOperation, UINT32 aIndex) -> BOOLEAN
             {
                 if (!aOperation->m_IsEnable
@@ -248,6 +284,10 @@ namespace MBox
                 if (vFileContextsArray)
                 {
                     vParameter.m_FltContexts.m_FileContext.m_Context = vFileContextsArray[aIndex].m_Context;
+                }
+                if (vTransactionContextsArray)
+                {
+                    vParameter.m_FltContexts.m_TransactionContext.m_Context = vTransactionContextsArray[aIndex].m_Context;
                 }
 
                 vParameter.m_RegisterContext = aOperation->m_RegisterContext;
@@ -327,7 +367,7 @@ namespace MBox
             //
 
             auto vPostNotifyCallback = [vInstanceContextsArray, vStreamContextsArray, 
-                vStreamHandleContextsArray, vFileContextsArray, &vParameter](
+                vStreamHandleContextsArray, vFileContextsArray, vTransactionContextsArray, &vParameter](
                 PreOperationCallbackFunction* aOperation, UINT32 aIndex) -> BOOLEAN
             {
                 if (!aOperation->m_IsEnable
@@ -356,6 +396,10 @@ namespace MBox
                 {
                     vParameter.m_FltContexts.m_FileContext.m_Context = vFileContextsArray[aIndex].m_Context;
                 }
+                if (vTransactionContextsArray)
+                {
+                    vParameter.m_FltContexts.m_TransactionContext.m_Context = vTransactionContextsArray[aIndex].m_Context;
+                }
 
                 vParameter.m_RegisterContext = aOperation->m_RegisterContext;
                 aOperation->m_PreOperation(&vParameter);
@@ -383,6 +427,10 @@ namespace MBox
             if (vFileContextsArray)
             {
                 FltReleaseContext(vFileContextsArray);
+            }
+            if (vTransactionContextsArray)
+            {
+                FltReleaseContext(vTransactionContextsArray);
             }
 
             return vFltStatus;
@@ -422,8 +470,9 @@ namespace MBox
 
             FltInstanceContext* vInstanceContextsArray  = nullptr;
             FltStreamContext*   vStreamContextsArray    = nullptr;
-            FltStreamHandleContext* vStreamHandleContextsArray = nullptr;
-            FltFileContext*     vFileContextsArray = nullptr;
+            FltStreamHandleContext* vStreamHandleContextsArray  = nullptr;
+            FltFileContext*         vFileContextsArray          = nullptr;
+            FltTransactionContext*  vTransactionContextsArray   = nullptr;
             if (vParameter.m_IRQL > APC_LEVEL)
             {
                 vParameter.m_HighIRQL = TRUE;
@@ -593,6 +642,50 @@ namespace MBox
                         }
                     }
                 }
+
+                //
+                // Transaction Context
+                //
+
+                if ((IRP_MJ_CLOSE == aData->Iopb->MajorFunction)
+                    || !aFltObjects
+                    || !(aFltObjects->Transaction))
+                {
+                    vParameter.m_FltContexts.m_TransactionContext.m_TransactionIsNull = TRUE;
+                    vParameter.m_FltContexts.m_TransactionContext.m_FltGetContextFailed = TRUE;
+                    vParameter.m_FltContexts.m_TransactionContext.m_Status = STATUS_UNSUCCESSFUL;
+                }
+                else if ((IRP_MJ_NETWORK_QUERY_OPEN == aData->Iopb->MajorFunction)
+                    || (FALSE == IsSupportedTransactionContexts()))
+                {
+                    vParameter.m_FltContexts.m_TransactionContext.m_FltGetContextFailed = TRUE;
+                    vParameter.m_FltContexts.m_TransactionContext.m_Status = STATUS_NOT_SUPPORTED;
+                }
+                else
+                {
+                    vStatus = FltGetTransactionContext(
+                        aFltObjects->Instance,
+                        aFltObjects->Transaction,
+                        (PFLT_CONTEXT*)&vTransactionContextsArray);
+                    if (STATUS_SUCCESS != vStatus)
+                    {
+                        vParameter.m_FltContexts.m_TransactionContext.m_FltGetContextFailed = TRUE;
+                        vParameter.m_FltContexts.m_TransactionContext.m_Status = vStatus;
+
+                        if (IRP_MJ_CREATE == aData->Iopb->MajorFunction)
+                        {
+                            vParameter.m_FltContexts.m_TransactionContext.m_FltGetContextFailed = FALSE;
+                            vParameter.m_FltContexts.m_TransactionContext.m_Status = STATUS_SUCCESS;
+
+                            vStatus = TransactionContextCreateCallback(aFltObjects, &vTransactionContextsArray);
+                            if (STATUS_SUCCESS != vStatus)
+                            {
+                                vParameter.m_FltContexts.m_TransactionContext.m_FltAllocateContextFailed = TRUE;
+                                vParameter.m_FltContexts.m_TransactionContext.m_Status = vStatus;
+                            }
+                        }
+                    }
+                }
             }
             
             //
@@ -600,7 +693,8 @@ namespace MBox
             //
 
             auto vPreNotifyCallback = [vInstanceContextsArray, vStreamContextsArray, 
-                vStreamHandleContextsArray, vFileContextsArray, &vParameter](PostOperationCallbackFunction* aOperation, UINT32 aIndex) -> BOOLEAN
+                vStreamHandleContextsArray, vFileContextsArray, vTransactionContextsArray, &vParameter](
+                    PostOperationCallbackFunction* aOperation, UINT32 aIndex) -> BOOLEAN
             {
                 if (!aOperation->m_IsEnable
                     || !aOperation->m_IsPreNotify)
@@ -628,6 +722,10 @@ namespace MBox
                 {
                     vParameter.m_FltContexts.m_FileContext.m_Context = vFileContextsArray[aIndex].m_Context;
                 }
+                if (vTransactionContextsArray)
+                {
+                    vParameter.m_FltContexts.m_TransactionContext.m_Context = vTransactionContextsArray[aIndex].m_Context;
+                }
 
                 vParameter.m_RegisterContext = aOperation->m_RegisterContext;
                 aOperation->m_PostOperation(&vParameter);
@@ -641,7 +739,7 @@ namespace MBox
             //
 
             auto vFilterCallback = [vInstanceContextsArray, vStreamContextsArray, 
-                vStreamHandleContextsArray, vFileContextsArray, &vParameter, &vFltStatus](
+                vStreamHandleContextsArray, vFileContextsArray, vTransactionContextsArray, &vParameter, &vFltStatus](
                     PostOperationCallbackFunction* aOperation, UINT32 aIndex) -> BOOLEAN
             {
                 if (!aOperation->m_IsEnable
@@ -669,6 +767,10 @@ namespace MBox
                 if (vFileContextsArray)
                 {
                     vParameter.m_FltContexts.m_FileContext.m_Context = vFileContextsArray[aIndex].m_Context;
+                }
+                if (vTransactionContextsArray)
+                {
+                    vParameter.m_FltContexts.m_TransactionContext.m_Context = vTransactionContextsArray[aIndex].m_Context;
                 }
 
                 vParameter.m_RegisterContext = aOperation->m_RegisterContext;
@@ -724,7 +826,7 @@ namespace MBox
             //
 
             auto vPostNotifyCallback = [vInstanceContextsArray, vStreamContextsArray, 
-                vStreamHandleContextsArray, vFileContextsArray, &vParameter](
+                vStreamHandleContextsArray, vFileContextsArray, vTransactionContextsArray, &vParameter](
                     PostOperationCallbackFunction* aOperation, UINT32 aIndex) -> BOOLEAN
             {
                 if (!aOperation->m_IsEnable
@@ -753,6 +855,10 @@ namespace MBox
                 {
                     vParameter.m_FltContexts.m_FileContext.m_Context = vFileContextsArray[aIndex].m_Context;
                 }
+                if (vTransactionContextsArray)
+                {
+                    vParameter.m_FltContexts.m_TransactionContext.m_Context = vTransactionContextsArray[aIndex].m_Context;
+                }
 
                 vParameter.m_RegisterContext = aOperation->m_RegisterContext;
                 aOperation->m_PostOperation(&vParameter);
@@ -780,6 +886,10 @@ namespace MBox
             if (vFileContextsArray)
             {
                 FltReleaseContext(vFileContextsArray);
+            }
+            if (vTransactionContextsArray)
+            {
+                FltReleaseContext(vTransactionContextsArray);
             }
 
             return vFltStatus;

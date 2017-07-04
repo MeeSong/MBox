@@ -30,25 +30,28 @@
     <ClCompile Include="MiniFlt.Callback.Operation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MiniFlt.Callback.Instance.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MiniFlt.Callback.Name.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MiniFlt.Callback.Notification.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MiniFlt.Callback.ContextCleanup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MiniFlt.Callback.Stream.cpp">
+    <ClCompile Include="MiniFlt.Callback.FileContext.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MiniFlt.Callback.StreamHandle.cpp">
+    <ClCompile Include="MiniFlt.Callback.InstanceContext.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MiniFlt.Callback.File.cpp">
+    <ClCompile Include="MiniFlt.Callback.StreamContext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MiniFlt.Callback.StreamHandleContext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MiniFlt.Callback.TransactionContext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MiniFlt.Callback.SectionContext.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -68,13 +71,7 @@
     <ClInclude Include="MiniFlt.Callback.Operation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MiniFlt.Callback.Instance.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="MiniFlt.Callback.Name.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MiniFlt.Callback.Notification.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MiniFlt.Macro.h">
@@ -83,13 +80,22 @@
     <ClInclude Include="MiniFlt.Callback.ContextCleanup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MiniFlt.Callback.Stream.h">
+    <ClInclude Include="MiniFlt.Callback.FileContext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MiniFlt.Callback.StreamHandle.h">
+    <ClInclude Include="MiniFlt.Callback.InstanceContext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MiniFlt.Callback.File.h">
+    <ClInclude Include="MiniFlt.Callback.StreamContext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MiniFlt.Callback.StreamHandleContext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MiniFlt.Callback.TransactionContext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MiniFlt.Callback.SectionContext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
