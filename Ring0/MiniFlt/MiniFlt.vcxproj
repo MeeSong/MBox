@@ -113,16 +113,19 @@
     <OutDir>$(SolutionDir)..\Output\Library\$(Configuration)\</OutDir>
     <IntDir>$(ProjectName).dir\$(Configuration)\$(Platform)\</IntDir>
     <TargetName>$(TargetName.Replace(' ','')).X86</TargetName>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)..\Output\Library\$(Configuration)\</OutDir>
     <IntDir>$(ProjectName).dir\$(Configuration)\$(Platform)\</IntDir>
     <TargetName>$(TargetName.Replace(' ','')).X64</TargetName>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)..\Output\Library\$(Configuration)\</OutDir>
     <IntDir>$(ProjectName).dir\$(Configuration)\$(Platform)\</IntDir>
     <TargetName>$(TargetName.Replace(' ','')).X64</TargetName>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Lib>
@@ -133,6 +136,7 @@
     <ClCompile>
       <AdditionalIncludeDirectories>$(SolutionDir)..\Include\;$(SolutionDir)..\Ring0\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <EnablePREfast>true</EnablePREfast>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -144,6 +148,7 @@
     <ClCompile>
       <AdditionalIncludeDirectories>$(SolutionDir)..\Include\;$(SolutionDir)..\Ring0\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <EnablePREfast>true</EnablePREfast>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -156,6 +161,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)..\Include\;$(SolutionDir)..\Ring0\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <PrecompiledHeader>Use</PrecompiledHeader>
+      <EnablePREfast>true</EnablePREfast>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -167,6 +173,7 @@
     <ClCompile>
       <AdditionalIncludeDirectories>$(SolutionDir)..\Include\;$(SolutionDir)..\Ring0\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <EnablePREfast>true</EnablePREfast>
     </ClCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

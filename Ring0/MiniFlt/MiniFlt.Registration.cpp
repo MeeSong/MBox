@@ -593,7 +593,7 @@ namespace MBox
         static FLT_REGISTRATION& s_FltRegistration_BeforeWindows10 = s_FltRegistration_BeforeWindows8;
         
         const PFLT_REGISTRATION GetFilterRegistration(
-            System::SystemVersion aVersion,
+            SystemVersion aVersion,
             FLT_CONTEXT_TYPE aContextSupportedType,
             FLT_REGISTRATION_FLAGS aFltRegistrationFlags,
             PFLT_FILTER_UNLOAD_CALLBACK aUnload)
@@ -602,7 +602,7 @@ namespace MBox
 
             switch (aVersion)
             {
-            case MBox::System::SystemVersion::WindowsXP:
+            case MBox::SystemVersion::WindowsXP:
                 vFltRegistration = &s_FltRegistration_BeforeWindowsXP;
                 vFltRegistration->FilterUnloadCallback = aUnload;
                 vFltRegistration->Flags = aFltRegistrationFlags & (~FLTFL_REGISTRATION_SUPPORT_DAX_VOLUME);
@@ -611,8 +611,8 @@ namespace MBox
                     ~(FLT_FILE_CONTEXT | FLT_TRANSACTION_CONTEXT | FLT_SECTION_CONTEXT);
                 break;
 
-            case MBox::System::SystemVersion::WindowsVista:
-            case MBox::System::SystemVersion::Windows7:
+            case MBox::SystemVersion::WindowsVista:
+            case MBox::SystemVersion::Windows7:
                 vFltRegistration = &s_FltRegistration_BeforeWindows7;
                 vFltRegistration->FilterUnloadCallback = aUnload;
                 vFltRegistration->Flags = aFltRegistrationFlags & (~FLTFL_REGISTRATION_SUPPORT_DAX_VOLUME);
@@ -621,8 +621,8 @@ namespace MBox
                     ~(FLT_SECTION_CONTEXT);
                 break;
 
-            case MBox::System::SystemVersion::Windows8:
-            case MBox::System::SystemVersion::Windows8_1:
+            case MBox::SystemVersion::Windows8:
+            case MBox::SystemVersion::Windows8_1:
                 vFltRegistration = &s_FltRegistration_BeforeWindows8;
                 vFltRegistration->FilterUnloadCallback = aUnload;
                 vFltRegistration->Flags = aFltRegistrationFlags & (~FLTFL_REGISTRATION_SUPPORT_DAX_VOLUME);
@@ -630,8 +630,8 @@ namespace MBox
                 g_ContextSupportedType = aContextSupportedType;
                 break;
 
-            case MBox::System::SystemVersion::Windows10_1507:
-            case MBox::System::SystemVersion::Windows10_1511:
+            case MBox::SystemVersion::Windows10_1507:
+            case MBox::SystemVersion::Windows10_1511:
                 vFltRegistration = &s_FltRegistration_BeforeWindows10;
                 vFltRegistration->FilterUnloadCallback = aUnload;
                 vFltRegistration->Flags = aFltRegistrationFlags & (~FLTFL_REGISTRATION_SUPPORT_DAX_VOLUME);
@@ -639,8 +639,8 @@ namespace MBox
                 g_ContextSupportedType = aContextSupportedType;
                 break;
 
-            case MBox::System::SystemVersion::Windows10_1607:
-            case MBox::System::SystemVersion::Windows10_1703:
+            case MBox::SystemVersion::Windows10_1607:
+            case MBox::SystemVersion::Windows10_1703:
                 vFltRegistration = &s_FltRegistration_BeforeWindows10;
                 vFltRegistration->FilterUnloadCallback = aUnload;
                 vFltRegistration->Flags = aFltRegistrationFlags;

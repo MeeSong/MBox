@@ -210,7 +210,7 @@ namespace MBox
 
                 UnitTest$CompileTime$Log$Macro(DPFLTR_ERROR_LEVEL,
                     "Status = %08X, Instance = %p, Transaction = %p, Transaction Context Request failed!",
-                    aParameter->m_FltObjects->Instance, aParameter->m_FltObjects->Transaction);
+                    vStatus, aParameter->m_FltObjects->Instance, aParameter->m_FltObjects->Transaction);
 
                 break;
             }

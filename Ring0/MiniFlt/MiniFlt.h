@@ -17,7 +17,7 @@ namespace MBox
         NTSTATUS Uninitialize();
 
         NTSTATUS RegisterFilter(
-            System::SystemVersion aVersion,
+            SystemVersion aVersion,
             FLT_CONTEXT_TYPE aContextSupportedType,
             FLT_REGISTRATION_FLAGS aFltRegistrationFlags);
         NTSTATUS UnregisterFilter();

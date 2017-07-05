@@ -2,6 +2,7 @@
 #include "Listener.h"
 
 //////////////////////////////////////////////////////////////////////////
+extern "C" DRIVER_INITIALIZE DriverEntry;
 
 static MBox::Listener* s_Listener = nullptr;
 
@@ -68,7 +69,7 @@ static NTSTATUS InitializeControllers(DRIVER_OBJECT* aDriverObject)
     return vStatus;
 }
 
-extern "C" NTSTATUS DriverEntry(
+NTSTATUS DriverEntry(
     PDRIVER_OBJECT aDriverObject,
     PUNICODE_STRING aRegistryPath)
 {
@@ -95,7 +96,7 @@ extern "C" NTSTATUS DriverEntry(
         }
 
         vStatus = MBox::MiniFlt::RegisterFilter(
-            MBox::System::SystemVersion::Windows7,
+            MBox::SystemVersion::Windows7,
             FLT_INSTANCE_CONTEXT,
             0);
         if (!NT_SUCCESS(vStatus))

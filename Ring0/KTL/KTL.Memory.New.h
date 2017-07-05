@@ -4,7 +4,7 @@
 #define New_$910C2682_3929_4387_9BE4_E556DE90DABA 1
 
 #include "KTL.Type.h"
-#include <ntifs.h>
+#include <wdm.h>
 
 using size_t = ktl::usize;
 
