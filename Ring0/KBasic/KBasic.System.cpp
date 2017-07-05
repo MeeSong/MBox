@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "KBasic.System.Version.h"
+#include "KBasic.System.h"
 
 namespace MBox
 {
