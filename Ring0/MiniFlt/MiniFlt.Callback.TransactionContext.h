@@ -113,12 +113,7 @@ MiniFlt$Function$TraverseCallbackPacketMemberName$Macro(TransactionCallbackFunct
             };
             MiniFlt$Function$TraverseTransactionCallbackFunctionCallbackName$Macro(vCallback);
         }
-
-        NTSTATUS __stdcall FltGetTransactionContextShims(
-            PFLT_INSTANCE aInstance,
-            PKTRANSACTION aTransaction,
-            PFLT_CONTEXT *aContext);
-
+        
         BOOLEAN IsSupportedTransactionContexts();
 
         NTSTATUS __stdcall TransactionContextCreateCallback(

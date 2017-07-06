@@ -11,8 +11,10 @@ static constexpr POOL_TYPE DefaultPoolType  = NonPagedPoolNx;
 // Check buffer 
 //
 
+#ifdef DBG
 // 在开启 Driver Verifier 之后, 由于会改变 Pool 布局, 所以要暂时关闭 Tag 验证
 #define KTL$CompileTime$DisableCheckPoolTag$Macro 1
+#endif
 
 #ifndef KTL$CompileTime$DisableCheckPoolTag$Macro
 

@@ -30,8 +30,8 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NdisFlt\NdisFlt.vcxproj">
-      <Project>{7cd2a2c1-22ca-4da5-9b5d-f1a8a5aaa24d}</Project>
+    <ProjectReference Include="..\ShimsApi\ShimsApi.vcxproj">
+      <Project>{87df4236-0c42-4b2a-9b1c-b8120a01a76b}</Project>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">

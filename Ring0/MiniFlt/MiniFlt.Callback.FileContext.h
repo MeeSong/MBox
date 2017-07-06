@@ -87,12 +87,7 @@ MiniFlt$Function$TraverseCallbackPacketMemberName$Macro(FileCallbackFunction)
             };
             MiniFlt$Function$TraverseFileCallbackFunctionCallbackName$Macro(vCallback);
         }
-
-        NTSTATUS __stdcall FltGetFileContextShims(
-            PFLT_INSTANCE aInstance,
-            PFILE_OBJECT aFileObject,
-            PFLT_CONTEXT *aContext);
-
+        
         BOOLEAN IsSupportedFileContexts(PFILE_OBJECT aFileObject);
 
         NTSTATUS __stdcall FileContextCreateCallback(

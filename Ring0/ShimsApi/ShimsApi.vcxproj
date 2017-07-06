@@ -19,54 +19,26 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="MiniFlt.Callback.ContextCleanup.cpp" />
-    <ClCompile Include="MiniFlt.Callback.FileContext.cpp" />
-    <ClCompile Include="MiniFlt.Callback.InstanceContext.cpp" />
-    <ClCompile Include="MiniFlt.Callback.Name.cpp" />
-    <ClCompile Include="MiniFlt.Callback.SectionContext.cpp" />
-    <ClCompile Include="MiniFlt.Callback.Operation.cpp" />
-    <ClCompile Include="MiniFlt.Callback.Packet.cpp" />
-    <ClCompile Include="MiniFlt.Callback.StreamContext.cpp" />
-    <ClCompile Include="MiniFlt.Callback.StreamHandleContext.cpp" />
-    <ClCompile Include="MiniFlt.Callback.TransactionContext.cpp" />
-    <ClCompile Include="MiniFlt.cpp" />
-    <ClCompile Include="MiniFlt.Registration.cpp" />
-    <ClCompile Include="stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\KTL\KTL.vcxproj">
-      <Project>{c740164f-02ef-4df7-bea2-3042fd9823ec}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\ShimsApi\ShimsApi.vcxproj">
-      <Project>{87df4236-0c42-4b2a-9b1c-b8120a01a76b}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="MiniFlt.Callback.ContextCleanup.h" />
-    <ClInclude Include="MiniFlt.Callback.FileContext.h" />
-    <ClInclude Include="MiniFlt.Callback.InstanceContext.h" />
-    <ClInclude Include="MiniFlt.Callback.Name.h" />
-    <ClInclude Include="MiniFlt.Callback.SectionContext.h" />
-    <ClInclude Include="MiniFlt.Callback.Operation.h" />
-    <ClInclude Include="MiniFlt.Callback.Packet.h" />
-    <ClInclude Include="MiniFlt.Callback.StreamContext.h" />
-    <ClInclude Include="MiniFlt.Callback.StreamHandleContext.h" />
-    <ClInclude Include="MiniFlt.Callback.TransactionContext.h" />
-    <ClInclude Include="MiniFlt.h" />
-    <ClInclude Include="MiniFlt.Macro.h" />
-    <ClInclude Include="MiniFlt.Registration.h" />
+    <ClInclude Include="ShimsApi.MiniFilter.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ShimsApi.MiniFilter.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{D4C53D20-6CE0-4D61-A3C9-7611DF5BE86C}</ProjectGuid>
+    <ProjectGuid>{87DF4236-0C42-4B2A-9B1C-B8120A01A76B}</ProjectGuid>
     <TemplateGuid>{0a049372-4c4d-4ea0-a64e-dc6ad88ceca1}</TemplateGuid>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <MinimumVisualStudioVersion>12.0</MinimumVisualStudioVersion>
     <Configuration>Debug</Configuration>
     <Platform Condition="'$(Platform)' == ''">Win32</Platform>
-    <RootNamespace>MiniFlt</RootNamespace>
+    <RootNamespace>ShimsApi</RootNamespace>
     <DriverType>KMDF</DriverType>
     <WindowsTargetPlatformVersion>$(LatestTargetPlatformVersion)</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -131,53 +103,56 @@
     <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <Lib>
-      <TreatLibWarningAsErrors>true</TreatLibWarningAsErrors>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\Output\Library\Debug\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>FltMgr.lib</AdditionalDependencies>
-    </Lib>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include\;$(SolutionDir)..\Ring0\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <EnablePREfast>true</EnablePREfast>
-    </ClCompile>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <Lib>
-      <TreatLibWarningAsErrors>true</TreatLibWarningAsErrors>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\Output\Library\Release\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>FltMgr.lib</AdditionalDependencies>
-    </Lib>
-    <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include\;$(SolutionDir)..\Ring0\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
-      <EnablePREfast>true</EnablePREfast>
-    </ClCompile>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <Lib>
-      <TreatLibWarningAsErrors>true</TreatLibWarningAsErrors>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\Output\Library\Debug\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>FltMgr.lib</AdditionalDependencies>
-    </Lib>
-    <ClCompile>
       <AdditionalIncludeDirectories>$(SolutionDir)..\Include\;$(SolutionDir)..\Ring0\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <EnablePREfast>true</EnablePREfast>
+      <DisableSpecificWarnings>4201;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\Output\Library\Debug\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <TreatLibWarningAsErrors>true</TreatLibWarningAsErrors>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\Output\Library\Release\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>FltMgr.lib</AdditionalDependencies>
     </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
+      <EnablePREfast>true</EnablePREfast>
       <AdditionalIncludeDirectories>$(SolutionDir)..\Include\;$(SolutionDir)..\Ring0\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
-      <EnablePREfast>true</EnablePREfast>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <DisableSpecificWarnings>4201;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\Output\Library\Release\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <TreatLibWarningAsErrors>true</TreatLibWarningAsErrors>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <EnablePREfast>true</EnablePREfast>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include\;$(SolutionDir)..\Ring0\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <DisableSpecificWarnings>4201;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\Output\Library\Debug\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <TreatLibWarningAsErrors>true</TreatLibWarningAsErrors>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <EnablePREfast>true</EnablePREfast>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include\;$(SolutionDir)..\Ring0\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <DisableSpecificWarnings>4201;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\Output\Library\Release\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <TreatLibWarningAsErrors>true</TreatLibWarningAsErrors>
+    </Lib>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

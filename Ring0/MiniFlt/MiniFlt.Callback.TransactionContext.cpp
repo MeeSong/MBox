@@ -2,76 +2,14 @@
 #include "MiniFlt.Callback.TransactionContext.h"
 #include "MiniFlt.Callback.Packet.h"
 
+#include "ShimsApi\ShimsApi.MiniFilter.h"
+
 //////////////////////////////////////////////////////////////////////////
 
 namespace MBox
 {
     namespace MiniFlt
     {
-        NTSTATUS __stdcall FltSetTransactionContextShims(
-            PFLT_INSTANCE aInstance, 
-            PKTRANSACTION aTransaction, 
-            FLT_SET_CONTEXT_OPERATION aOperation, 
-            PFLT_CONTEXT aNewContext, 
-            PFLT_CONTEXT *aOldContext)
-        {
-            using FltSetTransactionContext$Fun = NTSTATUS(__stdcall *)(
-                PFLT_INSTANCE, PKTRANSACTION, FLT_SET_CONTEXT_OPERATION, PFLT_CONTEXT, PFLT_CONTEXT*);
-            static FltSetTransactionContext$Fun sFltSetTransactionContext = nullptr;
-
-            if (nullptr == sFltSetTransactionContext)
-            {
-                sFltSetTransactionContext = (FltSetTransactionContext$Fun)FltGetRoutineAddress("FltSetTransactionContext");
-            }
-            if (sFltSetTransactionContext)
-            {
-                return sFltSetTransactionContext(aInstance, aTransaction, aOperation, aNewContext, aOldContext);
-            }
-
-            return STATUS_NOT_SUPPORTED;
-        }
-
-        NTSTATUS __stdcall FltEnlistInTransactionShims(
-            PFLT_INSTANCE aInstance, 
-            PKTRANSACTION aTransaction, 
-            PFLT_CONTEXT aTransactionContext, 
-            NOTIFICATION_MASK aNotificationMask)
-        {
-            using FltEnlistInTransaction$Fun = NTSTATUS(__stdcall *)(PFLT_INSTANCE, PKTRANSACTION, PFLT_CONTEXT, NOTIFICATION_MASK);
-            static FltEnlistInTransaction$Fun sFltEnlistInTransaction = nullptr;
-
-            if (nullptr == sFltEnlistInTransaction)
-            {
-                sFltEnlistInTransaction = (FltEnlistInTransaction$Fun)FltGetRoutineAddress("FltEnlistInTransaction");
-            }
-            if (sFltEnlistInTransaction)
-            {
-                return sFltEnlistInTransaction(aInstance, aTransaction, aTransactionContext, aNotificationMask);
-            }
-
-            return STATUS_NOT_SUPPORTED;
-        }
-
-        NTSTATUS __stdcall FltGetTransactionContextShims(
-            PFLT_INSTANCE aInstance, 
-            PKTRANSACTION aTransaction, 
-            PFLT_CONTEXT *aContext)
-        {
-            using FltGetTransactionContext$Fun = NTSTATUS(__stdcall *)(PFLT_INSTANCE, PKTRANSACTION, PFLT_CONTEXT*);
-            static FltGetTransactionContext$Fun sFltGetTransactionContext = nullptr;
-
-            if (nullptr == sFltGetTransactionContext)
-            {
-                sFltGetTransactionContext = (FltGetTransactionContext$Fun)FltGetRoutineAddress("FltGetTransactionContext");
-            }
-            if (sFltGetTransactionContext)
-            {
-                return sFltGetTransactionContext(aInstance, aTransaction, aContext);
-            }
-
-            return STATUS_NOT_SUPPORTED;
-        }
-
         extern FLT_CONTEXT_TYPE g_ContextSupportedType;
 
         BOOLEAN IsSupportedTransactionContexts()
@@ -120,7 +58,7 @@ namespace MBox
             else
             {
                 RtlSecureZeroMemory(vContextArray, vContextArrayBytes);
-                vStatus = FltSetTransactionContextShims(
+                vStatus = MBox::ShimsAPi::FltSetTransactionContextShims(
                     aFltObject->Instance,
                     aFltObject->Transaction,
                     FLT_SET_CONTEXT_KEEP_IF_EXISTS,
@@ -136,7 +74,7 @@ namespace MBox
                 }
                 else
                 {
-                    vStatus = FltEnlistInTransactionShims(
+                    vStatus = MBox::ShimsAPi::FltEnlistInTransactionShims(
                         aFltObject->Instance,
                         aFltObject->Transaction,
                         vContextArray,

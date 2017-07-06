@@ -2,6 +2,8 @@
 #include "MiniFlt.Callback.Operation.h"
 #include "MiniFlt.h"
 
+#include "ShimsApi\ShimsApi.MiniFilter.h"
+
 //////////////////////////////////////////////////////////////////////////
 
 namespace MBox
@@ -162,7 +164,7 @@ namespace MBox
                 }
                 else
                 {
-                    vStatus = FltGetFileContextShims(
+                    vStatus = MBox::ShimsAPi::FltGetFileContextShims(
                         aFltObjects->Instance,
                         aFltObjects->FileObject,
                         (PFLT_CONTEXT*)&vFileContextsArray);
@@ -193,7 +195,7 @@ namespace MBox
                 }
                 else
                 {
-                    vStatus = FltGetTransactionContextShims(
+                    vStatus = MBox::ShimsAPi::FltGetTransactionContextShims(
                         aFltObjects->Instance,
                         aFltObjects->Transaction,
                         (PFLT_CONTEXT*)&vTransactionContextsArray);
@@ -619,7 +621,7 @@ namespace MBox
                 }
                 else
                 {
-                    vStatus = FltGetFileContextShims(
+                    vStatus = MBox::ShimsAPi::FltGetFileContextShims(
                         aFltObjects->Instance,
                         aFltObjects->FileObject,
                         (PFLT_CONTEXT*)&vFileContextsArray);
@@ -663,7 +665,7 @@ namespace MBox
                 }
                 else
                 {
-                    vStatus = FltGetTransactionContextShims(
+                    vStatus = MBox::ShimsAPi::FltGetTransactionContextShims(
                         aFltObjects->Instance,
                         aFltObjects->Transaction,
                         (PFLT_CONTEXT*)&vTransactionContextsArray);
