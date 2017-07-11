@@ -22,8 +22,8 @@ namespace MBox
 
         NTSTATUS Initialize(
             DRIVER_OBJECT* aDriverObject,
-            UNICODE_STRING* aRegistryPath,
-            DEVICE_OBJECT* aDeviceObject = nullptr)
+            UNICODE_STRING* /*aRegistryPath*/,
+            DEVICE_OBJECT* aDeviceObject)
         {
             NTSTATUS vStatus = STATUS_SUCCESS;
 

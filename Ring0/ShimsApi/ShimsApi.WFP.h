@@ -1,4 +1,5 @@
 #pragma once
+#include <guiddef.h>
 #include <Fwpmk.h>
 
 namespace MBox

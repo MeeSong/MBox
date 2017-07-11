@@ -164,7 +164,7 @@ namespace MBox
                 }
                 else
                 {
-                    vStatus = MBox::ShimsAPi::FltGetFileContextShims(
+                    vStatus = MBox::ShimsAPi::MiniFilter::FltGetFileContextShims(
                         aFltObjects->Instance,
                         aFltObjects->FileObject,
                         (PFLT_CONTEXT*)&vFileContextsArray);
@@ -195,7 +195,7 @@ namespace MBox
                 }
                 else
                 {
-                    vStatus = MBox::ShimsAPi::FltGetTransactionContextShims(
+                    vStatus = MBox::ShimsAPi::MiniFilter::FltGetTransactionContextShims(
                         aFltObjects->Instance,
                         aFltObjects->Transaction,
                         (PFLT_CONTEXT*)&vTransactionContextsArray);
@@ -621,7 +621,7 @@ namespace MBox
                 }
                 else
                 {
-                    vStatus = MBox::ShimsAPi::FltGetFileContextShims(
+                    vStatus = MBox::ShimsAPi::MiniFilter::FltGetFileContextShims(
                         aFltObjects->Instance,
                         aFltObjects->FileObject,
                         (PFLT_CONTEXT*)&vFileContextsArray);
@@ -665,7 +665,7 @@ namespace MBox
                 }
                 else
                 {
-                    vStatus = MBox::ShimsAPi::FltGetTransactionContextShims(
+                    vStatus = MBox::ShimsAPi::MiniFilter::FltGetTransactionContextShims(
                         aFltObjects->Instance,
                         aFltObjects->Transaction,
                         (PFLT_CONTEXT*)&vTransactionContextsArray);

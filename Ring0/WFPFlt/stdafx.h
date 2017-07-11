@@ -8,6 +8,8 @@
 #endif
 
 #include <ndis.h>
+#include <guiddef.h>
+#include <fwpmk.h>
 
 #include <KTL\KTL.Type.h>
 #include <KTL\KTL.Memory.New.h>

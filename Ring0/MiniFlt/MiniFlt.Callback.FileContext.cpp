@@ -15,7 +15,7 @@ namespace MBox
         BOOLEAN IsSupportedFileContexts(PFILE_OBJECT aFileObject)
         {
             if ((g_ContextSupportedType & FLT_FILE_CONTEXT)
-                && MBox::ShimsAPi::FltSupportsFileContextsShims(aFileObject))
+                && MBox::ShimsAPi::MiniFilter::FltSupportsFileContextsShims(aFileObject))
             {
                 return TRUE;
             }
@@ -59,7 +59,7 @@ namespace MBox
             else
             {
                 RtlSecureZeroMemory(vContextArray, vContextArrayBytes);
-                vStatus = MBox::ShimsAPi::FltSetFileContextShims(
+                vStatus = MBox::ShimsAPi::MiniFilter::FltSetFileContextShims(
                     aFltObject->Instance,
                     aFltObject->FileObject,
                     FLT_SET_CONTEXT_KEEP_IF_EXISTS,
