@@ -102,7 +102,7 @@ namespace MBox
         }
 
         NTSTATUS RegisterFilter(
-            SystemVersion aVersion,
+            SystemVersion aMinimumVersion,
             FLT_CONTEXT_TYPE aContextSupportedType,
             FLT_REGISTRATION_FLAGS aFltRegistrationFlags)
         {
@@ -111,7 +111,7 @@ namespace MBox
             for (;;)
             {
                 PFLT_REGISTRATION vFltRegistration = GetFilterRegistration(
-                    aVersion, aContextSupportedType, aFltRegistrationFlags, FltUnload);
+                    aMinimumVersion, aContextSupportedType, aFltRegistrationFlags, FltUnload);
                 if (!vFltRegistration)
                 {
                     vStatus = STATUS_NOT_SUPPORTED;

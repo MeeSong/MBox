@@ -9,6 +9,13 @@ namespace MBox
         {
             SystemVersion GetSystemVersion()
             {
+                static SystemVersion vSysVersion{ SystemVersion::WindowsUnknown };
+
+                if (SystemVersion::WindowsUnknown != vSysVersion)
+                {
+                    return vSysVersion;
+                }
+
                 NTSTATUS vStatus = STATUS_SUCCESS;
                 RTL_OSVERSIONINFOW  vVersion{};
                 
@@ -18,7 +25,6 @@ namespace MBox
                     return SystemVersion::WindowsUnknown;
                 }
 
-                SystemVersion vSysVersion{ SystemVersion::WindowsUnknown };
                 switch (vVersion.dwBuildNumber)
                 {
                 default:

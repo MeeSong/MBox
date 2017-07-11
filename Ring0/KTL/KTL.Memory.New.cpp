@@ -2,10 +2,50 @@
 #include "KTL.Macro.h"
 
 
-static constexpr ktl::u32 DefaultPoolTag    = KTL$CompileTime$ByteSwap32$Macro('KNew');
-static constexpr POOL_TYPE DefaultPoolType  = NonPagedPoolNx;
+static constexpr ktl::u32 DefaultPoolTag = KTL$CompileTime$ByteSwap32$Macro('KNew');
+static POOL_TYPE DefaultPoolType  = NonPagedPoolNx;
 
 //////////////////////////////////////////////////////////////////////////
+
+//
+// Compatible with XP
+//
+
+void KtlInitializeDefaultPoolTypeWithRuntime(
+    ktl::u32 aRuntimeFlags)
+{
+    NTSTATUS vStatus;
+    ktl::u32 vMajorVersion;
+    ktl::u32 vMinorVersion;
+    RTL_OSVERSIONINFOW vVersionInfo{ sizeof(vVersionInfo) };
+
+    vStatus = RtlGetVersion(&vVersionInfo);
+
+    if (!NT_VERIFY(NT_SUCCESS(vStatus))) 
+    {
+        vMajorVersion = 5;
+        vMinorVersion = 0;
+    }
+    else 
+    {
+        vMajorVersion = vVersionInfo.dwMajorVersion;
+        vMinorVersion = vVersionInfo.dwMinorVersion;
+    }
+
+    if ((aRuntimeFlags & DrvRtPoolNxOptIn) != 0) 
+    {
+        //
+        // Discover whether NX pool support is available on this platform, and,
+        // if so, initialize the default non-paged pool type.
+        //
+
+        if ((vMajorVersion < 6) ||
+            (vMajorVersion == 6 && vMinorVersion < 2)) 
+        {
+            DefaultPoolType = NonPagedPool;
+        }
+    }
+}
 
 //
 // Check buffer 

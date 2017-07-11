@@ -8,6 +8,9 @@
 
 using size_t = ktl::usize;
 
+void KtlInitializeDefaultPoolTypeWithRuntime(
+    ktl::u32 aRuntimeFlags = DrvRtPoolNxOptIn);
+
 // replaceable usual deallocation functions
 void* __cdecl operator new(size_t aSize) NOEXCEPT$TYPE;
 void __cdecl operator delete (void *aPtr) NOEXCEPT$TYPE;

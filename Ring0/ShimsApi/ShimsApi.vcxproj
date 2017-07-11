@@ -20,10 +20,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ShimsApi.MiniFilter.h" />
+    <ClInclude Include="ShimsApi.Ndis.h" />
+    <ClInclude Include="ShimsApi.WFP.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ShimsApi.MiniFilter.cpp" />
+    <ClCompile Include="ShimsApi.Ndis.cpp" />
+    <ClCompile Include="ShimsApi.WFP.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

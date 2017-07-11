@@ -21,12 +21,24 @@
     <ClInclude Include="ShimsApi.MiniFilter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ShimsApi.WFP.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ShimsApi.Ndis.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ShimsApi.MiniFilter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ShimsApi.WFP.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ShimsApi.Ndis.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
