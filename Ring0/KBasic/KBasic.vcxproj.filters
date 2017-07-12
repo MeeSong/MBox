@@ -21,12 +21,18 @@
     <ClCompile Include="KBasic.System.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="KBasic.Module.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="KBasic.System.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="KBasic.Module.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
