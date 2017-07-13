@@ -25,11 +25,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KBasic.Module.h" />
+    <ClInclude Include="KBasic.PE.h" />
     <ClInclude Include="KBasic.System.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KBasic.Module.cpp" />
+    <ClCompile Include="KBasic.PE.cpp" />
     <ClCompile Include="KBasic.System.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

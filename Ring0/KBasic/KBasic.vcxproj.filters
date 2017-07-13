@@ -24,6 +24,9 @@
     <ClCompile Include="KBasic.Module.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="KBasic.PE.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -33,6 +36,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="KBasic.Module.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="KBasic.PE.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

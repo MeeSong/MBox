@@ -13,6 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ring3", "Ring3", "{CB3E6D17
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Include", "Include", "{6900FBAC-17E6-4AC2-AA96-A653C41154D7}"
 	ProjectSection(SolutionItems) = preProject
+		..\Include\MBox.Images.PE.h = ..\Include\MBox.Images.PE.h
 		..\Include\MBox.Memory.Information.h = ..\Include\MBox.Memory.Information.h
 		..\Include\Mbox.Module.Loader.h = ..\Include\Mbox.Module.Loader.h
 		..\Include\MBox.System.Information.h = ..\Include\MBox.System.Information.h
