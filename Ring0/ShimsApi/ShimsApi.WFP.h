@@ -8,6 +8,10 @@ namespace MBox
     {
         namespace WFP
         {
+            NTSTATUS __stdcall GetFwpIpsecModuleAddress(const void** aModuleAddress);
+
+            const void* __stdcall GetFwpIpsecRoutineAddress(const char* aRoutineName);
+
             NTSTATUS __stdcall FwpmBfeStateSubscribeChanges0Shims(
                 void* aDeviceObject,
                 FWPM_SERVICE_STATE_CHANGE_CALLBACK0 aCallback,

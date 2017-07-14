@@ -6,7 +6,7 @@ namespace MBox
 {
     namespace KBasic
     {
-        namespace Module
+        namespace Modules
         {
             enum : ktl::u32
             {
@@ -131,6 +131,19 @@ namespace MBox
 
                 return vStatus;
             }
+
+            //
+            // Module Address & Routine
+            //
+
+            NTSTATUS __stdcall GetModuleAddress(
+                const void ** aModuleAddress,
+                const char* aModuleName);
+
+            const void * __stdcall GetRoutineAddress(
+                const void* aModuleAddress, 
+                const char * aRoutineName);
+
         }
     }
 }

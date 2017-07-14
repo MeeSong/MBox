@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "KBasic.Module.h"
+#include "KBasic.PE.h"
 
 #include <ntstrsafe.h>
 
@@ -13,7 +14,7 @@ namespace MBox
 {
     namespace KBasic
     {
-        namespace Module
+        namespace Modules
         {
             //
             // System Modules
@@ -386,6 +387,83 @@ namespace MBox
                 PRTL_PROCESS_MODULES aModules)
             {
                 delete[](ktl::byte*)aModules;
+            }
+
+            //
+            // Module Address & Routine
+            //
+
+            NTSTATUS __stdcall GetModuleAddress(
+                const void ** aModuleAddress,
+                const char* aModuleName)
+            {
+                if (nullptr == aModuleAddress 
+                    || nullptr == aModuleName
+                    || '\0' == aModuleName[0])
+                {
+                    return STATUS_INVALID_PARAMETER;
+                }
+
+                const void* vModuleAddress = nullptr;
+                auto vCallback = [&vModuleAddress, aModuleName](
+                    const RTL_PROCESS_MODULE_INFORMATION* aModuleInfo, 
+                    ktl::u32 /*aIndex*/)->bool
+                {
+                    if (0 == _stricmp(reinterpret_cast<const char*>(aModuleInfo->FullPathName), aModuleName))
+                    {
+                        vModuleAddress = aModuleInfo->ImageBase;
+                        return true;
+                    }
+                    return false;
+                };
+                NTSTATUS vStatus = TraverseSystemModuleInfo(vCallback);
+
+                if (!NT_SUCCESS(vStatus))
+                {
+                    return vStatus;
+                }
+                else if (nullptr == vModuleAddress)
+                {
+                    return STATUS_NOT_FOUND;
+                }
+
+                *aModuleAddress = vModuleAddress;
+                return STATUS_SUCCESS;
+            }
+
+            const void * __stdcall GetRoutineAddress(
+                const void * aModuleAddress, 
+                const char * aRoutineName)
+            {
+                if (nullptr == aModuleAddress
+                    ||nullptr == aRoutineName 
+                    || '\0' == aRoutineName[0])
+                {
+                    return nullptr;
+                }
+
+                const void* vRoutineAddress = nullptr;
+                auto vCallback = [aRoutineName, &vRoutineAddress](
+                    const void* /*aImageAddress*/,
+                    const KBasic::PE::ImageDataDirectory* /*aDataDirectory*/,
+                    const KBasic::PE::ImageExportDirectory* /*aExportDirectory*/,
+                    const char* /*aExportModuleName*/,
+                    ktl::u32 /*aOrdinal*/,
+                    ktl::u32 /*aNameOrdinal*/,
+                    const char* aExportName,
+                    const void* aExportAddress,
+                    ktl::u32 /*aIndex*/)->bool
+                {
+                    if (0 == strcmp(aExportName, aRoutineName))
+                    {
+                        vRoutineAddress = aExportAddress;
+                        return true;
+                    }
+                    return false;
+                };
+                KBasic::PE::TraverseExportDirectoryMapAsImage(vCallback, aModuleAddress);
+
+                return vRoutineAddress;
             }
 
         }

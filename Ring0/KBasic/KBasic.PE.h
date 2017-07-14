@@ -47,12 +47,12 @@ namespace MBox
             const void* GetDirectoryEntryDataMapAsImage(
                 const void* aImageAddress,
                 ImageDataDirectory::Index aIndex,
-                ImageDataDirectory** aDataDirectory = nullptr);
+                const ImageDataDirectory** aDataDirectory = nullptr);
 
             const void* GetDirectoryEntryDataMapAsFile(
                 const void* aImageAddress,
                 ImageDataDirectory::Index aIndex,
-                ImageDataDirectory** aDataDirectory = nullptr);
+                const ImageDataDirectory** aDataDirectory = nullptr);
 
             //
             // Export directory
@@ -165,11 +165,12 @@ namespace MBox
                 F aCallback,
                 const void* aImageAddress)
             {
-                ImageDataDirectory* vDataDirectory = nullptr;
-                ImageExportDirectory* vExportDirectory = GetDirectoryEntryDataMapAsImage(
+                const ImageDataDirectory* vDataDirectory = nullptr;
+                const ImageExportDirectory* vExportDirectory = 
+                    static_cast<const ImageExportDirectory*>(GetDirectoryEntryDataMapAsImage(
                     aImageAddress, 
                     ImageDataDirectory::Index::Export,
-                    &vDataDirectory);
+                    &vDataDirectory));
                 if (nullptr == vExportDirectory)
                 {
                     return;
@@ -200,7 +201,7 @@ namespace MBox
                     if (0 == vAddressRvaArray[vOrdinal]) continue;
 
                     const char* vExportName     = nullptr;
-                    ktl::u32    vNameOrdinal    = -1;
+                    ktl::u32    vNameOrdinal    = ktl::u32(-1);
                     const void* vExportAddress  = reinterpret_cast<const void*>(
                         reinterpret_cast<ktl::uintptr>(aImageAddress) + vAddressRvaArray[vOrdinal]);
 
@@ -253,10 +254,11 @@ namespace MBox
                 const void* aImageAddress)
             {
                 const ImageDataDirectory* vDataDirectory = nullptr;
-                const ImageExportDirectory* vExportDirectory = GetDirectoryEntryDataMapAsFile(
+                const ImageExportDirectory* vExportDirectory = 
+                    static_cast<const ImageExportDirectory*>(GetDirectoryEntryDataMapAsFile(
                     aImageAddress,
                     ImageDataDirectory::Index::Export,
-                    &vDataDirectory);
+                    &vDataDirectory));
                 if (nullptr == vExportDirectory)
                 {
                     return;
@@ -343,10 +345,11 @@ namespace MBox
                 const void* aImageAddress)
             {
                 const ImageDataDirectory* vDataDirectory = nullptr;
-                const ImageImportDescriptor* vImportDescriptor = GetDirectoryEntryDataMapAsImage(
+                const ImageImportDescriptor* vImportDescriptor = 
+                    static_cast<const ImageImportDescriptor*>(GetDirectoryEntryDataMapAsImage(
                     aImageAddress,
                     ImageDataDirectory::Index::Import,
-                    &vDataDirectory);
+                    &vDataDirectory));
                 if (nullptr == vImportDescriptor)
                 {
                     return;
@@ -356,13 +359,15 @@ namespace MBox
                     vImportDescriptor[vImportModuleIndex].m_Characteristics; 
                     ++vImportModuleIndex)
                 {
-                    const ImageThunkData64* vImportLookupTableArray = GetImportILTThunkDataMapAsImage(aImageAddress, vImportDescriptor);
+                    const ImageThunkData64* vImportLookupTableArray = 
+                        static_cast<const ImageThunkData64*>(GetImportILTThunkDataMapAsImage(aImageAddress, vImportDescriptor));
                     if (nullptr == vImportLookupTableArray)
                     {
                         continue;
                     }
 
-                    const ImageThunkData64* vImportAddressTableArray = GetImportIATArrayMapAsImage(aImageAddress, vImportDescriptor);
+                    const ImageThunkData64* vImportAddressTableArray = 
+                        static_cast<const ImageThunkData64*>(GetImportIATArrayMapAsImage(aImageAddress, vImportDescriptor));
                     if (nullptr == vImportAddressTableArray)
                     {
                         continue;
@@ -424,10 +429,11 @@ namespace MBox
                 const void* aImageAddress)
             {
                 const ImageDataDirectory* vDataDirectory = nullptr;
-                const ImageImportDescriptor* vImportDescriptor = GetDirectoryEntryDataMapAsImage(
+                const ImageImportDescriptor* vImportDescriptor = 
+                    static_cast<const ImageImportDescriptor*>(GetDirectoryEntryDataMapAsImage(
                     aImageAddress,
                     ImageDataDirectory::Index::Import,
-                    &vDataDirectory);
+                    &vDataDirectory));
                 if (nullptr == vImportDescriptor)
                 {
                     return;
@@ -437,13 +443,15 @@ namespace MBox
                     vImportDescriptor[vImportModuleIndex].m_Characteristics;
                     ++vImportModuleIndex)
                 {
-                    const ImageThunkData32* vImportLookupTableArray = GetImportILTThunkDataMapAsImage(aImageAddress, vImportDescriptor);
+                    const ImageThunkData32* vImportLookupTableArray = 
+                        static_cast<const ImageThunkData32*>(GetImportILTThunkDataMapAsImage(aImageAddress, vImportDescriptor));
                     if (nullptr == vImportLookupTableArray)
                     {
                         continue;
                     }
 
-                    const ImageThunkData32* vImportAddressTableArray = GetImportIATArrayMapAsImage(aImageAddress, vImportDescriptor);
+                    const ImageThunkData32* vImportAddressTableArray = 
+                        static_cast<const ImageThunkData32*>(GetImportIATArrayMapAsImage(aImageAddress, vImportDescriptor));
                     if (nullptr == vImportAddressTableArray)
                     {
                         continue;
@@ -505,10 +513,11 @@ namespace MBox
                 const void* aImageAddress)
             {
                 const ImageDataDirectory* vDataDirectory = nullptr;
-                const ImageImportDescriptor* vImportDescriptor = GetDirectoryEntryDataMapAsFile(
+                const ImageImportDescriptor* vImportDescriptor = 
+                    static_cast<const ImageImportDescriptor*>(GetDirectoryEntryDataMapAsFile(
                     aImageAddress,
                     ImageDataDirectory::Index::Import,
-                    &vDataDirectory);
+                    &vDataDirectory));
                 if (nullptr == vImportDescriptor)
                 {
                     return;
@@ -518,13 +527,15 @@ namespace MBox
                     vImportDescriptor[vImportModuleIndex].m_Characteristics;
                     ++vImportModuleIndex)
                 {
-                    const ImageThunkData64* vImportLookupTableArray = GetImportILTThunkDataMapAsFile(aImageAddress, vImportDescriptor);
+                    const ImageThunkData64* vImportLookupTableArray = 
+                        static_cast<const ImageThunkData64*>(GetImportILTThunkDataMapAsFile(aImageAddress, vImportDescriptor));
                     if (nullptr == vImportLookupTableArray)
                     {
                         continue;
                     }
 
-                    const ImageThunkData64* vImportAddressTableArray = GetImportIATArrayMapAsFile(aImageAddress, vImportDescriptor);
+                    const ImageThunkData64* vImportAddressTableArray = 
+                        static_cast<const ImageThunkData64*>(GetImportIATArrayMapAsFile(aImageAddress, vImportDescriptor));
                     if (nullptr == vImportAddressTableArray)
                     {
                         continue;
@@ -586,10 +597,11 @@ namespace MBox
                 const void* aImageAddress)
             {
                 const ImageDataDirectory* vDataDirectory = nullptr;
-                const ImageImportDescriptor* vImportDescriptor = GetDirectoryEntryDataMapAsFile(
+                const ImageImportDescriptor* vImportDescriptor = 
+                    static_cast<const ImageImportDescriptor*>(GetDirectoryEntryDataMapAsFile(
                     aImageAddress,
                     ImageDataDirectory::Index::Import,
-                    &vDataDirectory);
+                    &vDataDirectory));
                 if (nullptr == vImportDescriptor)
                 {
                     return;
@@ -599,13 +611,15 @@ namespace MBox
                     vImportDescriptor[vImportModuleIndex].m_Characteristics;
                     ++vImportModuleIndex)
                 {
-                    const ImageThunkData32* vImportLookupTableArray = GetImportILTThunkDataMapAsFile(aImageAddress, vImportDescriptor);
+                    const ImageThunkData32* vImportLookupTableArray = 
+                        static_cast<const ImageThunkData32*>(GetImportILTThunkDataMapAsFile(aImageAddress, vImportDescriptor));
                     if (nullptr == vImportLookupTableArray)
                     {
                         continue;
                     }
 
-                    const ImageThunkData32* vImportAddressTableArray = GetImportIATArrayMapAsFile(aImageAddress, vImportDescriptor);
+                    const ImageThunkData32* vImportAddressTableArray = 
+                        static_cast<const ImageThunkData32*>(GetImportIATArrayMapAsFile(aImageAddress, vImportDescriptor));
                     if (nullptr == vImportAddressTableArray)
                     {
                         continue;
@@ -660,6 +674,14 @@ namespace MBox
                     }
                 }
             }
+
+#ifdef _WIN64
+#define TraverseImportDescriptorMapAsImage  TraverseImportDescriptorMapAsImageX64
+#define TraverseImportDescriptorMapAsFile   TraverseImportDescriptorMapAsFileX64
+#else
+#define TraverseImportDescriptorMapAsImage  TraverseImportDescriptorMapAsImageX86
+#define TraverseImportDescriptorMapAsFile   TraverseImportDescriptorMapAsFileX86
+#endif
 
         }
     }
