@@ -11,7 +11,7 @@ namespace MBox
         {
             NTSTATUS BfeStateSubscribeChanges(BfeStateSubscribeChangesParameter * aParameter)
             {
-                return ShimsAPi::WFP::FwpmBfeStateSubscribeChanges0Shims(
+                return ShimsApi::WFP::FwpmBfeStateSubscribeChanges0Shims(
                     aParameter->m_DeviceObject,
                     aParameter->m_Callback,
                     aParameter->m_Context,
@@ -20,12 +20,12 @@ namespace MBox
 
             NTSTATUS BfeStateUnsubscribeChanges(BfeStateUnsubscribeChangesParameter * aParameter)
             {
-                return ShimsAPi::WFP::FwpmBfeStateUnsubscribeChanges0Shims(aParameter->m_ChangeHandle);
+                return ShimsApi::WFP::FwpmBfeStateUnsubscribeChanges0Shims(aParameter->m_ChangeHandle);
             }
 
             FWPM_SERVICE_STATE BfeStateGet()
             {
-                return ShimsAPi::WFP::FwpmBfeStateGet0Shims();
+                return ShimsApi::WFP::FwpmBfeStateGet0Shims();
             }
         }
     }

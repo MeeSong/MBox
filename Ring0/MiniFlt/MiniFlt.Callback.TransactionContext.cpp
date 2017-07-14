@@ -58,7 +58,7 @@ namespace MBox
             else
             {
                 RtlSecureZeroMemory(vContextArray, vContextArrayBytes);
-                vStatus = MBox::ShimsAPi::MiniFilter::FltSetTransactionContextShims(
+                vStatus = MBox::ShimsApi::MiniFilter::FltSetTransactionContextShims(
                     aFltObject->Instance,
                     aFltObject->Transaction,
                     FLT_SET_CONTEXT_KEEP_IF_EXISTS,
@@ -74,7 +74,7 @@ namespace MBox
                 }
                 else
                 {
-                    vStatus = MBox::ShimsAPi::MiniFilter::FltEnlistInTransactionShims(
+                    vStatus = MBox::ShimsApi::MiniFilter::FltEnlistInTransactionShims(
                         aFltObject->Instance,
                         aFltObject->Transaction,
                         vContextArray,

@@ -3,7 +3,7 @@
 
 namespace MBox
 {
-    namespace ShimsAPi
+    namespace ShimsApi
     {
         namespace MiniFilter
         {

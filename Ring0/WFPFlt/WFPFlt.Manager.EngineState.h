@@ -1,5 +1,6 @@
 #pragma once
 #include <ShimsApi\ShimsApi.WFP.h>
+#include <KTL\KTL.Multithreading.Singleton.h>
 #include <KTL\KTL.Functional.Function.h>
 
 namespace MBox
@@ -7,6 +8,7 @@ namespace MBox
     namespace WFPFlt
     {
         class EngineStateManager
+            : public ktl::Multithreading::singleton_without_lock<EngineStateManager>
         {
         public:
             struct StateChangeCallbackParameter

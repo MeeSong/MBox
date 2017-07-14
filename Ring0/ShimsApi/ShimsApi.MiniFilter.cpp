@@ -3,7 +3,7 @@
 
 namespace MBox
 {
-    namespace ShimsAPi
+    namespace ShimsApi
     {
         namespace MiniFilter
         {
@@ -25,7 +25,8 @@ namespace MBox
                     // The call to FltRegisterFilter is necessary to initialize global data structures.
                     //
 
-                    sFltSupportsFileContexts = (FltSupportsFileContexts$Fun)FltGetRoutineAddress("FltSupportsFileContexts");
+                    auto vRoutine = FltGetRoutineAddress("FltSupportsFileContexts");
+                    InterlockedExchangePointer((void* volatile *)(&sFltSupportsFileContexts), vRoutine);
                 }
                 if (sFltSupportsFileContexts)
                 {
@@ -48,7 +49,8 @@ namespace MBox
 
                 if (nullptr == sFltSetFileContext)
                 {
-                    sFltSetFileContext = (FltSetFileContext$Fun)FltGetRoutineAddress("FltSetFileContext");
+                    auto vRoutine = FltGetRoutineAddress("FltSetFileContext");
+                    InterlockedExchangePointer((void* volatile *)(&sFltSetFileContext), vRoutine);
                 }
                 if (sFltSetFileContext)
                 {
@@ -68,7 +70,8 @@ namespace MBox
 
                 if (nullptr == sFltGetFileContext)
                 {
-                    sFltGetFileContext = (FltGetFileContext$Fun)FltGetRoutineAddress("FltGetFileContext");
+                    auto vRoutine = FltGetRoutineAddress("FltGetFileContext");
+                    InterlockedExchangePointer((void* volatile *)(&sFltGetFileContext), vRoutine);
                 }
                 if (sFltGetFileContext)
                 {
@@ -95,7 +98,8 @@ namespace MBox
 
                 if (nullptr == sFltSetTransactionContext)
                 {
-                    sFltSetTransactionContext = (FltSetTransactionContext$Fun)FltGetRoutineAddress("FltSetTransactionContext");
+                    auto vRoutine = FltGetRoutineAddress("FltSetTransactionContext");
+                    InterlockedExchangePointer((void* volatile *)(&sFltSetTransactionContext), vRoutine);
                 }
                 if (sFltSetTransactionContext)
                 {
@@ -116,7 +120,8 @@ namespace MBox
 
                 if (nullptr == sFltEnlistInTransaction)
                 {
-                    sFltEnlistInTransaction = (FltEnlistInTransaction$Fun)FltGetRoutineAddress("FltEnlistInTransaction");
+                    auto vRoutine = FltGetRoutineAddress("FltEnlistInTransaction");
+                    InterlockedExchangePointer((void* volatile *)(&sFltEnlistInTransaction), vRoutine);
                 }
                 if (sFltEnlistInTransaction)
                 {
@@ -136,7 +141,8 @@ namespace MBox
 
                 if (nullptr == sFltGetTransactionContext)
                 {
-                    sFltGetTransactionContext = (FltGetTransactionContext$Fun)FltGetRoutineAddress("FltGetTransactionContext");
+                    auto vRoutine = FltGetRoutineAddress("FltGetTransactionContext");
+                    InterlockedExchangePointer((void* volatile *)(&sFltGetTransactionContext), vRoutine);
                 }
                 if (sFltGetTransactionContext)
                 {

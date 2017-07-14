@@ -41,6 +41,11 @@
     <ClInclude Include="KTL.Memory.SharedPtr.h" />
     <ClInclude Include="KTL.Memory.SmartPointerBase.h" />
     <ClInclude Include="KTL.Memory.WeakPtr.h" />
+    <ClInclude Include="KTL.Multithreading.LockHelper.h" />
+    <ClInclude Include="KTL.Multithreading.NullLock.h" />
+    <ClInclude Include="KTL.Multithreading.Singleton.h" />
+    <ClInclude Include="KTL.Multithreading.SpinLock.h" />
+    <ClInclude Include="KTL.Multithreading.SpinLockShimsApi.h" />
     <ClInclude Include="KTL.Strings.Formator.h" />
     <ClInclude Include="KTL.Strings.h" />
     <ClInclude Include="KTL.Strings.String.h" />
@@ -57,6 +62,8 @@
     <ClCompile Include="KTL.Memory.cpp" />
     <ClCompile Include="KTL.Memory.MemoryResource.cpp" />
     <ClCompile Include="KTL.Memory.New.cpp" />
+    <ClCompile Include="KTL.Multithreading.SpinLock.cpp" />
+    <ClCompile Include="KTL.Multithreading.SpinLockShimsApi.cpp" />
     <ClCompile Include="KTL.Type.Uitility.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

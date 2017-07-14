@@ -8,7 +8,7 @@
 
 namespace MBox
 {
-    namespace ShimsAPi
+    namespace ShimsApi
     {
         namespace WFP
         {
@@ -63,7 +63,8 @@ namespace MBox
 
                 if (nullptr == sFwpmBfeStateSubscribeChanges0)
                 {
-                    sFwpmBfeStateSubscribeChanges0 = (FwpmBfeStateSubscribeChanges0$Fun)GetFwpIpsecRoutineAddress("FwpmBfeStateSubscribeChanges0");
+                    auto vRoutine = GetFwpIpsecRoutineAddress("FwpmBfeStateSubscribeChanges0");
+                    InterlockedExchangePointer((void* volatile *)(&sFwpmBfeStateSubscribeChanges0), (void*)vRoutine);
                 }
                 if (sFwpmBfeStateSubscribeChanges0)
                 {
@@ -80,7 +81,8 @@ namespace MBox
 
                 if (nullptr == sFwpmBfeStateUnsubscribeChanges0)
                 {
-                    sFwpmBfeStateUnsubscribeChanges0 = (FwpmBfeStateUnsubscribeChanges0$Fun)GetFwpIpsecRoutineAddress("FwpmBfeStateUnsubscribeChanges0");
+                    auto vRoutine = GetFwpIpsecRoutineAddress("FwpmBfeStateUnsubscribeChanges0");
+                    InterlockedExchangePointer((void* volatile *)(&sFwpmBfeStateUnsubscribeChanges0), (void*)vRoutine);
                 }
                 if (sFwpmBfeStateUnsubscribeChanges0)
                 {
@@ -97,7 +99,8 @@ namespace MBox
 
                 if (nullptr == sFwpmBfeStateGet0)
                 {
-                    sFwpmBfeStateGet0 = (FwpmBfeStateGet0$Fun)GetFwpIpsecRoutineAddress("FwpmBfeStateGet0");
+                    auto vRoutine = GetFwpIpsecRoutineAddress("FwpmBfeStateGet0");
+                    InterlockedExchangePointer((void* volatile *)(&sFwpmBfeStateGet0), (void*)vRoutine);
                 }
                 if (sFwpmBfeStateGet0)
                 {
