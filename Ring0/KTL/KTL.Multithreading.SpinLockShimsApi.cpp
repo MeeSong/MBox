@@ -9,7 +9,7 @@ namespace ktl
             KIRQL __stdcall ExAcquireSpinLockExclusiveShims(PEX_SPIN_LOCK aExSpinLock)
             {
                 using ExAcquireSpinLockExclusive$Fun = KIRQL(__stdcall*)(PEX_SPIN_LOCK);
-                ExAcquireSpinLockExclusive$Fun sExAcquireSpinLockExclusive = nullptr;
+                static ExAcquireSpinLockExclusive$Fun sExAcquireSpinLockExclusive = nullptr;
 
                 if (nullptr == sExAcquireSpinLockExclusive)
                 {
@@ -31,7 +31,7 @@ namespace ktl
             void __stdcall ExReleaseSpinLockExclusiveShims(PEX_SPIN_LOCK aExSpinLock, KIRQL aIrql)
             {
                 using ExReleaseSpinLockExclusive$Fun = void(__stdcall*)(PEX_SPIN_LOCK, KIRQL);
-                ExReleaseSpinLockExclusive$Fun sExReleaseSpinLockExclusive = nullptr;
+                static ExReleaseSpinLockExclusive$Fun sExReleaseSpinLockExclusive = nullptr;
 
                 if (nullptr == sExReleaseSpinLockExclusive)
                 {
@@ -51,7 +51,7 @@ namespace ktl
             KIRQL __stdcall ExAcquireSpinLockSharedShims(PEX_SPIN_LOCK aExSpinLock)
             {
                 using ExAcquireSpinLockShared$Fun = KIRQL(__stdcall*)(PEX_SPIN_LOCK);
-                ExAcquireSpinLockShared$Fun sExAcquireSpinLockShared = nullptr;
+                static ExAcquireSpinLockShared$Fun sExAcquireSpinLockShared = nullptr;
 
                 if (nullptr == sExAcquireSpinLockShared)
                 {
@@ -73,7 +73,7 @@ namespace ktl
             void __stdcall ExReleaseSpinLockSharedShims(PEX_SPIN_LOCK aExSpinLock, KIRQL aIrql)
             {
                 using ExReleaseSpinLockShared$Fun = void(__stdcall*)(PEX_SPIN_LOCK, KIRQL);
-                ExReleaseSpinLockShared$Fun sExReleaseSpinLockShared = nullptr;
+                static ExReleaseSpinLockShared$Fun sExReleaseSpinLockShared = nullptr;
 
                 if (nullptr == sExReleaseSpinLockShared)
                 {
@@ -93,7 +93,7 @@ namespace ktl
             unsigned long __stdcall ExTryConvertSharedSpinLockExclusiveShims(PEX_SPIN_LOCK aExSpinLock)
             {
                 using ExTryConvertSharedSpinLockExclusive$Fun = unsigned long(__stdcall*)(PEX_SPIN_LOCK);
-                ExTryConvertSharedSpinLockExclusive$Fun sExTryConvertSharedSpinLockExclusive = nullptr;
+                static ExTryConvertSharedSpinLockExclusive$Fun sExTryConvertSharedSpinLockExclusive = nullptr;
 
                 if (nullptr == sExTryConvertSharedSpinLockExclusive)
                 {
