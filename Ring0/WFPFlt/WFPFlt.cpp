@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "WFPFlt.h"
+#include "WFPFlt.Manager.EngineState.h"
+#include "WFPFlt.Manager.Engine.h"
 
 #include <KBasic\KBasic.System.h>
 
@@ -18,6 +20,27 @@ namespace MBox
                 return TRUE;
             }
             return FALSE;
+        }
+
+        static void StateChangeCallback (EngineStateManager::StateChangeCallbackParameter* aParameter)
+        {
+            switch (aParameter->m_State)
+            {
+            default:
+                break;
+
+            case FWPM_SERVICE_STATE::FWPM_SERVICE_START_PENDING:
+                break;
+
+            case FWPM_SERVICE_STATE::FWPM_SERVICE_RUNNING:
+                break;
+
+            case FWPM_SERVICE_STATE::FWPM_SERVICE_STOP_PENDING:
+                break;
+
+            case FWPM_SERVICE_STATE::FWPM_SERVICE_STOPPED:
+                break;
+            }
         }
 
         NTSTATUS Initialize(
@@ -54,9 +77,44 @@ namespace MBox
                     }
                 }
 
+                auto vEngineStateManager = EngineStateManager::get_instance();
+                if (nullptr == vEngineStateManager)
+                {
+                    vStatus = STATUS_INSUFFICIENT_RESOURCES;
+                    break;
+                }
 
+                auto vEngineManager = EngineManager::get_instance();
+                if (nullptr == vEngineManager)
+                {
+                    vStatus = STATUS_INSUFFICIENT_RESOURCES;
+                    break;
+                }
+
+                vStatus = vEngineStateManager->RegisterStateChangeNotify(s_DeviceObject, StateChangeCallback, nullptr);
+                if (!NT_SUCCESS(vStatus))
+                {
+                    break;
+                }
+
+                if (FWPM_SERVICE_STATE::FWPM_SERVICE_RUNNING != vEngineStateManager->GetEngineState())
+                {
+                    vStatus = STATUS_PENDING;
+                    break;
+                }
+
+                vStatus = vEngineManager->OpenEngine();
+                if (!NT_SUCCESS(vStatus))
+                {
+                    break;
+                }
 
                 break;
+            }
+
+            if (!NT_SUCCESS(vStatus))
+            {
+                Unitialize();
             }
 
             return vStatus;
@@ -64,7 +122,17 @@ namespace MBox
 
         void Unitialize()
         {
+            //
+            // Unitialize the order
+            //
+            // Callout 
+            // Injection
+            // Engine
+            // EngineState
+            //
 
+            EngineManager::destroy_instance();
+            EngineStateManager::destroy_instance();
         }
 
         DEVICE_OBJECT* GetDeviceObject()

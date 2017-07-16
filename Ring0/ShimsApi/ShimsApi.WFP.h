@@ -8,6 +8,10 @@ namespace MBox
     {
         namespace WFP
         {
+            //
+            // Engine State Manager
+            //
+
             NTSTATUS __stdcall GetFwpIpsecModuleAddress(const void** aModuleAddress);
 
             const void* __stdcall GetFwpIpsecRoutineAddress(const char* aRoutineName);
@@ -23,6 +27,18 @@ namespace MBox
 
             FWPM_SERVICE_STATE __stdcall FwpmBfeStateGet0Shims();
 
+            //
+            // Engine Manager
+            //
+
+            NTSTATUS __stdcall FwpmEngineOpen0Shims(
+                const wchar_t* aServerName,
+                UINT32 aAuthnService,
+                SEC_WINNT_AUTH_IDENTITY_W* aAuthIdentity,
+                const FWPM_SESSION0* aSession,
+                HANDLE* aEngineHandle);
+
+            NTSTATUS __stdcall FwpmEngineClose0Shims(HANDLE aEngineHandle);
         }
     }
 }

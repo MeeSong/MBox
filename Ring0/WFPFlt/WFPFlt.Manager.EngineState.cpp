@@ -27,6 +27,16 @@ namespace MBox
             return vStatus;
         }
 
+        FWPM_SERVICE_STATE EngineStateManager::GetEngineState()
+        {
+            if (m_StateChangeHandle)
+            {
+                return WFPApiWrapper::BfeStateGet();
+            }
+
+            return FWPM_SERVICE_STATE::FWPM_SERVICE_STOPPED;
+        }
+
         void __stdcall EngineStateManager::WfpEngineStateChangeCallback(
             void * aContext, 
             FWPM_SERVICE_STATE aState)

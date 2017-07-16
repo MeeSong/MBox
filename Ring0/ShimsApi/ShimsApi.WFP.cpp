@@ -52,6 +52,10 @@ namespace MBox
                 return KBasic::Modules::GetRoutineAddress(vModuleAddress, aRoutineName);
             }
 
+            //
+            // Engine State Manager
+            //
+
             NTSTATUS __stdcall FwpmBfeStateSubscribeChanges0Shims(
                 void* aDeviceObject,
                 FWPM_SERVICE_STATE_CHANGE_CALLBACK0 aCallback,
@@ -108,6 +112,52 @@ namespace MBox
                 }
 
                 return FWPM_SERVICE_STOPPED;
+            }
+
+            //
+            // Engine Manager
+            //
+
+            NTSTATUS __stdcall FwpmEngineOpen0Shims(
+                const wchar_t * aServerName, 
+                UINT32 aAuthnService, 
+                SEC_WINNT_AUTH_IDENTITY_W * aAuthIdentity, 
+                const FWPM_SESSION0 * aSession, 
+                HANDLE * aEngineHandle)
+            {
+                using FwpmEngineOpen0$Fun = NTSTATUS(__stdcall*)(
+                    const wchar_t *, UINT32, SEC_WINNT_AUTH_IDENTITY_W *, const FWPM_SESSION0 *, HANDLE *);
+                static FwpmEngineOpen0$Fun sFwpmEngineOpen0 = nullptr;
+
+                if (nullptr == sFwpmEngineOpen0)
+                {
+                    auto vRoutine = GetFwpIpsecRoutineAddress("FwpmEngineOpen0");
+                    InterlockedExchangePointer((void* volatile *)(&sFwpmEngineOpen0), (void*)vRoutine);
+                }
+                if (sFwpmEngineOpen0)
+                {
+                    return sFwpmEngineOpen0(aServerName, aAuthnService, aAuthIdentity, aSession, aEngineHandle);
+                }
+
+                return STATUS_NOT_SUPPORTED;
+            }
+
+            NTSTATUS __stdcall FwpmEngineClose0Shims(HANDLE aEngineHandle)
+            {
+                using FwpmEngineClose0$Fun = NTSTATUS(__stdcall*)(HANDLE);
+                static FwpmEngineClose0$Fun sFwpmEngineClose0 = nullptr;
+
+                if (nullptr == sFwpmEngineClose0)
+                {
+                    auto vRoutine = GetFwpIpsecRoutineAddress("FwpmEngineClose0");
+                    InterlockedExchangePointer((void* volatile *)(&sFwpmEngineClose0), (void*)vRoutine);
+                }
+                if (sFwpmEngineClose0)
+                {
+                    return sFwpmEngineClose0(aEngineHandle);
+                }
+
+                return STATUS_NOT_SUPPORTED;
             }
 
         }

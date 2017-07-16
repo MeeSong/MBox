@@ -27,6 +27,9 @@
     <ClInclude Include="WFPFlt.ApiWrapper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="WFPFlt.Manager.Engine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -39,6 +42,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="WFPFlt.ApiWrapper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WFPFlt.Manager.Engine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

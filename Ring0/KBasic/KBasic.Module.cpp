@@ -215,6 +215,11 @@ namespace MBox
                     PVOID vBaseAddress  = nullptr;
                     MEMORY_BASIC_INFORMATION vMemInfo{};
 
+                    if (aModules && (aInputBytes >= sizeof(RTL_PROCESS_MODULES)))
+                    {
+                        *aModules = { 0 };
+                    }
+
                     do 
                     {
                         vStatus = ZwQueryVirtualMemory(
@@ -262,61 +267,77 @@ namespace MBox
                             aProcessHandle,
                             vImageBase,
                             &vModuleName);
-                        if (!NT_SUCCESS(vStatus)
-                            && vStatus != STATUS_INFO_LENGTH_MISMATCH)
+                        if (!NT_SUCCESS(vStatus))
                         {
-                            //
-                            // 不是文件的会返回 STATUS_FILE_INVALID
-                            // 这里直接改成 STATUS_MORE_ENTRIES
-                            // 防止因为错误而退出循环
-                            //
+                            if (STATUS_FILE_INVALID == vStatus)
+                            {
+                                //
+                                // 不是文件的会返回 STATUS_FILE_INVALID
+                                // 这里直接改成 STATUS_MORE_ENTRIES
+                                // 防止因为错误而退出循环
+                                //
 
-                            vStatus = STATUS_MORE_ENTRIES;
+                                vStatus = STATUS_MORE_ENTRIES;
+                                continue;
+                            }
+
+                            break;
+                        }
+
+                        //
+                        // 符合条件 (MEM_TYPE_MASK::Mapped | MEM_TYPE_MASK::Image)
+                        // 同时又是文件的, 才会被认为是 Image
+                        //
+                        ++vImageCount;
+
+                        if (nullptr == aModules
+                            || (aInputBytes < (sizeof(RTL_PROCESS_MODULES) + (vImageCount - 1) * sizeof(RTL_PROCESS_MODULE_INFORMATION))))
+                        {
+                            DeferenceModuleNameInfo(vModuleName);
                             continue;
                         }
 
-                        ++vImageCount;
-
-                        if (aModules
-                            && (aInputBytes >= (sizeof(RTL_PROCESS_MODULES) + (vImageCount - 1) * sizeof(RTL_PROCESS_MODULE_INFORMATION))))
+                        ANSI_STRING vModuleNameA{};
+                        RtlUnicodeStringToAnsiString(&vModuleNameA, vModuleName, TRUE);
+                        
+                        if (vModuleNameA.Buffer)
                         {
-                            ANSI_STRING vModuleNameA{};
-                            RtlUnicodeStringToAnsiString(&vModuleNameA, vModuleName, TRUE);
-                            if (vModuleNameA.Buffer)
+                            RtlStringCchCopyNA(
+                                PCHAR(aModules->Modules[aModules->NumberOfModules].FullPathName),
+                                KTL$CompileTime$ArraySize$Macro(aModules->Modules[aModules->NumberOfModules].FullPathName),
+                                vModuleNameA.Buffer,
+                                vModuleNameA.Length);
+                            aModules->Modules[aModules->NumberOfModules].FullPathName[-1] = '\0';
+
+                            auto vPosition = ktl::strings::string_reverse_find(
+                                PSTR(aModules->Modules[aModules->NumberOfModules].FullPathName),
+                                KTL$CompileTime$ArraySize$Macro(aModules->Modules[aModules->NumberOfModules].FullPathName),
+                                PSTR("\\"), 1);
+
+                            if (vPosition)
                             {
-                                RtlStringCchCopyNA(
-                                    PCHAR(aModules->Modules[aModules->NumberOfModules].FullPathName),
-                                    KTL$CompileTime$ArraySize$Macro(aModules->Modules[aModules->NumberOfModules].FullPathName),
-                                    vModuleNameA.Buffer,
-                                    vModuleNameA.Length);
-                                aModules->Modules[aModules->NumberOfModules].FullPathName[-1] = '\0';
-
-                                auto vPosition = ktl::strings::string_reverse_find(
-                                    PSTR(aModules->Modules[aModules->NumberOfModules].FullPathName),
-                                    KTL$CompileTime$ArraySize$Macro(aModules->Modules[aModules->NumberOfModules].FullPathName), 
-                                    PSTR("\\"), 1);
-
-                                if (vPosition)
-                                {
-                                    ++vPosition;
-                                    aModules->Modules[aModules->NumberOfModules].OffsetToFileName = 
-                                        USHORT(ktl::usize(vPosition - PSTR(aModules->Modules[aModules->NumberOfModules].FullPathName)));
-                                }
-
-                                RtlFreeAnsiString(&vModuleNameA);
+                                ++vPosition;
+                                aModules->Modules[aModules->NumberOfModules].OffsetToFileName =
+                                    USHORT(ktl::usize(vPosition - PSTR(aModules->Modules[aModules->NumberOfModules].FullPathName)));
                             }
 
-                            aModules->Modules[aModules->NumberOfModules].ImageBase = vImageBase;
-                            aModules->Modules[aModules->NumberOfModules].ImageSize = ULONG(vImageSize);
-
-                            ++(aModules->NumberOfModules);
+                            RtlFreeAnsiString(&vModuleNameA);
                         }
+
+                        aModules->Modules[aModules->NumberOfModules].ImageBase = vImageBase;
+                        aModules->Modules[aModules->NumberOfModules].ImageSize = ULONG(vImageSize);
+                        ++(aModules->NumberOfModules);
 
                         DeferenceModuleNameInfo(vModuleName);
 
                     } while (NT_SUCCESS(vStatus));
-                    if (vImageCount &&
-                        STATUS_INVALID_PARAMETER == vStatus)
+                    
+                    if (nullptr == aModules
+                        || (aInputBytes < (sizeof(RTL_PROCESS_MODULES) + (vImageCount - 1) * sizeof(RTL_PROCESS_MODULE_INFORMATION))))
+                    {
+                        vStatus = STATUS_INFO_LENGTH_MISMATCH;
+                    }
+                    else if (vImageCount && STATUS_INVALID_PARAMETER == vStatus)
                     {
                         //
                         // 遍历最后一块内存之后再遍历就会返回 STATUS_INVALID_PARAMETER

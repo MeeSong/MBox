@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="WFPFlt.ApiWrapper.h" />
+    <ClInclude Include="WFPFlt.Manager.Engine.h" />
     <ClInclude Include="WFPFlt.Manager.EngineState.h" />
     <ClInclude Include="WFPFlt.h" />
   </ItemGroup>
@@ -33,6 +34,7 @@
     </ClCompile>
     <ClCompile Include="WFPFlt.ApiWrapper.cpp" />
     <ClCompile Include="WFPFlt.cpp" />
+    <ClCompile Include="WFPFlt.Manager.Engine.cpp" />
     <ClCompile Include="WFPFlt.Manager.EngineState.cpp" />
   </ItemGroup>
   <ItemGroup>

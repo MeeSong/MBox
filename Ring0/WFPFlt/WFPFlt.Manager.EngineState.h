@@ -1,5 +1,6 @@
 #pragma once
-#include <ShimsApi\ShimsApi.WFP.h>
+#include "WFPFlt.ApiWrapper.h"
+
 #include <KTL\KTL.Multithreading.Singleton.h>
 #include <KTL\KTL.Functional.Function.h>
 
@@ -41,7 +42,7 @@ namespace MBox
                     WFPApiWrapper::BfeStateSubscribeChangesParameter vParameter{};
                     vParameter.m_DeviceObject = aDeviceObject;
                     vParameter.m_Context = this;
-                    vParameter.m_ChangeHandle = &m_StateChangeCallback;
+                    vParameter.m_ChangeHandle = &m_StateChangeHandle;
                     vParameter.m_Callback = WfpEngineStateChangeCallback;
 
                     vStatus = WFPApiWrapper::BfeStateSubscribeChanges(&vParameter);
@@ -57,6 +58,8 @@ namespace MBox
             }
 
             NTSTATUS UnregisterStateChangeNotify();
+
+            FWPM_SERVICE_STATE GetEngineState();
 
         protected:
             static void __stdcall WfpEngineStateChangeCallback(
