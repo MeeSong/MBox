@@ -7,4 +7,6 @@
 #define NTDDI_VERSION   0x0A000003
 #endif
 
+#define NDIS_SUPPORT_NDIS660 1
+
 #include <KTL\KTL.Type.h>

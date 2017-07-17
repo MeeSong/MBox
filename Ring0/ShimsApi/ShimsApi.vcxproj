@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ShimsApi.Macro.h" />
     <ClInclude Include="ShimsApi.MiniFilter.h" />
     <ClInclude Include="ShimsApi.Ndis.h" />
     <ClInclude Include="ShimsApi.WFP.h" />

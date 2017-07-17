@@ -2,6 +2,7 @@
 #include "WFPFlt.h"
 #include "WFPFlt.Manager.EngineState.h"
 #include "WFPFlt.Manager.Engine.h"
+#include "WFPFlt.Manager.Injection.h"
 
 #include <KBasic\KBasic.System.h>
 
@@ -43,6 +44,41 @@ namespace MBox
             }
         }
 
+        static NTSTATUS GetManagerInstance()
+        {
+            NTSTATUS vStatus = STATUS_INSUFFICIENT_RESOURCES;
+
+            for (;;)
+            {
+                if (nullptr == EngineStateManager::get_instance())
+                {
+                    break;
+                }
+
+                if (nullptr == EngineManager::get_instance())
+                {
+                    break;
+                }
+
+                if (nullptr == InjectionManager::get_instance())
+                {
+                    break;
+                }
+
+                vStatus = STATUS_SUCCESS;
+                break;
+            }
+
+            if (!NT_SUCCESS(vStatus))
+            {
+                InjectionManager::destroy_instance();
+                EngineManager::destroy_instance();
+                EngineStateManager::destroy_instance();
+            }
+
+            return vStatus;
+        }
+
         NTSTATUS Initialize(
             DRIVER_OBJECT* aDriverObject,
             UNICODE_STRING* /*aRegistryPath*/,
@@ -77,20 +113,13 @@ namespace MBox
                     }
                 }
 
+                vStatus = GetManagerInstance();
+                if (!NT_SUCCESS(vStatus))
+                {
+                    break;
+                }
+
                 auto vEngineStateManager = EngineStateManager::get_instance();
-                if (nullptr == vEngineStateManager)
-                {
-                    vStatus = STATUS_INSUFFICIENT_RESOURCES;
-                    break;
-                }
-
-                auto vEngineManager = EngineManager::get_instance();
-                if (nullptr == vEngineManager)
-                {
-                    vStatus = STATUS_INSUFFICIENT_RESOURCES;
-                    break;
-                }
-
                 vStatus = vEngineStateManager->RegisterStateChangeNotify(s_DeviceObject, StateChangeCallback, nullptr);
                 if (!NT_SUCCESS(vStatus))
                 {
@@ -103,6 +132,7 @@ namespace MBox
                     break;
                 }
 
+                auto vEngineManager = EngineManager::get_instance();
                 vStatus = vEngineManager->OpenEngine();
                 if (!NT_SUCCESS(vStatus))
                 {
@@ -126,11 +156,13 @@ namespace MBox
             // Unitialize the order
             //
             // Callout 
+            // Redirect
             // Injection
             // Engine
             // EngineState
             //
 
+            InjectionManager::destroy_instance();
             EngineManager::destroy_instance();
             EngineStateManager::destroy_instance();
         }

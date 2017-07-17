@@ -24,6 +24,7 @@
     <ClInclude Include="WFPFlt.Manager.Engine.h" />
     <ClInclude Include="WFPFlt.Manager.EngineState.h" />
     <ClInclude Include="WFPFlt.h" />
+    <ClInclude Include="WFPFlt.Manager.Injection.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -36,6 +37,7 @@
     <ClCompile Include="WFPFlt.cpp" />
     <ClCompile Include="WFPFlt.Manager.Engine.cpp" />
     <ClCompile Include="WFPFlt.Manager.EngineState.cpp" />
+    <ClCompile Include="WFPFlt.Manager.Injection.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ShimsApi\ShimsApi.vcxproj">
