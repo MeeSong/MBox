@@ -1,15 +1,14 @@
 #pragma once
-#include <KTL\KTL.Multithreading.Singleton.h>
 
 namespace MBox
 {
     namespace WFPFlt
     {
         class EngineManager
-            : public ktl::Multithreading::singleton_without_lock<EngineManager>
         {
         public:
-            ~EngineManager();
+            NTSTATUS Initialize();
+            void Uninitialize();
 
             NTSTATUS OpenEngine();
             void     CloseEngine();
@@ -19,6 +18,8 @@ namespace MBox
         protected:
             HANDLE  m_EngineHandle = nullptr;
         };
+
+        EngineManager* GetEngineManager();
 
     }
 }

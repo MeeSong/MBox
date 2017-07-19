@@ -22,13 +22,29 @@
     <ClInclude Include="ShimsApi.Macro.h" />
     <ClInclude Include="ShimsApi.MiniFilter.h" />
     <ClInclude Include="ShimsApi.Ndis.h" />
+    <ClInclude Include="ShimsApi.WFP.Engine.h" />
+    <ClInclude Include="ShimsApi.WFP.EngineState.h" />
+    <ClInclude Include="ShimsApi.WFP.Filters.h" />
     <ClInclude Include="ShimsApi.WFP.h" />
+    <ClInclude Include="ShimsApi.WFP.Injection.h" />
+    <ClInclude Include="ShimsApi.WFP.Provider.h" />
+    <ClInclude Include="ShimsApi.WFP.Redirect.h" />
+    <ClInclude Include="ShimsApi.WFP.Sublayer.h" />
+    <ClInclude Include="ShimsApi.WFP.Transaction.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ShimsApi.MiniFilter.cpp" />
     <ClCompile Include="ShimsApi.Ndis.cpp" />
     <ClCompile Include="ShimsApi.WFP.cpp" />
+    <ClCompile Include="ShimsApi.WFP.Engine.cpp" />
+    <ClCompile Include="ShimsApi.WFP.EngineState.cpp" />
+    <ClCompile Include="ShimsApi.WFP.Filters.cpp" />
+    <ClCompile Include="ShimsApi.WFP.Injection.cpp" />
+    <ClCompile Include="ShimsApi.WFP.Provider.cpp" />
+    <ClCompile Include="ShimsApi.WFP.Redirect.cpp" />
+    <ClCompile Include="ShimsApi.WFP.Sublayer.cpp" />
+    <ClCompile Include="ShimsApi.WFP.Transaction.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

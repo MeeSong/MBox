@@ -1,18 +1,27 @@
 #include "stdafx.h"
 #include "WFPFlt.Manager.EngineState.h"
-#include "WFPFlt.ApiWrapper.h"
 
 namespace MBox
 {
     namespace WFPFlt
     {
-        EngineStateManager::~EngineStateManager()
+        NTSTATUS EngineStateManager::Initialize()
+        {
+            return STATUS_SUCCESS;
+        }
+
+        void EngineStateManager::Uninitialize()
         {
             UnregisterStateChangeNotify();
         }
         
         NTSTATUS EngineStateManager::UnregisterStateChangeNotify()
         {
+            if (nullptr == m_StateChangeHandle)
+            {
+                return STATUS_SUCCESS;
+            }
+
             NTSTATUS vStatus = STATUS_SUCCESS;
 
             WFPApiWrapper::BfeStateUnsubscribeChangesParameter vParameter{};
@@ -53,6 +62,12 @@ namespace MBox
 
                 return vThis->m_StateChangeCallback(&vParameter);
             }
+        }
+
+        EngineStateManager * GetEngineStateManager()
+        {
+            static EngineStateManager sEngineStateManager{};
+            return &sEngineStateManager;
         }
 
     }

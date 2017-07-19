@@ -20,11 +20,23 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="WFPFlt.ApiWrapper.Engine.h" />
+    <ClInclude Include="WFPFlt.ApiWrapper.EngineState.h" />
     <ClInclude Include="WFPFlt.ApiWrapper.h" />
+    <ClInclude Include="WFPFlt.ApiWrapper.Injection.h" />
+    <ClInclude Include="WFPFlt.ApiWrapper.Provider.h" />
+    <ClInclude Include="WFPFlt.ApiWrapper.Redirect.h" />
+    <ClInclude Include="WFPFlt.ApiWrapper.Sublayer.h" />
+    <ClInclude Include="WFPFlt.ApiWrapper.Transaction.h" />
+    <ClInclude Include="WFPFlt.Manager.Callout.h" />
     <ClInclude Include="WFPFlt.Manager.Engine.h" />
     <ClInclude Include="WFPFlt.Manager.EngineState.h" />
     <ClInclude Include="WFPFlt.h" />
+    <ClInclude Include="WFPFlt.Manager.Filter.h" />
     <ClInclude Include="WFPFlt.Manager.Injection.h" />
+    <ClInclude Include="WFPFlt.Manager.Provider.h" />
+    <ClInclude Include="WFPFlt.Manager.Redirect.h" />
+    <ClInclude Include="WFPFlt.Manager.Transaction.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -34,10 +46,22 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="WFPFlt.ApiWrapper.cpp" />
+    <ClCompile Include="WFPFlt.ApiWrapper.Engine.cpp" />
+    <ClCompile Include="WFPFlt.ApiWrapper.EngineState.cpp" />
+    <ClCompile Include="WFPFlt.ApiWrapper.Injection.cpp" />
+    <ClCompile Include="WFPFlt.ApiWrapper.Provider.cpp" />
+    <ClCompile Include="WFPFlt.ApiWrapper.Redirect.cpp" />
+    <ClCompile Include="WFPFlt.ApiWrapper.Sublayer.cpp" />
+    <ClCompile Include="WFPFlt.ApiWrapper.Transaction.cpp" />
     <ClCompile Include="WFPFlt.cpp" />
+    <ClCompile Include="WFPFlt.Manager.Callout.cpp" />
     <ClCompile Include="WFPFlt.Manager.Engine.cpp" />
     <ClCompile Include="WFPFlt.Manager.EngineState.cpp" />
+    <ClCompile Include="WFPFlt.Manager.Filter.cpp" />
     <ClCompile Include="WFPFlt.Manager.Injection.cpp" />
+    <ClCompile Include="WFPFlt.Manager.Provider.cpp" />
+    <ClCompile Include="WFPFlt.Manager.Redirect.cpp" />
+    <ClCompile Include="WFPFlt.Manager.Transaction.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ShimsApi\ShimsApi.vcxproj">

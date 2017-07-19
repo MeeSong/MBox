@@ -1,5 +1,4 @@
 #pragma once
-#include <MBox.Network.Socket.h>
 
 namespace MBox
 {
@@ -10,39 +9,26 @@ namespace MBox
             extern const wchar_t g_DefaultName[];
             extern const wchar_t g_DefaultDescription[];
 
-            //
-            // Engine State Manager
-            //
-
-            struct BfeStateSubscribeChangesParameter
+            struct FreeMemoryParameter
             {
-                void*   m_DeviceObject  = nullptr;
-                void*   m_Context       = nullptr;
-                HANDLE* m_ChangeHandle  = nullptr;
-
-                FWPM_SERVICE_STATE_CHANGE_CALLBACK0 m_Callback = nullptr;
+                void**  m_Ptr;
             };
 
-            NTSTATUS BfeStateSubscribeChanges(BfeStateSubscribeChangesParameter* aParameter);
-
-            struct BfeStateUnsubscribeChangesParameter
-            {
-                HANDLE  m_ChangeHandle = nullptr;
-            };
-
-            NTSTATUS BfeStateUnsubscribeChanges(BfeStateUnsubscribeChangesParameter* aParameter);
-
-            FWPM_SERVICE_STATE BfeStateGet();
+            void FreeMemory(FreeMemoryParameter* aParameter);
 
             //
-            // Engine Manager
+            // Convert helper
             //
 
             struct WFPFltDisplayData
             {
-                wchar_t*    m_Name          = const_cast<wchar_t*>(g_DefaultName);
-                wchar_t*    m_Description   = const_cast<wchar_t*>(g_DefaultDescription);
+                wchar_t*    m_Name = const_cast<wchar_t*>(g_DefaultName);
+                wchar_t*    m_Description = const_cast<wchar_t*>(g_DefaultDescription);
             };
+
+            void WFPFltDisplayDataToDisplayData(FWPM_DISPLAY_DATA0* aDisplayData, const WFPFltDisplayData* aWFPFltDisplayData);
+            void DisplayDataToWFPFltDisplayData(WFPFltDisplayData* aWFPFltDisplayData, const FWPM_DISPLAY_DATA0* aDisplayData);
+
 
             struct WFPFltSession
             {
@@ -56,44 +42,33 @@ namespace MBox
                 BOOL    m_IsKernelMode = FALSE;
             };
 
-            struct EngineOpenParameter
+            void WFPFltSessionToSession(FWPM_SESSION0* aSession, const WFPFltSession* aWFPFltSession);
+
+
+            struct WFPFltProvider
             {
-                const wchar_t*  m_ServerName    = nullptr;
-                UINT32          m_AuthnService  = RPC_C_AUTHN_WINNT;
-                SEC_WINNT_AUTH_IDENTITY_W* m_AuthIdentity = nullptr;
-                WFPFltSession*  m_Session       = nullptr;
-                HANDLE*         m_EngineHandle  = nullptr;
+                GUID                m_ProviderGuid = { 0 };
+                WFPFltDisplayData   m_DisplayData{};
+                UINT32              m_Flags = FWPM_PROVIDER_FLAG_PERSISTENT;
+                FWP_BYTE_BLOB       m_ProviderData = { 0 };
+                wchar_t*            m_ServiceName = nullptr;
             };
 
-            NTSTATUS EngineOpen(EngineOpenParameter* aParameter);
+            void WFPFltProviderToProvider(FWPM_PROVIDER0* aProvider, const WFPFltProvider* aWFPFltProvider);
+            void ProviderToWFPFltProvider(WFPFltProvider* aWFPFltProvider, const FWPM_PROVIDER0* aProvider);
 
-            struct EngineCloseParameter
+
+            struct WFPFltSublayer
             {
-                HANDLE  m_EngineHandle = nullptr;
+                GUID                m_SublayerGuid = { 0 };
+                WFPFltDisplayData   m_DisplayData{};
+                UINT32              m_Flags = FWPM_SUBLAYER_FLAG_PERSISTENT;
+                GUID*               m_ProviderGuid = nullptr;
+                FWP_BYTE_BLOB       m_ProviderData = { 0 };
+                UINT16              m_Weight = FWPM_AUTO_WEIGHT_BITS;
             };
 
-            NTSTATUS EngineClose(EngineCloseParameter* aParameter);
-
-            //
-            // Injection Manager
-            //
-
-            struct InjectionHandleCreateParameter
-            {
-                AddressFamily   m_AddressFamily = AddressFamily::Unspecified;
-                UINT32          m_InjectionType = 0;
-                HANDLE*         m_InjectionHandle = nullptr;
-            };
-
-            NTSTATUS InjectionHandleCreate(InjectionHandleCreateParameter* aParameter);
-
-            struct InjectionHandleDestroyParameter
-            {
-                HANDLE          m_InjectionHandle = nullptr;
-            };
-
-            NTSTATUS InjectionHandleDestroy(InjectionHandleDestroyParameter* aParameter);
-
+            void WFPFltSublayerToSublayer(FWPM_SUBLAYER0* aSublayer, const WFPFltSublayer* aWFPFltSublayer);
 
         }
     }

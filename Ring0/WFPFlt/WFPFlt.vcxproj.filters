@@ -33,6 +33,42 @@
     <ClInclude Include="WFPFlt.Manager.Injection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="WFPFlt.Manager.Filter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WFPFlt.Manager.Callout.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WFPFlt.Manager.Provider.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WFPFlt.Manager.Redirect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WFPFlt.ApiWrapper.EngineState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WFPFlt.ApiWrapper.Engine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WFPFlt.ApiWrapper.Transaction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WFPFlt.ApiWrapper.Injection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WFPFlt.ApiWrapper.Provider.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WFPFlt.Manager.Transaction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WFPFlt.ApiWrapper.Sublayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WFPFlt.ApiWrapper.Redirect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -51,6 +87,42 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="WFPFlt.Manager.Injection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WFPFlt.Manager.Filter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WFPFlt.Manager.Callout.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WFPFlt.Manager.Provider.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WFPFlt.Manager.Redirect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WFPFlt.ApiWrapper.EngineState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WFPFlt.ApiWrapper.Engine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WFPFlt.ApiWrapper.Transaction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WFPFlt.ApiWrapper.Injection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WFPFlt.ApiWrapper.Provider.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WFPFlt.Manager.Transaction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WFPFlt.ApiWrapper.Sublayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WFPFlt.ApiWrapper.Redirect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

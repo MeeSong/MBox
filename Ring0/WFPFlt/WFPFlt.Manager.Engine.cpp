@@ -1,12 +1,17 @@
 #include "stdafx.h"
 #include "WFPFlt.Manager.Engine.h"
-#include "WFPFlt.ApiWrapper.h"
+#include "WFPFlt.ApiWrapper.Engine.h"
 
 namespace MBox
 {
     namespace WFPFlt
     {
-        EngineManager::~EngineManager()
+        NTSTATUS EngineManager::Initialize()
+        {
+            return STATUS_SUCCESS;
+        }
+
+        void EngineManager::Uninitialize()
         {
             CloseEngine();
         }
@@ -41,6 +46,12 @@ namespace MBox
         HANDLE EngineManager::GetEngineHandle()
         {
             return m_EngineHandle;
+        }
+
+        EngineManager * GetEngineManager()
+        {
+            static EngineManager sEngineManager{};
+            return &sEngineManager;
         }
     }
 }

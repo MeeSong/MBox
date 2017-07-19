@@ -1,7 +1,5 @@
 #pragma once
-#include "WFPFlt.ApiWrapper.h"
-
-#include <KTL\KTL.Multithreading.Singleton.h>
+#include "WFPFlt.ApiWrapper.EngineState.h"
 #include <KTL\KTL.Functional.Function.h>
 
 namespace MBox
@@ -9,7 +7,6 @@ namespace MBox
     namespace WFPFlt
     {
         class EngineStateManager
-            : public ktl::Multithreading::singleton_without_lock<EngineStateManager>
         {
         public:
             struct StateChangeCallbackParameter
@@ -20,7 +17,8 @@ namespace MBox
 
             using StateChangeCallback$Fun = ktl::function<void(StateChangeCallbackParameter*)>;
 
-            ~EngineStateManager();
+            NTSTATUS Initialize();
+            void Uninitialize();
 
             template<typename F>
             NTSTATUS RegisterStateChangeNotify(
@@ -70,6 +68,8 @@ namespace MBox
             void *  m_Context = nullptr;
             HANDLE  m_StateChangeHandle = nullptr;
         };
+
+        EngineStateManager* GetEngineStateManager();
 
     }
 }

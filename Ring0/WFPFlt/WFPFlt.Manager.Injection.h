@@ -1,12 +1,10 @@
 #pragma once
-#include <KTL\KTL.Multithreading.Singleton.h>
 
 namespace MBox
 {
     namespace WFPFlt
     {
         class InjectionManager
-            : public ktl::Multithreading::singleton_without_lock<InjectionManager>
         {
         public:
             enum InjectionType : ktl::u32
@@ -60,16 +58,19 @@ namespace MBox
                 Max,
             };
 
-            ~InjectionManager();
+            NTSTATUS Initialize();
+            void Uninitialize();
 
-            NTSTATUS OpenInjection();
-            void CloseInjection();
+            NTSTATUS CreateInjectionHandle();
+            void CloseInjectionHandle();
 
             HANDLE GetInjectionHandle(InjectionType aInjectionType);
 
         protected:
             HANDLE  m_InjectionHandleArray[InjectionType::Max] = { nullptr };
         };
+
+        InjectionManager* GetInjectionManager();
 
     }
 }

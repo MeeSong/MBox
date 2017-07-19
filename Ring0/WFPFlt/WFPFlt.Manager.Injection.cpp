@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "WFPFlt.Manager.Injection.h"
-#include "WFPFlt.ApiWrapper.h"
+#include "WFPFlt.ApiWrapper.Injection.h"
 
 #include <KBasic\KBasic.System.h>
 #include <fwpsk.h>
@@ -10,12 +10,17 @@ namespace MBox
 {
     namespace WFPFlt
     {
-        InjectionManager::~InjectionManager()
+        NTSTATUS InjectionManager::Initialize()
         {
-            CloseInjection();
+            return STATUS_SUCCESS;
         }
 
-        NTSTATUS InjectionManager::OpenInjection()
+        void InjectionManager::Uninitialize()
+        {
+            CloseInjectionHandle();
+        }
+
+        NTSTATUS InjectionManager::CreateInjectionHandle()
         {
             NTSTATUS vStatus = STATUS_SUCCESS;
             WFPApiWrapper::InjectionHandleCreateParameter vParameter{};
@@ -349,13 +354,13 @@ namespace MBox
 
             if (!NT_SUCCESS(vStatus))
             {
-                CloseInjection();
+                CloseInjectionHandle();
             }
 
             return vStatus;
         }
 
-        void InjectionManager::CloseInjection()
+        void InjectionManager::CloseInjectionHandle()
         {
             for (ktl::u32 vIndex = 0; vIndex < InjectionType::Max; ++vIndex)
             {
@@ -378,5 +383,11 @@ namespace MBox
 
             return m_InjectionHandleArray[aInjectionType];
         }
-    }
+
+        InjectionManager * GetInjectionManager()
+        {
+            static InjectionManager sInjectionManager{};
+            return &sInjectionManager;
+        }
+}
 }

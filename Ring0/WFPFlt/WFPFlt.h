@@ -13,6 +13,10 @@ namespace MBox
 
         void Unitialize();
 
-        DEVICE_OBJECT* GetDeviceObject();
+        NTSTATUS StartFilter();
+        NTSTATUS StopFilter();
+        BOOLEAN IsStartedFilter();
+
+
     }
 }
