@@ -46,6 +46,7 @@
     <ClInclude Include="KTL.Multithreading.Singleton.h" />
     <ClInclude Include="KTL.Multithreading.SpinLock.h" />
     <ClInclude Include="KTL.Multithreading.SpinLockShimsApi.h" />
+    <ClInclude Include="KTL.Random.h" />
     <ClInclude Include="KTL.Strings.Formator.h" />
     <ClInclude Include="KTL.Strings.h" />
     <ClInclude Include="KTL.Strings.String.h" />
@@ -56,6 +57,7 @@
     <ClInclude Include="KTL.Type.PointerTraits.h" />
     <ClInclude Include="KTL.Type.TypeTraits.h" />
     <ClInclude Include="KTL.Type.Uitility.h" />
+    <ClInclude Include="KTL.UUID.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KTL.Containers.ListNode.cpp" />
@@ -65,6 +67,7 @@
     <ClCompile Include="KTL.Multithreading.SpinLock.cpp" />
     <ClCompile Include="KTL.Multithreading.SpinLockShimsApi.cpp" />
     <ClCompile Include="KTL.Type.Uitility.cpp" />
+    <ClCompile Include="KTL.UUID.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C740164F-02EF-4DF7-BEA2-3042FD9823EC}</ProjectGuid>

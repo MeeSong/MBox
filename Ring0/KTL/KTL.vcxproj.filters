@@ -126,6 +126,12 @@
     <ClInclude Include="KTL.Multithreading.SpinLockShimsApi.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="KTL.Random.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="KTL.UUID.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KTL.Memory.New.cpp">
@@ -147,6 +153,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="KTL.Multithreading.SpinLockShimsApi.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="KTL.UUID.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

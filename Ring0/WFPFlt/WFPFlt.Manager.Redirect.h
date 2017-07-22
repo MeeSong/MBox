@@ -8,8 +8,6 @@ namespace MBox
         class RedirectManager
         {
         public:
-            ~RedirectManager();
-
             NTSTATUS Initialize();
             void Uninitialize();
 

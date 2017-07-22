@@ -19,5 +19,6 @@ namespace MBox
             volatile long m_IsBegin = FALSE;
             HANDLE  m_EngineHandle = nullptr;
         };
+
     }
 }

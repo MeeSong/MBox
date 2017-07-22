@@ -788,7 +788,7 @@ namespace ktl
 
         template<typename _Type>
         struct __is_signed_helper<_Type, true>
-            : public bool_constant < _Type(-1) < _Type(0) >
+            : public bool_constant < _Type(-1) < _Type(1) >
         { };
 
         template<typename _Type>

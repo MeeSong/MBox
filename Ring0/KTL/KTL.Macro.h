@@ -35,7 +35,7 @@ char(*KTL$CompileTime$NumberOf$Function(KTL$CompileTime$Unaligned$Macro T(&)[N])
 #ifndef KTL$CompileTime$ByteSwap16$Macro
 #define KTL$CompileTime$ByteSwap16$Macro(x) (       \
     ((ktl::u16(x) & ktl::u16(0xFF << 8)) >> 8) |    \
-    ((ktl::u16(x) & ktl::u16(0xFF >> 8)) << 8)      \
+    ((ktl::u16(x) & ktl::u16(0xFF >> 0)) << 8)      \
 )
 #endif
 

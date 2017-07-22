@@ -3,7 +3,6 @@
 #include "WFPFlt.Manager.EngineState.h"
 #include "WFPFlt.Manager.Engine.h"
 #include "WFPFlt.Manager.Injection.h"
-#include "WFPFlt.Manager.Filter.h"
 #include "WFPFlt.Manager.Provider.h"
 #include "WFPFlt.Manager.Redirect.h"
 
@@ -89,6 +88,12 @@ namespace MBox
                     }
                 }
 
+                vStatus = GetCalloutManager()->Initialize();
+                if (!NT_SUCCESS(vStatus))
+                {
+                    break;
+                }
+
 
                 vStatus = STATUS_SUCCESS;
                 break;
@@ -96,6 +101,7 @@ namespace MBox
 
             if (!NT_SUCCESS(vStatus))
             {
+                GetCalloutManager()->Uninitialize();
                 GetRedirectManager()->Uninitialize();
                 GetProviderManager()->Uninitialize();
                 GetInjectionManager()->Uninitialize();
@@ -192,6 +198,9 @@ namespace MBox
             // EngineState
             //
 
+            GetCalloutManager()->Uninitialize();
+            GetRedirectManager()->Uninitialize();
+            GetProviderManager()->Uninitialize();
             GetInjectionManager()->Uninitialize();
             GetEngineManager()->Uninitialize();
             GetEngineStateManager()->Uninitialize();

@@ -7,11 +7,6 @@ namespace MBox
 {
     namespace WFPFlt
     {
-        RedirectManager::~RedirectManager()
-        {
-            Uninitialize();
-        }
-
         NTSTATUS RedirectManager::Initialize()
         {
             return STATUS_SUCCESS;

@@ -23,6 +23,7 @@ namespace MBox
 
             NTSTATUS ProviderGetByKey(ProviderGetByKeyParameter * aParameter)
             {
+                aParameter->m_IsValidProvider0 = TRUE;
                 return ShimsApi::WFP::FwpmProviderGetByKey0Shims(aParameter->m_EngineHandle, aParameter->m_KeyGuid, &aParameter->m_Provider0);
             }
 

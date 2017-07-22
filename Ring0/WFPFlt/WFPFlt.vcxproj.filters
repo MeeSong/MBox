@@ -33,9 +33,6 @@
     <ClInclude Include="WFPFlt.Manager.Injection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WFPFlt.Manager.Filter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="WFPFlt.Manager.Callout.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -69,6 +66,12 @@
     <ClInclude Include="WFPFlt.ApiWrapper.Redirect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="WFPFlt.ApiWrapper.Callout.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WFPFlt.ApiWrapper.Filter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -87,9 +90,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="WFPFlt.Manager.Injection.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="WFPFlt.Manager.Filter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="WFPFlt.Manager.Callout.cpp">
@@ -123,6 +123,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="WFPFlt.ApiWrapper.Redirect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WFPFlt.ApiWrapper.Callout.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WFPFlt.ApiWrapper.Filter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

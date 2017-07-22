@@ -26,6 +26,8 @@ namespace MBox
 
             struct ProviderGetByKeyParameter
             {
+                UINT32      m_IsValidProvider0 : 1;
+
                 HANDLE      m_EngineHandle  = nullptr;
                 const GUID* m_KeyGuid       = nullptr;
 
@@ -33,6 +35,11 @@ namespace MBox
                 {
                     FWPM_PROVIDER0* m_Provider0 = nullptr;
                 };
+
+                ProviderGetByKeyParameter()
+                {
+                    m_IsValidProvider0 = FALSE;
+                }
             };
 
             NTSTATUS ProviderGetByKey(ProviderGetByKeyParameter* aParameter);

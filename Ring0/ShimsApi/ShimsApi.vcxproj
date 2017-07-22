@@ -22,6 +22,7 @@
     <ClInclude Include="ShimsApi.Macro.h" />
     <ClInclude Include="ShimsApi.MiniFilter.h" />
     <ClInclude Include="ShimsApi.Ndis.h" />
+    <ClInclude Include="ShimsApi.WFP.Callout.h" />
     <ClInclude Include="ShimsApi.WFP.Engine.h" />
     <ClInclude Include="ShimsApi.WFP.EngineState.h" />
     <ClInclude Include="ShimsApi.WFP.Filters.h" />
@@ -36,6 +37,7 @@
   <ItemGroup>
     <ClCompile Include="ShimsApi.MiniFilter.cpp" />
     <ClCompile Include="ShimsApi.Ndis.cpp" />
+    <ClCompile Include="ShimsApi.WFP.Callout.cpp" />
     <ClCompile Include="ShimsApi.WFP.cpp" />
     <ClCompile Include="ShimsApi.WFP.Engine.cpp" />
     <ClCompile Include="ShimsApi.WFP.EngineState.cpp" />

@@ -1,4 +1,5 @@
 #pragma once
+#include "WFPFlt.Manager.Callout.h"
 
 namespace MBox
 {
@@ -17,6 +18,11 @@ namespace MBox
         NTSTATUS StopFilter();
         BOOLEAN IsStartedFilter();
 
+        template<typename F>
+        NTSTATUS RegisterCallback(CalloutManager::CallbackPacket* aCallbackPacket, F aDeletor)
+        {
+            return GetCalloutManager()->RegisterCallback(aCallbackPacket, aDeletor);
+        }
 
     }
 }
