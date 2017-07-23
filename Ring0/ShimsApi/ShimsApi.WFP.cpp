@@ -27,7 +27,10 @@ namespace MBox
                     return STATUS_SUCCESS;
                 }
 
-                return KBasic::Modules::GetModuleAddress(&sModuleAddress, s_FwpIpSecModulePath);
+                NTSTATUS vStatus = KBasic::Modules::GetModuleAddress(&sModuleAddress, s_FwpIpSecModulePath);
+                
+                *aModuleAddress = sModuleAddress;
+                return vStatus;
             }
 
             const void * __stdcall GetFwpIpsecRoutineAddress(const char * aRoutineName)

@@ -13,8 +13,6 @@ namespace MBox
 
                 InboundForward,
                 OutboundForward,
-                InboundNetwork,
-                OutboundNetwork,
                 InboundTransport,
                 OutboundTransport,
                 InboundStream,

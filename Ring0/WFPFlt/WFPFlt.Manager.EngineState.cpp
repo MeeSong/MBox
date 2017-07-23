@@ -7,12 +7,27 @@ namespace MBox
     {
         NTSTATUS EngineStateManager::Initialize()
         {
+            if (nullptr == m_StateChangeCallback)
+            {
+                m_StateChangeCallback = new StateChangeCallback$Fun;
+                if (nullptr == m_StateChangeCallback)
+                {
+                    return STATUS_INSUFFICIENT_RESOURCES;
+                }
+            }
+
             return STATUS_SUCCESS;
         }
 
         void EngineStateManager::Uninitialize()
         {
             UnregisterStateChangeNotify();
+
+            if (m_StateChangeCallback)
+            {
+                delete m_StateChangeCallback;
+                m_StateChangeCallback = nullptr;
+            }
         }
         
         NTSTATUS EngineStateManager::UnregisterStateChangeNotify()
@@ -60,13 +75,13 @@ namespace MBox
                 vParameter.aContext = vThis->m_Context;
                 vParameter.m_State = aState;
 
-                return vThis->m_StateChangeCallback(&vParameter);
+                return (*(vThis->m_StateChangeCallback))(&vParameter);
             }
         }
 
         EngineStateManager * GetEngineStateManager()
         {
-            static EngineStateManager sEngineStateManager{};
+            static EngineStateManager sEngineStateManager;
             return &sEngineStateManager;
         }
 

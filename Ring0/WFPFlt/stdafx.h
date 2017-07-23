@@ -10,8 +10,8 @@
 #define NDIS_SUPPORT_NDIS660 1
 
 #include <ndis.h>
-#include <guiddef.h>
 #include <fwpmk.h>
+#include <initguid.h>
 
 #include <KTL\KTL.Type.h>
 #include <KTL\KTL.Memory.New.h>

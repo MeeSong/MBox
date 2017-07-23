@@ -47,7 +47,7 @@ namespace MBox
 
         RedirectManager * GetRedirectManager()
         {
-            static RedirectManager sRedirectManager{};
+            static RedirectManager sRedirectManager;
             return &sRedirectManager;
         }
     }

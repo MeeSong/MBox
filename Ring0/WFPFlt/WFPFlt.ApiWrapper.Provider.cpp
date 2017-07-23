@@ -11,9 +11,11 @@ namespace MBox
             NTSTATUS ProviderAdd(ProviderAddParameter * aParameter)
             {
                 FWPM_PROVIDER0 vProvider = { 0 };
-                WFPFltProviderToProvider(&vProvider, aParameter->m_Provider);
 
-                return ShimsApi::WFP::FwpmProviderAdd0Shims(aParameter->m_EngineHandle, &vProvider, aParameter->m_SecurityDescriptor);
+                return ShimsApi::WFP::FwpmProviderAdd0Shims(
+                    aParameter->m_EngineHandle,
+                    WFPFltProviderToProvider(&vProvider, aParameter->m_Provider),
+                    aParameter->m_SecurityDescriptor);
             }
 
             NTSTATUS ProviderDeleteByKey(ProviderDeleteByKeyParameter * aParameter)

@@ -15,13 +15,12 @@ namespace MBox
             NTSTATUS EngineOpen(EngineOpenParameter * aParameter)
             {
                 FWPM_SESSION0 vSession0 = { 0 };
-                WFPFltSessionToSession(&vSession0, aParameter->m_Session);
 
                 return ShimsApi::WFP::FwpmEngineOpen0Shims(
                     aParameter->m_ServerName,
                     aParameter->m_AuthnService,
                     aParameter->m_AuthIdentity,
-                    &vSession0,
+                    WFPFltSessionToSession(&vSession0, aParameter->m_Session),
                     aParameter->m_EngineHandle);
             }
 

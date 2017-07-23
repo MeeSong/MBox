@@ -6,6 +6,7 @@
 #include "WFPFlt.ApiWrapper.Filter.h"
 
 #include <KTL\KTL.UUID.h>
+#include <KBasic\KBasic.System.h>
 
 
 namespace MBox
@@ -320,12 +321,27 @@ namespace MBox
 
         NTSTATUS CalloutManager::Initialize()
         {
+            if (nullptr == m_CallbackPacketList)
+            {
+                m_CallbackPacketList = new CallbackPacketList$Type;
+                if (nullptr == m_CallbackPacketList)
+                {
+                    return STATUS_INSUFFICIENT_RESOURCES;
+                }
+            }
+
             return STATUS_SUCCESS;
         }
 
         void CalloutManager::Uninitialize()
         {
             UnregisterCalloutAndFilter();
+
+            if (m_CallbackPacketList)
+            {
+                delete m_CallbackPacketList;
+                m_CallbackPacketList = nullptr;
+            }
         }
 
         NTSTATUS CalloutManager::RegisterCalloutAndFilter(DEVICE_OBJECT* aDeviceObject)
@@ -338,7 +354,13 @@ namespace MBox
                 return STATUS_INVALID_HANDLE;
             }
 
-            for (ktl::u32 vIndex = 0; vIndex < CalloutType::Max; ++vIndex)
+            ktl::u32 vMaxCallout = CalloutType::Max;
+            if (KBasic::System::GetSystemVersion() < SystemVersion::Windows8)
+            {
+                vMaxCallout = CalloutType::InboundMacFrameEthernet;
+            }
+
+            for (ktl::u32 vIndex = 0; vIndex < vMaxCallout; ++vIndex)
             {
                 vStatus = RegisterCalloutAndFilter(
                     &m_CalloutAndFilterId[vIndex],

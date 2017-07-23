@@ -11,11 +11,10 @@ namespace MBox
             NTSTATUS FilterAdd(FilterAddParameter * aParameter)
             {
                 FWPM_FILTER0 vFilter0{};
-                WFPFltFilterToFilter(&vFilter0, aParameter->m_Filter);
 
                 return ShimsApi::WFP::FwpmFilterAdd0Shims(
                     aParameter->m_EngineHandle,
-                    &vFilter0, 
+                    WFPFltFilterToFilter(&vFilter0, aParameter->m_Filter),
                     aParameter->m_SecurityDescriptor, 
                     aParameter->m_FilterId);
             }

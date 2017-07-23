@@ -22,4 +22,6 @@
 #include <MiniFlt\MiniFlt.Callback.TransactionContext.h>
 #include <MiniFlt\MiniFlt.Callback.ContextCleanup.h>
 
+#include <WFPFlt\WFPFlt.h>
+
 #include "Macro.h"

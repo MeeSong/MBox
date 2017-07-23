@@ -11,9 +11,11 @@ namespace MBox
             NTSTATUS SublayerAdd(SublayerAddParameter * aParameter)
             {
                 FWPM_SUBLAYER0 vSublayer0 = { 0 };
-                WFPFltSublayerToSublayer(&vSublayer0, aParameter->m_Sublayer);
 
-                return ShimsApi::WFP::FwpmSubLayerAdd0Shims(aParameter->m_EngineHandle, &vSublayer0, aParameter->m_SecurityDescriptor);
+                return ShimsApi::WFP::FwpmSubLayerAdd0Shims(
+                    aParameter->m_EngineHandle,
+                    WFPFltSublayerToSublayer(&vSublayer0, aParameter->m_Sublayer),
+                    aParameter->m_SecurityDescriptor);
             }
             NTSTATUS SublayerDeleteByKey(SublayerDeleteByKeyParameter * aParameter)
             {

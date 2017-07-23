@@ -86,22 +86,7 @@ namespace MBox
                     // Virtual Switch Ethernet
                     //
 
-                    //// Unspecified Virtual Switch Ethernet
-                    //vParameter.m_AddressFamily = AddressFamily::Unspecified;
-                    //vParameter.m_InjectionType = FWPS_INJECTION_TYPE_VSWITCH;
-                    //vParameter.m_InjectionHandle = &m_InjectionHandleArray[InjectionType::IngressVSwitchEthernet];
-                    //vStatus = WFPApiWrapper::InjectionHandleCreate(&vParameter);
-                    //if (!NT_SUCCESS(vStatus))
-                    //{
-                    //    break;
-                    //}
-
-                    //vParameter.m_InjectionHandle = &m_InjectionHandleArray[InjectionType::EgressVSwitchEthernet];
-                    //vStatus = WFPApiWrapper::InjectionHandleCreate(&vParameter);
-                    //if (!NT_SUCCESS(vStatus))
-                    //{
-                    //    break;
-                    //}
+                    //// Unspecified Virtual Switch Ethernet does not exist
 
                     //// IPv4 Virtual Switch Ethernet
                     //vParameter.m_AddressFamily = AddressFamily::IPv4;
@@ -193,23 +178,8 @@ namespace MBox
                 // Network
                 //
 
-                // Unspecified Network
-                vParameter.m_AddressFamily = AddressFamily::Unspecified;
-                vParameter.m_InjectionType = FWPS_INJECTION_TYPE_NETWORK;
-                vParameter.m_InjectionHandle = &m_InjectionHandleArray[InjectionType::InboundNetwork];
-                vStatus = WFPApiWrapper::InjectionHandleCreate(&vParameter);
-                if (!NT_SUCCESS(vStatus))
-                {
-                    break;
-                }
-
-                vParameter.m_InjectionHandle = &m_InjectionHandleArray[InjectionType::OutboundNetwork];
-                vStatus = WFPApiWrapper::InjectionHandleCreate(&vParameter);
-                if (!NT_SUCCESS(vStatus))
-                {
-                    break;
-                }
-
+                // Unspecified Network does not exist
+                
                 // IPv4 Network
                 vParameter.m_AddressFamily = AddressFamily::IPv4;
                 vParameter.m_InjectionHandle = &m_InjectionHandleArray[InjectionType::IPv4InboundNetwork];
@@ -370,6 +340,8 @@ namespace MBox
                     vParameter.m_InjectionHandle = m_InjectionHandleArray[vIndex];
 
                     WFPApiWrapper::InjectionHandleDestroy(&vParameter);
+
+                    m_InjectionHandleArray[vIndex] = nullptr;
                 }
             }
         }
@@ -386,7 +358,7 @@ namespace MBox
 
         InjectionManager * GetInjectionManager()
         {
-            static InjectionManager sInjectionManager{};
+            static InjectionManager sInjectionManager;
             return &sInjectionManager;
         }
 }

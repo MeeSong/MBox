@@ -1,5 +1,4 @@
 #pragma once
-#include "WFPFlt.Manager.Callout.h"
 
 namespace MBox
 {
@@ -9,20 +8,16 @@ namespace MBox
 
         NTSTATUS Initialize(
             DRIVER_OBJECT* aDriverObject, 
-            UNICODE_STRING* aRegistryPath,
-            DEVICE_OBJECT* aDeviceObject = nullptr );
+            UNICODE_STRING* aRegistryPath);
 
         void Unitialize();
+
+        NTSTATUS RegisterFilter(
+            DEVICE_OBJECT* aDeviceObject = nullptr);
 
         NTSTATUS StartFilter();
         NTSTATUS StopFilter();
         BOOLEAN IsStartedFilter();
-
-        template<typename F>
-        NTSTATUS RegisterCallback(CalloutManager::CallbackPacket* aCallbackPacket, F aDeletor)
-        {
-            return GetCalloutManager()->RegisterCallback(aCallbackPacket, aDeletor);
-        }
 
     }
 }

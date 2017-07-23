@@ -27,8 +27,8 @@ namespace MBox
                 wchar_t*    m_Description = const_cast<wchar_t*>(g_DefaultDescription);
             };
 
-            void WFPFltDisplayDataToDisplayData(FWPM_DISPLAY_DATA0* aDisplayData, const WFPFltDisplayData* aWFPFltDisplayData);
-            void DisplayDataToWFPFltDisplayData(WFPFltDisplayData* aWFPFltDisplayData, const FWPM_DISPLAY_DATA0* aDisplayData);
+            FWPM_DISPLAY_DATA0* WFPFltDisplayDataToDisplayData(FWPM_DISPLAY_DATA0* aDisplayData, const WFPFltDisplayData* aWFPFltDisplayData);
+            WFPFltDisplayData* DisplayDataToWFPFltDisplayData(WFPFltDisplayData* aWFPFltDisplayData, const FWPM_DISPLAY_DATA0* aDisplayData);
 
 
             struct WFPFltSession
@@ -43,7 +43,7 @@ namespace MBox
                 BOOL    m_IsKernelMode = FALSE;
             };
 
-            void WFPFltSessionToSession(FWPM_SESSION0* aSession, const WFPFltSession* aWFPFltSession);
+            FWPM_SESSION0* WFPFltSessionToSession(FWPM_SESSION0* aSession, const WFPFltSession* aWFPFltSession);
 
 
             struct WFPFltProvider
@@ -55,8 +55,8 @@ namespace MBox
                 wchar_t*            m_ServiceName = nullptr;
             };
 
-            void WFPFltProviderToProvider(FWPM_PROVIDER0* aProvider, const WFPFltProvider* aWFPFltProvider);
-            void ProviderToWFPFltProvider(WFPFltProvider* aWFPFltProvider, const FWPM_PROVIDER0* aProvider);
+            FWPM_PROVIDER0* WFPFltProviderToProvider(FWPM_PROVIDER0* aProvider, const WFPFltProvider* aWFPFltProvider);
+            WFPFltProvider* ProviderToWFPFltProvider(WFPFltProvider* aWFPFltProvider, const FWPM_PROVIDER0* aProvider);
 
 
             struct WFPFltSublayer
@@ -69,7 +69,7 @@ namespace MBox
                 UINT16              m_Weight = FWPM_AUTO_WEIGHT_BITS;
             };
 
-            void WFPFltSublayerToSublayer(FWPM_SUBLAYER0* aSublayer, const WFPFltSublayer* aWFPFltSublayer);
+            FWPM_SUBLAYER0* WFPFltSublayerToSublayer(FWPM_SUBLAYER0* aSublayer, const WFPFltSublayer* aWFPFltSublayer);
 
 
             struct WFPFltCallout
@@ -88,9 +88,9 @@ namespace MBox
                 FWPS_CALLOUT_FLOW_DELETE_NOTIFY_FN0 m_FlowDeleteNotifyRoutine = nullptr;
             };
 
-            void WFPFltCalloutToCallout(FWPS_CALLOUT0* aCallout, const WFPFltCallout* aWFPFltCallout);
-            void WFPFltCalloutToCallout(FWPS_CALLOUT1* aCallout, const WFPFltCallout* aWFPFltCallout);
-            void WFPFltCalloutToCallout(FWPS_CALLOUT2* aCallout, const WFPFltCallout* aWFPFltCallout);
+            FWPS_CALLOUT0* WFPFltCalloutToCallout(FWPS_CALLOUT0* aCallout, const WFPFltCallout* aWFPFltCallout);
+            FWPS_CALLOUT1* WFPFltCalloutToCallout(FWPS_CALLOUT1* aCallout, const WFPFltCallout* aWFPFltCallout);
+            FWPS_CALLOUT2* WFPFltCalloutToCallout(FWPS_CALLOUT2* aCallout, const WFPFltCallout* aWFPFltCallout);
 
 
             struct WFPFltMCallout
@@ -104,7 +104,7 @@ namespace MBox
                 UINT32              m_CalloutId = 0;
             };
 
-            void WFPFltMCalloutToMCallout(FWPM_CALLOUT0* aCallout, const WFPFltMCallout* aWFPFltCallout);
+            FWPM_CALLOUT0* WFPFltMCalloutToMCallout(FWPM_CALLOUT0* aCallout, const WFPFltMCallout* aWFPFltCallout);
 
 
             struct WFPFltCalloutEnumTemplate
@@ -113,7 +113,7 @@ namespace MBox
                 GUID    m_LayerGuid     = { 0 };
             };
 
-            void WFPFltCalloutEnumTemplateToCalloutEnumTemplate(
+            FWPM_CALLOUT_ENUM_TEMPLATE0* WFPFltCalloutEnumTemplateToCalloutEnumTemplate(
                 FWPM_CALLOUT_ENUM_TEMPLATE0* aCalloutEnumTemplate, const WFPFltCalloutEnumTemplate* aWFPFltCalloutEnumTemplate);
 
 
@@ -154,8 +154,8 @@ namespace MBox
                 };
             };
 
-            void WFPFltValueToValue(FWP_VALUE0* aValue, const WFPFltValue* aWFPFltValue);
-            void WFPFltValueToConditionValue(FWP_CONDITION_VALUE0* aConditionValue, const WFPFltValue* aWFPFltValue);
+            FWP_VALUE0* WFPFltValueToValue(FWP_VALUE0* aValue, const WFPFltValue* aWFPFltValue);
+            FWP_CONDITION_VALUE0* WFPFltValueToConditionValue(FWP_CONDITION_VALUE0* aConditionValue, const WFPFltValue* aWFPFltValue);
 
 
             struct WFPFltFilterCondition
@@ -165,7 +165,7 @@ namespace MBox
                 WFPFltValue     m_ConditionValue;
             };
 
-            void WFPFltFilterConditionToFilterCondition(
+            FWPM_FILTER_CONDITION0* WFPFltFilterConditionToFilterCondition(
                 FWPM_FILTER_CONDITION0* aFilterCondition, const WFPFltFilterCondition* aWFPFltFilterCondition);
 
 
@@ -180,7 +180,7 @@ namespace MBox
                 };
             };
 
-            void WFPFltActionToAction(FWPM_ACTION0* aAction, const WFPFltAction* aWFPFltAction);
+            FWPM_ACTION0* WFPFltActionToAction(FWPM_ACTION0* aAction, const WFPFltAction* aWFPFltAction);
 
 
             struct WFPFltFilter
@@ -210,7 +210,7 @@ namespace MBox
                 WFPFltValue m_EffectiveWeight;
             };
 
-            void WFPFltFilterToFilter(FWPM_FILTER0* aFilter, const WFPFltFilter* aWFPFltFilter);
+            FWPM_FILTER0* WFPFltFilterToFilter(FWPM_FILTER0* aFilter, const WFPFltFilter* aWFPFltFilter);
             
         }
     }

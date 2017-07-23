@@ -146,7 +146,7 @@ namespace MBox
                 vStatus = WFPApiWrapper::ProviderDeleteByKey(&vParameter);
                 if (!NT_SUCCESS(vStatus))
                 {
-                    if (STATUS_FWP_SUBLAYER_NOT_FOUND != vStatus)
+                    if (STATUS_FWP_PROVIDER_NOT_FOUND != vStatus)
                     {
                         break;
                     }
@@ -172,7 +172,7 @@ namespace MBox
 
         ProviderManager * GetProviderManager()
         {
-            static ProviderManager sProviderManager{};
+            static ProviderManager sProviderManager;
             return &sProviderManager;
         }
 

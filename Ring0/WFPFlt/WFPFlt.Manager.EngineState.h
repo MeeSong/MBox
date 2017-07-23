@@ -16,7 +16,7 @@ namespace MBox
             };
 
             using StateChangeCallback$Fun = ktl::function<void(StateChangeCallbackParameter*)>;
-
+            
             NTSTATUS Initialize();
             void Uninitialize();
 
@@ -30,7 +30,7 @@ namespace MBox
 
                 for (;;)
                 {
-                    if (false == m_StateChangeCallback.attach(aCallback))
+                    if (false == m_StateChangeCallback->attach(aCallback))
                     {
                         vStatus = STATUS_INSUFFICIENT_RESOURCES;
                         break;
@@ -64,7 +64,7 @@ namespace MBox
                 void * aContext,
                 FWPM_SERVICE_STATE aState);
 
-            StateChangeCallback$Fun m_StateChangeCallback{};
+            StateChangeCallback$Fun* m_StateChangeCallback = nullptr;
             void *  m_Context = nullptr;
             HANDLE  m_StateChangeHandle = nullptr;
         };

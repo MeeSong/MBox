@@ -5,6 +5,7 @@
 #include "WFPFlt.Manager.Injection.h"
 #include "WFPFlt.Manager.Provider.h"
 #include "WFPFlt.Manager.Redirect.h"
+#include "WFPFlt.Manager.Callout.h"
 
 #include <KBasic\KBasic.System.h>
 
@@ -13,6 +14,7 @@ namespace MBox
     namespace WFPFlt
     {
         volatile long           s_IsStartedFilter   = FALSE;
+        static DRIVER_OBJECT*   s_DriverObject      = nullptr;
         static DEVICE_OBJECT*   s_DeviceObject      = nullptr;
 
         BOOLEAN IsSupportedWFP()
@@ -47,6 +49,26 @@ namespace MBox
             }
 
             }
+        }
+
+        static void UnitializeManager()
+        {
+            //
+            // Unitialize the order
+            //
+            // Callout 
+            // Redirect
+            // Injection
+            // Engine
+            // EngineState
+            //
+
+            GetCalloutManager()->Uninitialize();
+            GetRedirectManager()->Uninitialize();
+            GetProviderManager()->Uninitialize();
+            GetInjectionManager()->Uninitialize();
+            GetEngineManager()->Uninitialize();
+            GetEngineStateManager()->Uninitialize();
         }
 
         static NTSTATUS InitializeManager()
@@ -101,12 +123,7 @@ namespace MBox
 
             if (!NT_SUCCESS(vStatus))
             {
-                GetCalloutManager()->Uninitialize();
-                GetRedirectManager()->Uninitialize();
-                GetProviderManager()->Uninitialize();
-                GetInjectionManager()->Uninitialize();
-                GetEngineManager()->Uninitialize();
-                GetEngineStateManager()->Uninitialize();
+                UnitializeManager();
             }
 
             return vStatus;
@@ -114,8 +131,7 @@ namespace MBox
 
         NTSTATUS Initialize(
             DRIVER_OBJECT* aDriverObject,
-            UNICODE_STRING* /*aRegistryPath*/,
-            DEVICE_OBJECT* aDeviceObject)
+            UNICODE_STRING* /*aRegistryPath*/)
         {
             NTSTATUS vStatus = STATUS_SUCCESS;
 
@@ -126,10 +142,51 @@ namespace MBox
                     vStatus = STATUS_NOT_SUPPORTED;
                 }
 
+                vStatus = InitializeManager();
+                if (!NT_SUCCESS(vStatus))
+                {
+                    break;
+                }
+
+                s_DriverObject = aDriverObject;
+                break;
+            }
+
+            if (!NT_SUCCESS(vStatus))
+            {
+                Unitialize();
+            }
+
+            return vStatus;
+        }
+
+        void Unitialize()
+        {
+            UnitializeManager();
+
+            if (s_DeviceObject)
+            {
+                IoDeleteDevice(s_DeviceObject);
+                s_DeviceObject = nullptr;
+            }
+        }
+
+        NTSTATUS RegisterFilter(DEVICE_OBJECT* aDeviceObject)
+        {
+            NTSTATUS vStatus = STATUS_SUCCESS;
+
+            for (;;)
+            {
+                if (FALSE == IsSupportedWFP())
+                {
+                    vStatus = STATUS_NOT_SUPPORTED;
+                }
+
+
                 if (nullptr == aDeviceObject)
                 {
                     vStatus = IoCreateDevice(
-                        aDriverObject,
+                        s_DriverObject,
                         0,
                         nullptr,
                         FILE_DEVICE_NETWORK,
@@ -140,16 +197,12 @@ namespace MBox
                     {
                         break;
                     }
-                }
 
-                vStatus = InitializeManager();
-                if (!NT_SUCCESS(vStatus))
-                {
-                    break;
+                    aDeviceObject = s_DeviceObject;
                 }
 
                 auto vEngineStateManager = GetEngineStateManager();
-                vStatus = GetEngineStateManager()->RegisterStateChangeNotify(s_DeviceObject, StateChangeCallback, nullptr);
+                vStatus = vEngineStateManager->RegisterStateChangeNotify(s_DeviceObject, StateChangeCallback, nullptr);
                 if (!NT_SUCCESS(vStatus))
                 {
                     break;
@@ -175,41 +228,34 @@ namespace MBox
                     break;
                 }
 
+                if (KBasic::System::GetSystemVersion() >= SystemVersion::Windows8)
+                {
+                    auto vProviderManager = GetProviderManager();
+                    vStatus = vProviderManager->AddProvider();
+                    if (!NT_SUCCESS(vStatus))
+                    {
+                        break;
+                    }
+
+                    auto vRedirectManager = GetRedirectManager();
+                    vStatus = vRedirectManager->Initialize();
+                    if (!NT_SUCCESS(vStatus))
+                    {
+                        break;
+                    }
+                }
+
+                auto vCalloutManager = GetCalloutManager();
+                vStatus = vCalloutManager->RegisterCalloutAndFilter(aDeviceObject);
+                if (!NT_SUCCESS(vStatus))
+                {
+                    break;
+                }
+
                 break;
             }
 
-            if (!NT_SUCCESS(vStatus))
-            {
-                Unitialize();
-            }
-
             return vStatus;
-        }
-
-        void Unitialize()
-        {
-            //
-            // Unitialize the order
-            //
-            // Callout 
-            // Redirect
-            // Injection
-            // Engine
-            // EngineState
-            //
-
-            GetCalloutManager()->Uninitialize();
-            GetRedirectManager()->Uninitialize();
-            GetProviderManager()->Uninitialize();
-            GetInjectionManager()->Uninitialize();
-            GetEngineManager()->Uninitialize();
-            GetEngineStateManager()->Uninitialize();
-
-            if (s_DeviceObject)
-            {
-                IoDeleteDevice(s_DeviceObject);
-                s_DeviceObject = nullptr;
-            }
         }
 
 

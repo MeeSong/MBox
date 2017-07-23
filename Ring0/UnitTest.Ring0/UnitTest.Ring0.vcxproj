@@ -181,6 +181,9 @@
     <ProjectReference Include="..\MiniFlt\MiniFlt.vcxproj">
       <Project>{d4c53d20-6ce0-4d61-a3c9-7611df5be86c}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\WFPFlt\WFPFlt.vcxproj">
+      <Project>{b58318b9-1d12-40bf-a1a4-e08130a6980f}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

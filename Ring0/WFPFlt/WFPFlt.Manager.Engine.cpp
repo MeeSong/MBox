@@ -50,7 +50,7 @@ namespace MBox
 
         EngineManager * GetEngineManager()
         {
-            static EngineManager sEngineManager{};
+            static EngineManager sEngineManager;
             return &sEngineManager;
         }
     }

@@ -1,4 +1,5 @@
 #pragma once
+#include "WFPFlt.h"
 #include <KTL\KTL.Functional.Function.h>
 #include <KTL\KTL.Containers.List.h>
 #include <KTL\KTL.Memory.SharedPtr.h>
@@ -92,6 +93,7 @@ namespace MBox
                 IPv4AleResourceRelease,
                 IPv6AleResourceRelease,
 
+                /* Windows 8 Begin. */
                 InboundMacFrameEthernet,            // Inbound lower (to the NDIS protocol driver) layer
                 OutboundMacFrameEthernet,           // Outbound upper (to the NDIS protocol driver) layer.
 
@@ -250,7 +252,7 @@ namespace MBox
             template<typename F>
             NTSTATUS RegisterCallback(CallbackPacket* aCallbackPacket, F aDeletor)
             {
-                if (KBasic::System::GetSystemVersion() < SystemVersion::WindowsVista)
+                if (FALSE == IsSupportedWFP())
                 {
                     return STATUS_NOT_SUPPORTED;
                 }
@@ -291,7 +293,7 @@ namespace MBox
             void FlowDeleteNotifyRoutine(FlowDeleteNotifyRoutineParameter* aParameter);
 
             CalloutAndFilterId      m_CalloutAndFilterId[CalloutType::Max];
-            CallbackPacketList$Type m_CallbackPacketList;
+            CallbackPacketList$Type* m_CallbackPacketList = nullptr;
 
             //////////////////////////////////////////////////////////////////////////
 
@@ -343,6 +345,12 @@ namespace MBox
         };
 
         CalloutManager* GetCalloutManager();
+
+        template<typename F>
+        NTSTATUS RegisterCallback(CalloutManager::CallbackPacket* aCallbackPacket, F aDeletor)
+        {
+            return GetCalloutManager()->RegisterCallback(aCallbackPacket, aDeletor);
+        }
 
     }
 }

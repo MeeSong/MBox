@@ -14,22 +14,28 @@ namespace MBox
                 if (KBasic::System::GetSystemVersion() >= SystemVersion::Windows8)
                 {
                     FWPS_CALLOUT2 vCallout2 = { 0 };
-                    WFPFltCalloutToCallout(&vCallout2, aParameter->m_Callout);
+
                     return ShimsApi::WFP::FwpsCalloutRegister2Shims(
-                        aParameter->m_DeviceObject, &vCallout2, aParameter->m_aCalloutId);
+                        aParameter->m_DeviceObject,
+                        WFPFltCalloutToCallout(&vCallout2, aParameter->m_Callout),
+                        aParameter->m_aCalloutId);
                 }
                 else if (KBasic::System::GetSystemVersion() >= SystemVersion::Windows7)
                 {
                     FWPS_CALLOUT1 vCallout1 = { 0 };
-                    WFPFltCalloutToCallout(&vCallout1, aParameter->m_Callout);
+
                     return ShimsApi::WFP::FwpsCalloutRegister1Shims(
-                        aParameter->m_DeviceObject, &vCallout1, aParameter->m_aCalloutId);
+                        aParameter->m_DeviceObject,
+                        WFPFltCalloutToCallout(&vCallout1, aParameter->m_Callout),
+                        aParameter->m_aCalloutId);
                 }
 
                 FWPS_CALLOUT0 vCallout0 = { 0 };
-                WFPFltCalloutToCallout(&vCallout0, aParameter->m_Callout);
+
                 return ShimsApi::WFP::FwpsCalloutRegister0Shims(
-                    aParameter->m_DeviceObject, &vCallout0, aParameter->m_aCalloutId);
+                    aParameter->m_DeviceObject,
+                    WFPFltCalloutToCallout(&vCallout0, aParameter->m_Callout),
+                    aParameter->m_aCalloutId);
             }
 
             NTSTATUS CalloutUnregisterById(CalloutUnregisterByIdParameter * aParameter)
@@ -62,10 +68,12 @@ namespace MBox
             NTSTATUS CalloutAdd(CalloutAddParameter * aParameter)
             {
                 FWPM_CALLOUT0 vCallout0{};
-                WFPFltMCalloutToMCallout(&vCallout0, aParameter->m_Callout);
 
                 return ShimsApi::WFP::FwpmCalloutAdd0Shims(
-                    aParameter->m_EngineHandle, &vCallout0, aParameter->m_SecurityDescriptor, aParameter->m_CalloutId);
+                    aParameter->m_EngineHandle,
+                    WFPFltMCalloutToMCallout(&vCallout0, aParameter->m_Callout),
+                    aParameter->m_SecurityDescriptor,
+                    aParameter->m_CalloutId);
             }
 
             NTSTATUS CalloutDeleteById(CalloutDeleteByIdParameter * aParameter)
@@ -97,10 +105,11 @@ namespace MBox
             NTSTATUS CalloutCreateEnumHandle(CalloutCreateEnumHandleParameter * aParameter)
             {
                 FWPM_CALLOUT_ENUM_TEMPLATE0 vEnumTemplate0{};
-                WFPFltCalloutEnumTemplateToCalloutEnumTemplate(&vEnumTemplate0, aParameter->m_EnumTemplate);
 
                 return ShimsApi::WFP::FwpmCalloutCreateEnumHandle0Shims(
-                    aParameter->m_EngineHandle, &vEnumTemplate0, aParameter->m_EnumHandle);
+                    aParameter->m_EngineHandle,
+                    WFPFltCalloutEnumTemplateToCalloutEnumTemplate(&vEnumTemplate0, aParameter->m_EnumTemplate),
+                    aParameter->m_EnumHandle);
             }
 
             NTSTATUS CalloutEnum(CalloutEnumParameter * aParameter)
