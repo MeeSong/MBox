@@ -96,6 +96,16 @@ namespace MBox
                 &FWPM_LAYER_ALE_RESOURCE_RELEASE_V4,
                 &FWPM_LAYER_ALE_RESOURCE_RELEASE_V6,
 
+                &FWPM_LAYER_ALE_CONNECT_REDIRECT_V4,
+                &FWPM_LAYER_ALE_CONNECT_REDIRECT_V6,
+
+                &FWPM_LAYER_ALE_BIND_REDIRECT_V4,
+                &FWPM_LAYER_ALE_BIND_REDIRECT_V6,
+
+                &FWPM_LAYER_STREAM_PACKET_V4,
+                &FWPM_LAYER_STREAM_PACKET_V6,
+
+                /* Windows 8 Begin. */
                 &FWPM_LAYER_INBOUND_MAC_FRAME_ETHERNET,
                 &FWPM_LAYER_OUTBOUND_MAC_FRAME_ETHERNET,
 
@@ -181,7 +191,7 @@ namespace MBox
             UINT64              aFlowContext,
             FWPS_CLASSIFY_OUT0* aClassifyOut)
         {
-            ClassifyRoutineParameterWithSynchronous vParameter;
+            ClassifyRoutineParameterForSynchronous vParameter;
             
             vParameter.m_IncomingValues0 = aIncomingValues;
             vParameter.m_IncomingMetadataValues0 = aIncomingMetadataValues;
@@ -209,7 +219,7 @@ namespace MBox
             UINT64              aFlowContext,
             FWPS_CLASSIFY_OUT0* aClassifyOut)
         {
-            ClassifyRoutineParameterWithSynchronous vParameter;
+            ClassifyRoutineParameterForSynchronous vParameter;
 
             vParameter.m_IncomingValues0 = aIncomingValues;
             vParameter.m_IncomingMetadataValues0 = aIncomingMetadataValues;
@@ -238,7 +248,7 @@ namespace MBox
             UINT64              aFlowContext,
             FWPS_CLASSIFY_OUT0* aClassifyOut)
         {
-            ClassifyRoutineParameterWithSynchronous vParameter;
+            ClassifyRoutineParameterForSynchronous vParameter;
 
             vParameter.m_IncomingValues0 = aIncomingValues;
             vParameter.m_IncomingMetadataValues0 = aIncomingMetadataValues;
@@ -315,11 +325,14 @@ namespace MBox
             vParameter.m_LayerId = aLayerId;
             vParameter.m_CalloutId = aCalloutId;
             vParameter.m_FlowContext = aFlowContext;
+
+            CalloutManager* vCalloutManager = GetCalloutManager();
+            return vCalloutManager->FlowDeleteNotifyRoutine(&vParameter);
         }
 
         //////////////////////////////////////////////////////////////////////////
 
-        NTSTATUS CalloutManager::Initialize()
+        NTSTATUS CalloutManager::Initialize(bool aIsAsynchronous)
         {
             if (nullptr == m_CallbackPacketList)
             {
@@ -330,6 +343,7 @@ namespace MBox
                 }
             }
 
+            m_IsAsynchronous = aIsAsynchronous;
             return STATUS_SUCCESS;
         }
 
@@ -339,6 +353,8 @@ namespace MBox
 
             if (m_CallbackPacketList)
             {
+                m_CallbackPacketList->clear();
+
                 delete m_CallbackPacketList;
                 m_CallbackPacketList = nullptr;
             }
@@ -435,7 +451,7 @@ namespace MBox
                 //     registers the callout driver's callout functions with the filter engine.
                 //
                 vCalloutAddParameter.m_CalloutId = &aCalloutAndFilterId->m_CalloutAddId;
-                
+
 
                 vAddCallout.m_CalloutGuid = aCalloutGuid;
                 vAddCallout.m_ApplicableLayerGuid = aLayerGuid;
@@ -455,10 +471,10 @@ namespace MBox
                 vFilterAddParameter.m_FilterId = &aCalloutAndFilterId->m_FilterId;
 
                 vFilter.m_FilterGuid = aFilterGuid;
-                vFilter.m_LayerGuid  = aLayerGuid;
+                vFilter.m_LayerGuid = aLayerGuid;
                 vFilter.m_SublayerGuid = FWPM_SUBLAYER_UNIVERSAL;
                 vFilter.m_RawContext = UINT64(this);
-                vFilter.m_Action.m_ActionType = FWP_ACTION_CALLOUT_TERMINATING;
+                vFilter.m_Action.m_ActionType = FWP_ACTION_CALLOUT_UNKNOWN;
                 vFilter.m_Action.m_CalloutGuid = aCalloutGuid;
 
                 vStatus = WFPApiWrapper::FilterAdd(&vFilterAddParameter);
@@ -528,17 +544,194 @@ namespace MBox
             }
         }
 
-        void CalloutManager::ClassifyRoutine(ClassifyRoutineParameterWithSynchronous * /*aParameter*/)
+        void CalloutManager::ClassifyRoutine(ClassifyRoutineParameterForSynchronous * aParameter)
         {
+            if (FALSE == aParameter->m_IsValidClassifyOut0)
+            {
+                return;
+            }
+
+            if (!(aParameter->m_ClassifyOut0->rights & FWPS_RIGHT_ACTION_WRITE))
+            {
+                return;
+            }
+
+            if (FALSE == aParameter->m_IsValidIncomingValues0)
+            {
+                aParameter->m_ClassifyOut0->actionType = FWP_ACTION_NONE;
+                return;
+            }
+
+            if (FALSE == IsStartedFilter())
+            {
+                aParameter->m_ClassifyOut0->actionType = FWP_ACTION_NONE;
+                return;
+            }
+
+            FilterResult vResult = FilterResult::None;
+            ClassifyRoutineParameter vParameter;
+            FWPS_CLASSIFY_OUT0* vClassifyOut = aParameter->m_ClassifyOut0;
+
+            if (m_IsAsynchronous)
+            {
+                vParameter.m_IsAsynchronous = TRUE;
+                // TODO
+
+                vResult = ClassifyRoutineForAsynchronous(&vParameter);
+            }
+            else
+            {
+                vParameter.m_IsSynchronous = TRUE;
+                vParameter.m_SynchronousParameter = aParameter;
+                aParameter->m_ClassifyOut0 = nullptr;
+
+                vResult = ClassifyRoutineForSynchronous(&vParameter);
+            }
+
+            switch (vResult)
+            {
+            default:
+            case MBox::WFPFlt::CalloutManager::FilterResult::None:
+                vClassifyOut->actionType = FWP_ACTION_NONE;
+                break;
+
+            case MBox::WFPFlt::CalloutManager::FilterResult::Permit:
+                vClassifyOut->actionType = FWP_ACTION_PERMIT;
+                vClassifyOut->rights &= ~FWPS_RIGHT_ACTION_WRITE;
+                break;
+
+            case MBox::WFPFlt::CalloutManager::FilterResult::Block:
+                vClassifyOut->actionType = FWP_ACTION_BLOCK;
+                vClassifyOut->rights &= ~FWPS_RIGHT_ACTION_WRITE;
+                vClassifyOut->flags |= FWPS_CLASSIFY_OUT_FLAG_ABSORB;
+                break;
+            }
         }
 
-        NTSTATUS CalloutManager::NotifyRoutine(NotifyRoutineParameter * /*aParameter*/)
+        NTSTATUS CalloutManager::NotifyRoutine(NotifyRoutineParameter * aParameter)
         {
-            return STATUS_SUCCESS;
+            NTSTATUS vStatus = STATUS_SUCCESS;
+
+            auto vCallback = [&vStatus, aParameter](const ktl::shared_ptr<CallbackPacket>* aPacket) -> bool
+            {
+                if (FALSE == (*aPacket)->m_IsValidNotifyRoutine)
+                {
+                    return false;
+                }
+
+                aParameter->m_RegisterContext = (*aPacket)->m_NotifyRoutineRegisterContext;
+                vStatus = (*aPacket)->m_NotifyRoutine(aParameter);
+                if (!NT_SUCCESS(vStatus))
+                {
+                    return true;
+                }
+
+                return false;
+            };
+            TraverseCallbackPacket(vCallback);
+
+            return vStatus;
         }
 
-        void CalloutManager::FlowDeleteNotifyRoutine(FlowDeleteNotifyRoutineParameter * /*aParameter*/)
+        void CalloutManager::FlowDeleteNotifyRoutine(FlowDeleteNotifyRoutineParameter * aParameter)
         {
+            auto vCallback = [aParameter](const ktl::shared_ptr<CallbackPacket>* aPacket) -> bool
+            {
+                if (FALSE == (*aPacket)->m_IsValidFlowDeleteNotifyRoutine)
+                {
+                    return false;
+                }
+
+                aParameter->m_RegisterContext = (*aPacket)->m_FlowDeleteNotifyRoutineRegisterContext;
+                (*aPacket)->m_FlowDeleteNotifyRoutine(aParameter);
+
+                return false;
+            };
+            TraverseCallbackPacket(vCallback);
+        }
+
+        CalloutManager::FilterResult CalloutManager::ClassifyRoutineForSynchronous(ClassifyRoutineParameter * aParameter)
+        {
+            FilterResult vResult = FilterResult::None;
+
+            // Pre Notify
+
+            aParameter->m_Result = vResult;
+            auto vPreNotifyCallback = [aParameter](const ktl::shared_ptr<CallbackPacket>* aPacket) -> bool
+            {
+                if (FALSE == (*aPacket)->m_IsValidClassifyRoutine)
+                {
+                    return false;
+                }
+
+                if (FALSE == (*aPacket)->m_IsPreNotifyClassifyRoutine)
+                {
+                    return false;
+                }
+
+                aParameter->m_RegisterContext = (*aPacket)->m_ClassifyRoutineRegisterContext;
+                (*aPacket)->m_ClassifyRoutine(aParameter);
+
+                return false;
+            };
+            TraverseCallbackPacket(vPreNotifyCallback);
+
+            // Filter
+
+            aParameter->m_Result = FilterResult::None;
+            auto vFilterCallback = [&vResult, aParameter](const ktl::shared_ptr<CallbackPacket>* aPacket) -> bool
+            {
+                if (FALSE == (*aPacket)->m_IsValidClassifyRoutine)
+                {
+                    return false;
+                }
+
+                if (FALSE == (*aPacket)->m_IsFilterClassifyRoutine)
+                {
+                    return false;
+                }
+
+                aParameter->m_RegisterContext = (*aPacket)->m_ClassifyRoutineRegisterContext;
+                vResult = (*aPacket)->m_ClassifyRoutine(aParameter);
+                if (FilterResult::Block == vResult)
+                {
+                    return true;
+                }
+
+                return false;
+            };
+            TraverseCallbackPacket(vFilterCallback);
+
+            // Post Notify
+
+            aParameter->m_Result = vResult;
+            auto vPostNotifyCallback = [aParameter](const ktl::shared_ptr<CallbackPacket>* aPacket) -> bool
+            {
+                if (FALSE == (*aPacket)->m_IsValidClassifyRoutine)
+                {
+                    return false;
+                }
+
+                if (FALSE == (*aPacket)->m_IsPostNotifyClassifyRoutine)
+                {
+                    return false;
+                }
+
+                aParameter->m_RegisterContext = (*aPacket)->m_ClassifyRoutineRegisterContext;
+                (*aPacket)->m_ClassifyRoutine(aParameter);
+
+                return false;
+            };
+            TraverseCallbackPacket(vPostNotifyCallback);
+
+            return vResult;
+        }
+
+        CalloutManager::FilterResult CalloutManager::ClassifyRoutineForAsynchronous(ClassifyRoutineParameter * /*aParameter*/)
+        {
+            FilterResult vResult = FilterResult::None;
+
+            return vResult;
         }
 
         CalloutManager * GetCalloutManager()

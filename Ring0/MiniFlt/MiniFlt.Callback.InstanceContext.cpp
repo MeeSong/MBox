@@ -8,7 +8,7 @@ namespace MBox
     {
         extern FLT_CONTEXT_TYPE g_ContextSupportedType;
 
-        inline BOOLEAN IsSupportedInstanceContexts()
+        BOOLEAN IsSupportedInstanceContexts()
         {
             if ((g_ContextSupportedType & FLT_INSTANCE_CONTEXT))
             {

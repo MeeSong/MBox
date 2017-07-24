@@ -20,6 +20,8 @@ namespace MBox
 
         void DestoryCallbackPacketList()
         {
+            s_CallbackPacketList->clear();
+
             delete s_CallbackPacketList;
             s_CallbackPacketList = nullptr;
         }

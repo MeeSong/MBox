@@ -35,14 +35,14 @@ namespace MBox
         CallbackPacketList$Type* GetCallbackPacketList();
 
         template <typename F>
-        void TraverseCallbacketList(F aFunctor)
+        void TraverseCallbackPacket(F aFunctor)
         {
             auto vCallbackPacketList = GetCallbackPacketList();
 
             ktl::u32 vIndex = 0;
-            for (auto &vItem : *vCallbackPacketList)
+            for (const auto &vPacket : (*vCallbackPacketList))
             {
-                if (aFunctor(vItem.get(), vIndex++))
+                if (aFunctor(&vPacket, vIndex++))
                 {
                     break;
                 }

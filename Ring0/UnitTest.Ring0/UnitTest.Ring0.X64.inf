@@ -30,7 +30,7 @@ StartType      = 3 ;    SERVICE_DEMAND_START
 ErrorControl   = 1 ;    SERVICE_ERROR_NORMAL%
 LoadOrderGroup = "FSFilter Activity Monitor"
 AddReg         = UnitTest.AddRegistry
-Dependencies   = FltMgr
+Dependencies   = FltMgr,BFE
 
 [UnitTest.AddRegistry]
 HKR,%RegInstancesSubkeyName%,%RegDefaultInstanceValueName%,0x00000000,%DefaultInstance%

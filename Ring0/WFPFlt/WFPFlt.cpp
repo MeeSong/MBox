@@ -162,6 +162,7 @@ namespace MBox
 
         void Unitialize()
         {
+            StopFilter();
             UnitializeManager();
 
             if (s_DeviceObject)
@@ -238,7 +239,7 @@ namespace MBox
                     }
 
                     auto vRedirectManager = GetRedirectManager();
-                    vStatus = vRedirectManager->Initialize();
+                    vStatus = vRedirectManager->CreateRedirectHandle();
                     if (!NT_SUCCESS(vStatus))
                     {
                         break;

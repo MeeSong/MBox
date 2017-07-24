@@ -15,6 +15,8 @@ static NTSTATUS PreUnload(FLT_FILTER_UNLOAD_FLAGS aFlags, PVOID /*aParameter*/)
         return STATUS_FLT_DO_NOT_DETACH;
     }
 
+    MBox::WFPFlt::StopFilter();
+
     if (s_Listener)
     {
         s_Listener->Uninitialize();
@@ -136,6 +138,12 @@ NTSTATUS DriverEntry(
         }
 
         vStatus = MBox::MiniFlt::StartFilter();
+        if (!NT_SUCCESS(vStatus))
+        {
+            break;
+        }
+
+        vStatus = MBox::WFPFlt::StartFilter();
         if (!NT_SUCCESS(vStatus))
         {
             break;

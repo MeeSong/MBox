@@ -93,6 +93,15 @@ namespace MBox
                 IPv4AleResourceRelease,
                 IPv6AleResourceRelease,
 
+                IPv4AleConnectRedirect,
+                IPv6AleConnectRedirect,
+
+                IPv4AleBindRedirect,
+                IPv6AleBindRedirect,
+
+                IPv4StreamPacket,
+                IPv6StreamPacket,
+
                 /* Windows 8 Begin. */
                 InboundMacFrameEthernet,            // Inbound lower (to the NDIS protocol driver) layer
                 OutboundMacFrameEthernet,           // Outbound upper (to the NDIS protocol driver) layer.
@@ -111,7 +120,14 @@ namespace MBox
                 Max
             };
 
-            struct ClassifyRoutineParameterWithSynchronous
+            enum class FilterResult : ktl::u32
+            {
+                None,
+                Permit,
+                Block,
+            };
+
+            struct ClassifyRoutineParameterForSynchronous
             {
                 UINT32  m_IsValidIncomingValues0 : 1;
                 UINT32  m_IsValidIncomingMetadataValues0 : 1;
@@ -147,7 +163,7 @@ namespace MBox
                 const void* m_ClassifyContext   = nullptr;
                 UINT64      m_FlowContext       = 0;
 
-                ClassifyRoutineParameterWithSynchronous()
+                ClassifyRoutineParameterForSynchronous()
                 {
                     m_IsValidIncomingValues0 = m_IsValidIncomingMetadataValues0 = m_IsValidClassifyOut0 = FALSE;
                     m_IsValidFilter0 = m_IsValidFilter1 = m_IsValidFilter2 = FALSE;
@@ -166,11 +182,13 @@ namespace MBox
 
                 union
                 {
-                    ClassifyRoutineParameterWithSynchronous m_SynchronousParameter;
-                    ClassifyRoutineParameterWithAsynchronous m_AsynchronousParameter;
+                    ClassifyRoutineParameterForSynchronous* m_SynchronousParameter = nullptr;
+                    ClassifyRoutineParameterWithAsynchronous* m_AsynchronousParameter;
                 };
 
-                void * m_RegisterContext = nullptr;
+                void * m_RegisterContext    = nullptr;
+                FilterResult m_Result       = FilterResult::None;
+
 
                 ClassifyRoutineParameter()
                 {
@@ -211,7 +229,7 @@ namespace MBox
                 void * m_RegisterContext = nullptr;
             };
 
-            using ClassifyRoutineCallback$Fun = ktl::function<void(ClassifyRoutineParameter*)>;
+            using ClassifyRoutineCallback$Fun = ktl::function<FilterResult(ClassifyRoutineParameter*)>;
             using NotifyRoutineCallback$Fun = ktl::function<NTSTATUS(NotifyRoutineParameter*)>;
             using FlowDeleteNotifyRoutineCallback$Fun = ktl::function<void(FlowDeleteNotifyRoutineParameter*)>;
 
@@ -243,7 +261,7 @@ namespace MBox
             using CallbackPacketList$Type = ktl::list<ktl::shared_ptr<CallbackPacket>>;
 
         public:
-            NTSTATUS Initialize();
+            NTSTATUS Initialize(bool aIsAsynchronous = false);
             void Uninitialize();
 
             NTSTATUS RegisterCalloutAndFilter(DEVICE_OBJECT* aDeviceObject);
@@ -288,10 +306,31 @@ namespace MBox
                 CalloutAndFilterId* aCalloutAndFilterId,
                 HANDLE aEngineHandle);
 
-            void ClassifyRoutine(ClassifyRoutineParameterWithSynchronous* aParameter);
+            void ClassifyRoutine(ClassifyRoutineParameterForSynchronous* aParameter);
             NTSTATUS NotifyRoutine(NotifyRoutineParameter* aParameter);
             void FlowDeleteNotifyRoutine(FlowDeleteNotifyRoutineParameter* aParameter);
 
+            FilterResult ClassifyRoutineForSynchronous(ClassifyRoutineParameter* aParameter);
+            FilterResult ClassifyRoutineForAsynchronous(ClassifyRoutineParameter* aParameter);
+
+            template <typename F>
+            void TraverseCallbackPacket(F aCallback)
+            {
+                if (nullptr == m_CallbackPacketList)
+                {
+                    return;
+                }
+
+                for (const auto& vPacket : (*m_CallbackPacketList))
+                {
+                    if (aCallback(&vPacket))
+                    {
+                        break;
+                    }
+                }
+            }
+
+            bool                    m_IsAsynchronous = false;
             CalloutAndFilterId      m_CalloutAndFilterId[CalloutType::Max];
             CallbackPacketList$Type* m_CallbackPacketList = nullptr;
 

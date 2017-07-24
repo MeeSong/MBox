@@ -21,7 +21,7 @@ namespace MBox
         {
             if (nullptr != m_RedirectHandle)
             {
-                return STATUS_FWP_ALREADY_EXISTS;
+                return STATUS_SUCCESS;
             }
 
             WFPApiWrapper::RedirectHandleCreateParameter vParameter{};

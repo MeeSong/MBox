@@ -11,13 +11,13 @@ void MiniFlt$Function$TraverseCallbackPacketMemberName$Macro(aFunctionName)(F aF
 template <typename F> \
 void MiniFlt$Function$TraverseCallbackPacketMemberName$Macro(aFunctionName)(F aFunctor)     \
 {                                                                                           \
-    auto vCallback = [&aFunctor](CallbackPacket* aCallbackPacket, UINT32 aIndex) -> BOOLEAN \
+    auto vCallback = [&aFunctor](const ktl::shared_ptr<CallbackPacket>* aCallbackPacket, UINT32 aIndex) -> BOOLEAN \
     {                                                                                       \
-        if (aCallbackPacket->aMember)                                                       \
+        if ((*aCallbackPacket)->aMember)                                                    \
         {                                                                                   \
-            return aFunctor(aCallbackPacket->aMember, aIndex);                              \
+            return aFunctor((*aCallbackPacket)->aMember, aIndex);                           \
         }                                                                                   \
         return FALSE;                                                                       \
     };                                                                                      \
-    TraverseCallbacketList(vCallback);                                                      \
+    TraverseCallbackPacket(vCallback);                                                      \
 }

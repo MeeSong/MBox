@@ -1,5 +1,6 @@
 #include "KTL.UUID.h"
 #include "KTL.Type.Uitility.h"
+#include <wdm.h>
 
 namespace ktl
 {
@@ -41,7 +42,7 @@ namespace ktl
             reinterpret_cast<ktl::u64*>(this)[0] = reinterpret_cast<const ktl::u64*>(&aOther)[0];
             reinterpret_cast<ktl::u64*>(this)[1] = reinterpret_cast<const ktl::u64*>(&aOther)[1];
 
-            aOther = { 0 };
+            RtlSecureZeroMemory(&aOther, sizeof(UUID));
             return (*this);
         }
 
