@@ -13,9 +13,10 @@ namespace MBox
 {
     namespace WFPFlt
     {
-        volatile long           s_IsStartedFilter   = FALSE;
+        static volatile long    s_IsStartedFilter   = FALSE;
         static DRIVER_OBJECT*   s_DriverObject      = nullptr;
         static DEVICE_OBJECT*   s_DeviceObject      = nullptr;
+        static PRKEVENT         s_CompleteHandle    = nullptr;
 
         BOOLEAN IsSupportedWFP()
         {
@@ -26,8 +27,18 @@ namespace MBox
             return FALSE;
         }
 
+        static void ComplateRegisterFilter()
+        {
+            if (s_CompleteHandle)
+            {
+                KeSetEvent(s_CompleteHandle, IO_NO_INCREMENT, FALSE);
+            }
+        }
+
         static void StateChangeCallback (EngineStateManager::StateChangeCallbackParameter* aParameter)
         {
+            auto vDeviceObject = (const DEVICE_OBJECT*)aParameter->aContext;
+
             switch (aParameter->m_State)
             {
             default:
@@ -37,16 +48,63 @@ namespace MBox
                 break;
 
             case FWPM_SERVICE_STATE::FWPM_SERVICE_RUNNING:
-                break;
+            {
+                NTSTATUS vStatus = STATUS_SUCCESS;
+
+                for (;;)
+                {
+                    vStatus = GetEngineManager()->OpenEngine();
+                    if (!NT_SUCCESS(vStatus))
+                    {
+                        break;
+                    }
+
+                    vStatus = GetProviderManager()->AddProvider();
+                    if (!NT_SUCCESS(vStatus) && STATUS_NOT_SUPPORTED != vStatus)
+                    {
+                        break;
+                    }
+
+                    vStatus = GetRedirectManager()->CreateRedirectHandle();
+                    if (!NT_SUCCESS(vStatus) && STATUS_NOT_SUPPORTED != vStatus)
+                    {
+                        break;
+                    }
+
+                    vStatus = GetCalloutManager()->RegisterCalloutAndFilter(vDeviceObject);
+                    if (!NT_SUCCESS(vStatus))
+                    {
+                        break;
+                    }
+
+                    ComplateRegisterFilter();
+                    break;
+                }
+
+                if (NT_SUCCESS(vStatus))
+                {
+                    break;
+                }
+
+                //
+                // if !NT_SUCCESS(vStatus), Will case FWPM_SERVICE_STOP_PENDING.
+                //
+                //  |
+                //  v
+                // 
+            }
 
             case FWPM_SERVICE_STATE::FWPM_SERVICE_STOP_PENDING:
-                break;
-
-            case FWPM_SERVICE_STATE::FWPM_SERVICE_STOPPED:
             {
+                GetCalloutManager()->UnregisterCalloutAndFilter();
+                GetRedirectManager()->CloseRedirectHandle();
+                GetProviderManager()->DeleteProvider();
                 GetEngineManager()->CloseEngine();
                 break;
             }
+
+            case FWPM_SERVICE_STATE::FWPM_SERVICE_STOPPED:
+                break;
 
             }
         }
@@ -56,22 +114,22 @@ namespace MBox
             //
             // Unitialize the order
             //
+            // EngineState
             // Callout 
             // Redirect
             // Injection
             // Engine
-            // EngineState
             //
 
+            GetEngineStateManager()->Uninitialize();
             GetCalloutManager()->Uninitialize();
             GetRedirectManager()->Uninitialize();
             GetProviderManager()->Uninitialize();
             GetInjectionManager()->Uninitialize();
             GetEngineManager()->Uninitialize();
-            GetEngineStateManager()->Uninitialize();
         }
 
-        static NTSTATUS InitializeManager()
+        static NTSTATUS InitializeManager(bool aIsAsynchronous)
         {
             NTSTATUS vStatus = STATUS_INSUFFICIENT_RESOURCES;
 
@@ -95,22 +153,19 @@ namespace MBox
                     break;
                 }
 
-                if (KBasic::System::GetSystemVersion() >= SystemVersion::Windows8)
+                vStatus = GetProviderManager()->Initialize();
+                if (!NT_SUCCESS(vStatus) && STATUS_NOT_SUPPORTED != vStatus)
                 {
-                    vStatus = GetProviderManager()->Initialize();
-                    if (!NT_SUCCESS(vStatus))
-                    {
-                        break;
-                    }
-
-                    vStatus = GetRedirectManager()->Initialize();
-                    if (!NT_SUCCESS(vStatus))
-                    {
-                        break;
-                    }
+                    break;
                 }
 
-                vStatus = GetCalloutManager()->Initialize();
+                vStatus = GetRedirectManager()->Initialize();
+                if (!NT_SUCCESS(vStatus) && STATUS_NOT_SUPPORTED != vStatus)
+                {
+                    break;
+                }
+
+                vStatus = GetCalloutManager()->Initialize(aIsAsynchronous);
                 if (!NT_SUCCESS(vStatus))
                 {
                     break;
@@ -131,7 +186,8 @@ namespace MBox
 
         NTSTATUS Initialize(
             DRIVER_OBJECT* aDriverObject,
-            UNICODE_STRING* /*aRegistryPath*/)
+            UNICODE_STRING* /*aRegistryPath*/, 
+            bool aIsAsynchronous)
         {
             NTSTATUS vStatus = STATUS_SUCCESS;
 
@@ -142,7 +198,7 @@ namespace MBox
                     vStatus = STATUS_NOT_SUPPORTED;
                 }
 
-                vStatus = InitializeManager();
+                vStatus = InitializeManager(aIsAsynchronous);
                 if (!NT_SUCCESS(vStatus))
                 {
                     break;
@@ -172,7 +228,7 @@ namespace MBox
             }
         }
 
-        NTSTATUS RegisterFilter(DEVICE_OBJECT* aDeviceObject)
+        NTSTATUS RegisterFilter(DEVICE_OBJECT* aDeviceObject, PRKEVENT aCompleteHandle)
         {
             NTSTATUS vStatus = STATUS_SUCCESS;
 
@@ -183,6 +239,7 @@ namespace MBox
                     vStatus = STATUS_NOT_SUPPORTED;
                 }
 
+                s_CompleteHandle = aCompleteHandle;
 
                 if (nullptr == aDeviceObject)
                 {
@@ -203,7 +260,7 @@ namespace MBox
                 }
 
                 auto vEngineStateManager = GetEngineStateManager();
-                vStatus = vEngineStateManager->RegisterStateChangeNotify(s_DeviceObject, StateChangeCallback, nullptr);
+                vStatus = vEngineStateManager->RegisterStateChangeNotify(aDeviceObject, StateChangeCallback, aDeviceObject);
                 if (!NT_SUCCESS(vStatus))
                 {
                     break;
@@ -211,6 +268,7 @@ namespace MBox
 
                 if (FWPM_SERVICE_STATE::FWPM_SERVICE_RUNNING != vEngineStateManager->GetEngineState())
                 {
+                    // When completed will call 'CompleteRegisterFilter()'
                     vStatus = STATUS_PENDING;
                     break;
                 }
@@ -229,21 +287,18 @@ namespace MBox
                     break;
                 }
 
-                if (KBasic::System::GetSystemVersion() >= SystemVersion::Windows8)
+                auto vProviderManager = GetProviderManager();
+                vStatus = vProviderManager->AddProvider();
+                if (!NT_SUCCESS(vStatus) && STATUS_NOT_SUPPORTED != vStatus)
                 {
-                    auto vProviderManager = GetProviderManager();
-                    vStatus = vProviderManager->AddProvider();
-                    if (!NT_SUCCESS(vStatus))
-                    {
-                        break;
-                    }
+                    break;
+                }
 
-                    auto vRedirectManager = GetRedirectManager();
-                    vStatus = vRedirectManager->CreateRedirectHandle();
-                    if (!NT_SUCCESS(vStatus))
-                    {
-                        break;
-                    }
+                auto vRedirectManager = GetRedirectManager();
+                vStatus = vRedirectManager->CreateRedirectHandle();
+                if (!NT_SUCCESS(vStatus) && STATUS_NOT_SUPPORTED != vStatus)
+                {
+                    break;
                 }
 
                 auto vCalloutManager = GetCalloutManager();
@@ -253,6 +308,7 @@ namespace MBox
                     break;
                 }
 
+                ComplateRegisterFilter();
                 break;
             }
 

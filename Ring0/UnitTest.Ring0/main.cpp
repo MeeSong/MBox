@@ -8,13 +8,8 @@ static MBox::Listener* s_Listener = nullptr;
 
 //////////////////////////////////////////////////////////////////////////
 
-static NTSTATUS PreUnload(FLT_FILTER_UNLOAD_FLAGS aFlags, PVOID /*aParameter*/)
+static NTSTATUS PreUnload(FLT_FILTER_UNLOAD_FLAGS /*aFlags*/, PVOID /*aParameter*/)
 {
-    if (!(aFlags & FLTFL_FILTER_UNLOAD_MANDATORY))
-    {
-        return STATUS_FLT_DO_NOT_DETACH;
-    }
-
     MBox::WFPFlt::StopFilter();
 
     if (s_Listener)
@@ -25,13 +20,8 @@ static NTSTATUS PreUnload(FLT_FILTER_UNLOAD_FLAGS aFlags, PVOID /*aParameter*/)
     return STATUS_SUCCESS;
 }
 
-static NTSTATUS PostUnload(FLT_FILTER_UNLOAD_FLAGS aFlags, PVOID /*aParameter*/)
+static NTSTATUS PostUnload(FLT_FILTER_UNLOAD_FLAGS /*aFlags*/, PVOID /*aParameter*/)
 {
-    if (!(aFlags & FLTFL_FILTER_UNLOAD_MANDATORY))
-    {
-        return STATUS_FLT_DO_NOT_DETACH;
-    }
-
     MBox::WFPFlt::Unitialize();
 
     delete s_Listener;
@@ -124,7 +114,6 @@ NTSTATUS DriverEntry(
             0);
         if (!NT_SUCCESS(vStatus))
         {
-            UnitializeControllers();
             break;
         }
 
@@ -155,7 +144,8 @@ NTSTATUS DriverEntry(
     if (!NT_SUCCESS(vStatus))
     {
         MBox::WFPFlt::Unitialize();
-        MBox::MiniFlt::UnregisterFilter();
+        MBox::MiniFlt::Uninitialize();
+        UnitializeControllers();
     }
 
     return vStatus;

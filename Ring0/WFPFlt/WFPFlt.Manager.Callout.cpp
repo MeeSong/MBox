@@ -62,15 +62,10 @@ namespace MBox
                 &FWPM_LAYER_OUTBOUND_ICMP_ERROR_V4_DISCARD,
                 &FWPM_LAYER_OUTBOUND_ICMP_ERROR_V6_DISCARD,
 
-                &FWPM_LAYER_ALE_AUTH_CONNECT_V4,
-                &FWPM_LAYER_ALE_AUTH_CONNECT_V6,
-                &FWPM_LAYER_ALE_AUTH_CONNECT_V4_DISCARD,
-                &FWPM_LAYER_ALE_AUTH_CONNECT_V6_DISCARD,
-
-                &FWPM_LAYER_ALE_FLOW_ESTABLISHED_V4,
-                &FWPM_LAYER_ALE_FLOW_ESTABLISHED_V6,
-                &FWPM_LAYER_ALE_FLOW_ESTABLISHED_V4_DISCARD,
-                &FWPM_LAYER_ALE_FLOW_ESTABLISHED_V6_DISCARD,
+                &FWPM_LAYER_ALE_RESOURCE_ASSIGNMENT_V4,
+                &FWPM_LAYER_ALE_RESOURCE_ASSIGNMENT_V6,
+                &FWPM_LAYER_ALE_RESOURCE_ASSIGNMENT_V4_DISCARD,
+                &FWPM_LAYER_ALE_RESOURCE_ASSIGNMENT_V6_DISCARD,
 
                 &FWPM_LAYER_ALE_AUTH_LISTEN_V4,
                 &FWPM_LAYER_ALE_AUTH_LISTEN_V6,
@@ -82,19 +77,25 @@ namespace MBox
                 &FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V4_DISCARD,
                 &FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V6_DISCARD,
 
-                //&FWPM_LAYER_ALE_AUTH_ROUTE_V4,
-                //&FWPM_LAYER_ALE_AUTH_ROUTE_V6,
+                &FWPM_LAYER_ALE_AUTH_CONNECT_V4,
+                &FWPM_LAYER_ALE_AUTH_CONNECT_V6,
+                &FWPM_LAYER_ALE_AUTH_CONNECT_V4_DISCARD,
+                &FWPM_LAYER_ALE_AUTH_CONNECT_V6_DISCARD,
 
-                &FWPM_LAYER_ALE_ENDPOINT_CLOSURE_V4,
-                &FWPM_LAYER_ALE_ENDPOINT_CLOSURE_V6,
+                &FWPM_LAYER_ALE_FLOW_ESTABLISHED_V4,
+                &FWPM_LAYER_ALE_FLOW_ESTABLISHED_V6,
+                &FWPM_LAYER_ALE_FLOW_ESTABLISHED_V4_DISCARD,
+                &FWPM_LAYER_ALE_FLOW_ESTABLISHED_V6_DISCARD,
 
-                &FWPM_LAYER_ALE_RESOURCE_ASSIGNMENT_V4,
-                &FWPM_LAYER_ALE_RESOURCE_ASSIGNMENT_V6,
-                &FWPM_LAYER_ALE_RESOURCE_ASSIGNMENT_V4_DISCARD,
-                &FWPM_LAYER_ALE_RESOURCE_ASSIGNMENT_V6_DISCARD,
+                /* Windows 7 Begin. */
+                //&FWPM_LAYER_NAME_RESOLUTION_CACHE_V4,
+                //&FWPM_LAYER_NAME_RESOLUTION_CACHE_V6,
 
                 &FWPM_LAYER_ALE_RESOURCE_RELEASE_V4,
                 &FWPM_LAYER_ALE_RESOURCE_RELEASE_V6,
+
+                &FWPM_LAYER_ALE_ENDPOINT_CLOSURE_V4,
+                &FWPM_LAYER_ALE_ENDPOINT_CLOSURE_V6,
 
                 &FWPM_LAYER_ALE_CONNECT_REDIRECT_V4,
                 &FWPM_LAYER_ALE_CONNECT_REDIRECT_V6,
@@ -119,7 +120,13 @@ namespace MBox
                 &FWPM_LAYER_INGRESS_VSWITCH_TRANSPORT_V6,
 
                 &FWPM_LAYER_EGRESS_VSWITCH_TRANSPORT_V4,
-                &FWPM_LAYER_EGRESS_VSWITCH_TRANSPORT_V6
+                &FWPM_LAYER_EGRESS_VSWITCH_TRANSPORT_V6,
+
+                /* Windows 8.1 Begin. */
+                &FWPM_LAYER_INBOUND_TRANSPORT_FAST,
+                &FWPM_LAYER_OUTBOUND_TRANSPORT_FAST,
+                &FWPM_LAYER_INBOUND_MAC_FRAME_NATIVE_FAST,
+                &FWPM_LAYER_OUTBOUND_MAC_FRAME_NATIVE_FAST
             };
 
             if (aCalloutType >= CalloutManager::CalloutType::Max)
@@ -179,6 +186,11 @@ namespace MBox
         UINT32 GetCalloutRegisterFlags(CalloutManager::CalloutType /*aCalloutType*/)
         {
             return 0;
+        }
+
+        FWP_ACTION_TYPE GetFilterActionType(CalloutManager::CalloutType /*aCalloutType*/)
+        {
+            return FWP_ACTION_CALLOUT_UNKNOWN;
         }
 
         //////////////////////////////////////////////////////////////////////////
@@ -360,7 +372,7 @@ namespace MBox
             }
         }
 
-        NTSTATUS CalloutManager::RegisterCalloutAndFilter(DEVICE_OBJECT* aDeviceObject)
+        NTSTATUS CalloutManager::RegisterCalloutAndFilter(const DEVICE_OBJECT* aDeviceObject)
         {
             NTSTATUS vStatus = STATUS_SUCCESS;
 
@@ -370,10 +382,18 @@ namespace MBox
                 return STATUS_INVALID_HANDLE;
             }
 
-            ktl::u32 vMaxCallout = CalloutType::Max;
+            volatile ktl::u32 vMaxCallout = CalloutType::Max;
+            if (KBasic::System::GetSystemVersion() < SystemVersion::Windows8_1)
+            {
+                vMaxCallout = CalloutType::MaxWindows8;
+            }
             if (KBasic::System::GetSystemVersion() < SystemVersion::Windows8)
             {
-                vMaxCallout = CalloutType::InboundMacFrameEthernet;
+                vMaxCallout = CalloutType::MaxWindows7;
+            }
+            if (KBasic::System::GetSystemVersion() < SystemVersion::Windows7)
+            {
+                vMaxCallout = CalloutType::MaxWindowsVista;
             }
 
             for (ktl::u32 vIndex = 0; vIndex < vMaxCallout; ++vIndex)
@@ -383,6 +403,7 @@ namespace MBox
                     aDeviceObject,
                     vEngineHandle,
                     GetCalloutRegisterFlags(CalloutType(vIndex)),
+                    GetFilterActionType(CalloutType(vIndex)),
                     *GetCalloutGuid(CalloutType(vIndex)),
                     *GetFilterGuid(CalloutType(vIndex)),
                     *GetLayerGuid(CalloutType(vIndex)));
@@ -397,9 +418,10 @@ namespace MBox
 
         NTSTATUS CalloutManager::RegisterCalloutAndFilter(
             CalloutAndFilterId * aCalloutAndFilterId, 
-            DEVICE_OBJECT * aDeviceObject,
+            const DEVICE_OBJECT * aDeviceObject,
             HANDLE aEngineHandle,
             UINT32 aCalloutRegisterFlags,
+            FWP_ACTION_TYPE aActionType,
             const GUID & aCalloutGuid, 
             const GUID & aFilterGuid, 
             const GUID & aLayerGuid)
@@ -416,12 +438,12 @@ namespace MBox
                 WFPApiWrapper::WFPFltCallout vRegisterCallout;
                 WFPApiWrapper::CalloutRegisterParameter vCalloutRegisterParameter;
 
-                vCalloutRegisterParameter.m_DeviceObject    = aDeviceObject;
+                vCalloutRegisterParameter.m_DeviceObject    = const_cast<DEVICE_OBJECT*>(aDeviceObject);
                 vCalloutRegisterParameter.m_Callout         = &vRegisterCallout;
                 vCalloutRegisterParameter.m_aCalloutId      = &(aCalloutAndFilterId->m_CalloutRegisterId);
 
-                vRegisterCallout.m_CalloutGuid = aCalloutGuid;
-                vRegisterCallout.m_Flags = aCalloutRegisterFlags;
+                vRegisterCallout.m_CalloutGuid  = aCalloutGuid;
+                vRegisterCallout.m_Flags        = aCalloutRegisterFlags;
 
                 vRegisterCallout.m_ClassifyRoutine0 = ClassifyRoutine;
                 vRegisterCallout.m_ClassifyRoutine1 = ClassifyRoutine;
@@ -444,17 +466,17 @@ namespace MBox
                 WFPApiWrapper::WFPFltMCallout vAddCallout;
                 WFPApiWrapper::CalloutAddParameter vCalloutAddParameter;
                 vCalloutAddParameter.m_EngineHandle = aEngineHandle;
-                vCalloutAddParameter.m_Callout = &vAddCallout;
+                vCalloutAddParameter.m_Callout      = &vAddCallout;
 
                 //
                 // This is the same identifier that is returned when a callout driver
                 //     registers the callout driver's callout functions with the filter engine.
                 //
-                vCalloutAddParameter.m_CalloutId = &aCalloutAndFilterId->m_CalloutAddId;
+                vCalloutAddParameter.m_CalloutId    = &aCalloutAndFilterId->m_CalloutAddId;
 
 
-                vAddCallout.m_CalloutGuid = aCalloutGuid;
-                vAddCallout.m_ApplicableLayerGuid = aLayerGuid;
+                vAddCallout.m_CalloutGuid           = aCalloutGuid;
+                vAddCallout.m_ApplicableLayerGuid   = aLayerGuid;
 
                 vStatus = WFPApiWrapper::CalloutAdd(&vCalloutAddParameter);
                 if (!NT_SUCCESS(vStatus))
@@ -466,16 +488,16 @@ namespace MBox
 
                 WFPApiWrapper::WFPFltFilter vFilter;
                 WFPApiWrapper::FilterAddParameter vFilterAddParameter;
-                vFilterAddParameter.m_EngineHandle = aEngineHandle;
-                vFilterAddParameter.m_Filter = &vFilter;
-                vFilterAddParameter.m_FilterId = &aCalloutAndFilterId->m_FilterId;
+                vFilterAddParameter.m_EngineHandle  = aEngineHandle;
+                vFilterAddParameter.m_Filter        = &vFilter;
+                vFilterAddParameter.m_FilterId      = &aCalloutAndFilterId->m_FilterId;
 
-                vFilter.m_FilterGuid = aFilterGuid;
-                vFilter.m_LayerGuid = aLayerGuid;
-                vFilter.m_SublayerGuid = FWPM_SUBLAYER_UNIVERSAL;
-                vFilter.m_RawContext = UINT64(this);
-                vFilter.m_Action.m_ActionType = FWP_ACTION_CALLOUT_UNKNOWN;
-                vFilter.m_Action.m_CalloutGuid = aCalloutGuid;
+                vFilter.m_FilterGuid    = aFilterGuid;
+                vFilter.m_LayerGuid     = aLayerGuid;
+                vFilter.m_SublayerGuid  = FWPM_SUBLAYER_UNIVERSAL;
+                vFilter.m_RawContext    = UINT64(this);
+                vFilter.m_Action.m_ActionType   = aActionType;
+                vFilter.m_Action.m_CalloutGuid  = aCalloutGuid;
 
                 vStatus = WFPApiWrapper::FilterAdd(&vFilterAddParameter);
                 if (!NT_SUCCESS(vStatus))
@@ -502,7 +524,17 @@ namespace MBox
                 return;
             }
 
-            for (ktl::u32 vIndex = 0; vIndex < CalloutType::Max; ++vIndex)
+            ktl::u32 vMaxCallout = CalloutType::Max;
+            if (KBasic::System::GetSystemVersion() < SystemVersion::Windows8)
+            {
+                vMaxCallout = CalloutType::MaxWindows7;
+            }
+            if (KBasic::System::GetSystemVersion() < SystemVersion::Windows7)
+            {
+                vMaxCallout = CalloutType::MaxWindowsVista;
+            }
+
+            for (ktl::u32 vIndex = 0; vIndex < vMaxCallout; ++vIndex)
             {
                 UnregisterCalloutAndFilter(
                     &m_CalloutAndFilterId[vIndex],
@@ -553,22 +585,26 @@ namespace MBox
 
             if (!(aParameter->m_ClassifyOut0->rights & FWPS_RIGHT_ACTION_WRITE))
             {
+                // If FWPS_RIGHT_ACTION_WRITE flag is set, a callout driver can write to the actionType member of this structure. 
+                // If this flag is not set, a callout driver can write only to the actionType member of 
+                //     this structure if it is vetoing an FWP_ACTION_PERMIT action that was previously returned 
+                //     by a higher weight filter in the filter engine.
                 return;
             }
 
             if (FALSE == aParameter->m_IsValidIncomingValues0)
             {
-                aParameter->m_ClassifyOut0->actionType = FWP_ACTION_NONE;
+                aParameter->m_ClassifyOut0->actionType = FWP_ACTION_CONTINUE;
                 return;
             }
 
             if (FALSE == IsStartedFilter())
             {
-                aParameter->m_ClassifyOut0->actionType = FWP_ACTION_NONE;
+                aParameter->m_ClassifyOut0->actionType = FWP_ACTION_CONTINUE;
                 return;
             }
 
-            FilterResult vResult = FilterResult::None;
+            FilterResult vResult = FilterResult::Continue;
             ClassifyRoutineParameter vParameter;
             FWPS_CLASSIFY_OUT0* vClassifyOut = aParameter->m_ClassifyOut0;
 
@@ -591,8 +627,8 @@ namespace MBox
             switch (vResult)
             {
             default:
-            case MBox::WFPFlt::CalloutManager::FilterResult::None:
-                vClassifyOut->actionType = FWP_ACTION_NONE;
+            case MBox::WFPFlt::CalloutManager::FilterResult::Continue:
+                vClassifyOut->actionType = FWP_ACTION_CONTINUE;
                 break;
 
             case MBox::WFPFlt::CalloutManager::FilterResult::Permit:
@@ -652,7 +688,7 @@ namespace MBox
 
         CalloutManager::FilterResult CalloutManager::ClassifyRoutineForSynchronous(ClassifyRoutineParameter * aParameter)
         {
-            FilterResult vResult = FilterResult::None;
+            FilterResult vResult = FilterResult::Continue;
 
             // Pre Notify
 
@@ -678,7 +714,7 @@ namespace MBox
 
             // Filter
 
-            aParameter->m_Result = FilterResult::None;
+            aParameter->m_Result = FilterResult::Continue;
             auto vFilterCallback = [&vResult, aParameter](const ktl::shared_ptr<CallbackPacket>* aPacket) -> bool
             {
                 if (FALSE == (*aPacket)->m_IsValidClassifyRoutine)
@@ -729,7 +765,7 @@ namespace MBox
 
         CalloutManager::FilterResult CalloutManager::ClassifyRoutineForAsynchronous(ClassifyRoutineParameter * /*aParameter*/)
         {
-            FilterResult vResult = FilterResult::None;
+            FilterResult vResult = FilterResult::Continue;
 
             return vResult;
         }

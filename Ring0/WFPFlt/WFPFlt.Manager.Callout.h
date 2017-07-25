@@ -59,15 +59,10 @@ namespace MBox
                 IPv4OutboundICMPErrorDiscard,
                 IPv6OutboundICMPErrorDiscard,
 
-                IPv4AleAuthConnect,
-                IPv6AleAuthConnect,
-                IPv4AleAuthConnectDiscard,
-                IPv6AleAuthConnectDiscard,
-
-                IPv4AleFlowEstablished,
-                IPv6AleFlowEstablished,
-                IPv4AleFlowEstablishedDiscard,
-                IPv6AleFlowEstablishedDiscard,
+                IPv4AleResourceAssignment,
+                IPv6AleResourceAssignment,
+                IPv4AleResourceAssignmentDiscard,
+                IPv6AleResourceAssignmentDiscard,
 
                 IPv4AleAuthListen,
                 IPv6AleAuthListen,
@@ -79,19 +74,26 @@ namespace MBox
                 IPv4AleAuthRecvAcceptDiscard,
                 IPv6AleAuthRecvAcceptDiscard,
 
-                //IPv4AleAuthRoute,
-                //IPv6AleAuthRoute,
+                IPv4AleAuthConnect,
+                IPv6AleAuthConnect,
+                IPv4AleAuthConnectDiscard,
+                IPv6AleAuthConnectDiscard,
+
+                IPv4AleFlowEstablished,
+                IPv6AleFlowEstablished,
+                IPv4AleFlowEstablishedDiscard,
+                IPv6AleFlowEstablishedDiscard,
+                MaxWindowsVista,
+
+                /* Windows 7 Begin. */
+                //IPv4NameResolutionCache = MaxWindowsVista,
+                //IPv6NameResolutionCache,
+
+                IPv4AleResourceRelease = MaxWindowsVista,
+                IPv6AleResourceRelease,
 
                 IPv4AleEndpointClosure,
                 IPv6AleEndpointClosure,
-
-                IPv4AleResourceAssignment,
-                IPv6AleResourceAssignment,
-                IPv4AleResourceAssignmentDiscard,
-                IPv6AleResourceAssignmentDiscard,
-
-                IPv4AleResourceRelease,
-                IPv6AleResourceRelease,
 
                 IPv4AleConnectRedirect,
                 IPv6AleConnectRedirect,
@@ -101,28 +103,37 @@ namespace MBox
 
                 IPv4StreamPacket,
                 IPv6StreamPacket,
+                MaxWindows7,
 
                 /* Windows 8 Begin. */
-                InboundMacFrameEthernet,            // Inbound lower (to the NDIS protocol driver) layer
-                OutboundMacFrameEthernet,           // Outbound upper (to the NDIS protocol driver) layer.
+                InboundMacFrameEthernet = MaxWindows7,  // Inbound lower (to the NDIS protocol driver) layer
+                OutboundMacFrameEthernet,               // Outbound upper (to the NDIS protocol driver) layer.
 
-                InboundMacFrameNative,              // Inbound lower (to the NDIS miniport driver) layer.
-                OutboundMacFrameNative,             // Outbound lower (to the NDIS miniport driver) layer.
+                InboundMacFrameNative,                  // Inbound lower (to the NDIS miniport driver) layer.
+                OutboundMacFrameNative,                 // Outbound lower (to the NDIS miniport driver) layer.
 
-                IngressVirtualSwitchEthernet,       // Ingress 802.3 data of the Hyper-V extensible switch.
-                EgressVirtualSwitchEthernet,        // Egress 802.3 data of the Hyper-V extensible switch.
+                IngressVirtualSwitchEthernet,           // Ingress 802.3 data of the Hyper-V extensible switch.
+                EgressVirtualSwitchEthernet,            // Egress 802.3 data of the Hyper-V extensible switch.
 
-                IPv4IngressVirtualSwitchTransport,  // Ingress transport data of the Hyper-V extensible switch.
+                IPv4IngressVirtualSwitchTransport,      // Ingress transport data of the Hyper-V extensible switch.
                 IPv6IngressVirtualSwitchTransport,
-                IPv4EgressVirtualSwitchTransport,   // Egress transport data of the Hyper-V extensible switch.
+
+                IPv4EgressVirtualSwitchTransport,       // Egress transport data of the Hyper-V extensible switch.
                 IPv6EgressVirtualSwitchTransport,
+                MaxWindows8,
+
+                /* Windows 8.1 Begin. */
+                InboundTransportFast = MaxWindows8,
+                OutboundTransportFast,
+                InboundMacFrameNativeFast,
+                OutboundMacFrameNativeFast,
 
                 Max
             };
 
             enum class FilterResult : ktl::u32
             {
-                None,
+                Continue,
                 Permit,
                 Block,
             };
@@ -187,7 +198,7 @@ namespace MBox
                 };
 
                 void * m_RegisterContext    = nullptr;
-                FilterResult m_Result       = FilterResult::None;
+                FilterResult m_Result       = FilterResult::Continue;
 
 
                 ClassifyRoutineParameter()
@@ -261,10 +272,10 @@ namespace MBox
             using CallbackPacketList$Type = ktl::list<ktl::shared_ptr<CallbackPacket>>;
 
         public:
-            NTSTATUS Initialize(bool aIsAsynchronous = false);
+            NTSTATUS Initialize(bool aIsAsynchronous);
             void Uninitialize();
 
-            NTSTATUS RegisterCalloutAndFilter(DEVICE_OBJECT* aDeviceObject);
+            NTSTATUS RegisterCalloutAndFilter(const DEVICE_OBJECT* aDeviceObject);
             void UnregisterCalloutAndFilter();
 
             template<typename F>
@@ -295,9 +306,10 @@ namespace MBox
 
             NTSTATUS RegisterCalloutAndFilter(
                 CalloutAndFilterId* aCalloutAndFilterId,
-                DEVICE_OBJECT* aDeviceObject,
+                const DEVICE_OBJECT* aDeviceObject,
                 HANDLE aEngineHandle,
                 UINT32 aCalloutRegisterFlags,
+                FWP_ACTION_TYPE aActionType,
                 const GUID& aCalloutGuid,
                 const GUID& aFilterGuid,
                 const GUID& aLayerGuid);

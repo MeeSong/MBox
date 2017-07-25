@@ -8,12 +8,14 @@ namespace MBox
 
         NTSTATUS Initialize(
             DRIVER_OBJECT* aDriverObject, 
-            UNICODE_STRING* aRegistryPath);
+            UNICODE_STRING* aRegistryPath,
+            bool aIsAsynchronous = true);
 
         void Unitialize();
 
         NTSTATUS RegisterFilter(
-            DEVICE_OBJECT* aDeviceObject = nullptr);
+            DEVICE_OBJECT* aDeviceObject = nullptr,
+            PRKEVENT aCompleteHandle = nullptr);
 
         NTSTATUS StartFilter();
         NTSTATUS StopFilter();
