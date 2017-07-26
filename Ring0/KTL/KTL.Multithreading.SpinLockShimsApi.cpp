@@ -2,7 +2,7 @@
 
 namespace ktl
 {
-    namespace Multithreading
+    inline namespace multithreading
     {
         namespace ShimsApi
         {

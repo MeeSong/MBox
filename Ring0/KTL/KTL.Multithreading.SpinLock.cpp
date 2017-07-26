@@ -3,7 +3,7 @@
 
 namespace ktl
 {
-    namespace Multithreading
+    inline namespace multithreading
     {
         //
         // spin_lock

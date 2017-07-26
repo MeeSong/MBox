@@ -4,7 +4,7 @@
 
 namespace ktl
 {
-    namespace Multithreading
+    inline namespace multithreading
     {
         //
         // spin_lock
@@ -38,8 +38,8 @@ namespace ktl
             }
             */
 
-            KLOCK_QUEUE_HANDLE  m_LockHandle{ 0 };
-            KSPIN_LOCK          m_Lock{ 0 };
+            KLOCK_QUEUE_HANDLE  m_LockHandle = { 0 };
+            KSPIN_LOCK          m_Lock = { 0 };
         };
 
         //

@@ -648,15 +648,15 @@ namespace MBox
         {
             NTSTATUS vStatus = STATUS_SUCCESS;
 
-            auto vCallback = [&vStatus, aParameter](const ktl::shared_ptr<CallbackPacket>* aPacket) -> bool
+            auto vCallback = [&vStatus, aParameter](ktl::shared_ptr<CallbackPacket> aPacket) -> bool
             {
-                if (FALSE == (*aPacket)->m_IsValidNotifyRoutine)
+                if (FALSE == aPacket->m_IsValidNotifyRoutine)
                 {
                     return false;
                 }
 
-                aParameter->m_RegisterContext = (*aPacket)->m_NotifyRoutineRegisterContext;
-                vStatus = (*aPacket)->m_NotifyRoutine(aParameter);
+                aParameter->m_RegisterContext = aPacket->m_NotifyRoutineRegisterContext;
+                vStatus = aPacket->m_NotifyRoutine(aParameter);
                 if (!NT_SUCCESS(vStatus))
                 {
                     return true;
@@ -671,15 +671,15 @@ namespace MBox
 
         void CalloutManager::FlowDeleteNotifyRoutine(FlowDeleteNotifyRoutineParameter * aParameter)
         {
-            auto vCallback = [aParameter](const ktl::shared_ptr<CallbackPacket>* aPacket) -> bool
+            auto vCallback = [aParameter](ktl::shared_ptr<CallbackPacket> aPacket) -> bool
             {
-                if (FALSE == (*aPacket)->m_IsValidFlowDeleteNotifyRoutine)
+                if (FALSE == aPacket->m_IsValidFlowDeleteNotifyRoutine)
                 {
                     return false;
                 }
 
-                aParameter->m_RegisterContext = (*aPacket)->m_FlowDeleteNotifyRoutineRegisterContext;
-                (*aPacket)->m_FlowDeleteNotifyRoutine(aParameter);
+                aParameter->m_RegisterContext = aPacket->m_FlowDeleteNotifyRoutineRegisterContext;
+                aPacket->m_FlowDeleteNotifyRoutine(aParameter);
 
                 return false;
             };
@@ -693,20 +693,20 @@ namespace MBox
             // Pre Notify
 
             aParameter->m_Result = vResult;
-            auto vPreNotifyCallback = [aParameter](const ktl::shared_ptr<CallbackPacket>* aPacket) -> bool
+            auto vPreNotifyCallback = [aParameter](ktl::shared_ptr<CallbackPacket> aPacket) -> bool
             {
-                if (FALSE == (*aPacket)->m_IsValidClassifyRoutine)
+                if (FALSE == aPacket->m_IsValidClassifyRoutine)
                 {
                     return false;
                 }
 
-                if (FALSE == (*aPacket)->m_IsPreNotifyClassifyRoutine)
+                if (FALSE == aPacket->m_IsPreNotifyClassifyRoutine)
                 {
                     return false;
                 }
 
-                aParameter->m_RegisterContext = (*aPacket)->m_ClassifyRoutineRegisterContext;
-                (*aPacket)->m_ClassifyRoutine(aParameter);
+                aParameter->m_RegisterContext = aPacket->m_ClassifyRoutineRegisterContext;
+                aPacket->m_ClassifyRoutine(aParameter);
 
                 return false;
             };
@@ -715,20 +715,20 @@ namespace MBox
             // Filter
 
             aParameter->m_Result = FilterResult::Continue;
-            auto vFilterCallback = [&vResult, aParameter](const ktl::shared_ptr<CallbackPacket>* aPacket) -> bool
+            auto vFilterCallback = [&vResult, aParameter](ktl::shared_ptr<CallbackPacket> aPacket) -> bool
             {
-                if (FALSE == (*aPacket)->m_IsValidClassifyRoutine)
+                if (FALSE == aPacket->m_IsValidClassifyRoutine)
                 {
                     return false;
                 }
 
-                if (FALSE == (*aPacket)->m_IsFilterClassifyRoutine)
+                if (FALSE == aPacket->m_IsFilterClassifyRoutine)
                 {
                     return false;
                 }
 
-                aParameter->m_RegisterContext = (*aPacket)->m_ClassifyRoutineRegisterContext;
-                vResult = (*aPacket)->m_ClassifyRoutine(aParameter);
+                aParameter->m_RegisterContext = aPacket->m_ClassifyRoutineRegisterContext;
+                vResult = aPacket->m_ClassifyRoutine(aParameter);
                 if (FilterResult::Block == vResult)
                 {
                     return true;
@@ -741,20 +741,20 @@ namespace MBox
             // Post Notify
 
             aParameter->m_Result = vResult;
-            auto vPostNotifyCallback = [aParameter](const ktl::shared_ptr<CallbackPacket>* aPacket) -> bool
+            auto vPostNotifyCallback = [aParameter](ktl::shared_ptr<CallbackPacket> aPacket) -> bool
             {
-                if (FALSE == (*aPacket)->m_IsValidClassifyRoutine)
+                if (FALSE == aPacket->m_IsValidClassifyRoutine)
                 {
                     return false;
                 }
 
-                if (FALSE == (*aPacket)->m_IsPostNotifyClassifyRoutine)
+                if (FALSE == aPacket->m_IsPostNotifyClassifyRoutine)
                 {
                     return false;
                 }
 
-                aParameter->m_RegisterContext = (*aPacket)->m_ClassifyRoutineRegisterContext;
-                (*aPacket)->m_ClassifyRoutine(aParameter);
+                aParameter->m_RegisterContext = aPacket->m_ClassifyRoutineRegisterContext;
+                aPacket->m_ClassifyRoutine(aParameter);
 
                 return false;
             };

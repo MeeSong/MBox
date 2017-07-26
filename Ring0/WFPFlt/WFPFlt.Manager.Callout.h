@@ -333,9 +333,9 @@ namespace MBox
                     return;
                 }
 
-                for (const auto& vPacket : (*m_CallbackPacketList))
+                for (auto& vPacket : (*m_CallbackPacketList))
                 {
-                    if (aCallback(&vPacket))
+                    if (aCallback(vPacket))
                     {
                         break;
                     }

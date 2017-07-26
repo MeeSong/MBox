@@ -40,9 +40,9 @@ namespace MBox
             auto vCallbackPacketList = GetCallbackPacketList();
 
             ktl::u32 vIndex = 0;
-            for (const auto &vPacket : (*vCallbackPacketList))
+            for (auto &vPacket : (*vCallbackPacketList))
             {
-                if (aFunctor(&vPacket, vIndex++))
+                if (aFunctor(vPacket, vIndex++))
                 {
                     break;
                 }

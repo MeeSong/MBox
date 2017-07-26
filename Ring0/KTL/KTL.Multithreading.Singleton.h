@@ -4,7 +4,7 @@
 
 namespace ktl
 {
-    namespace Multithreading
+    inline namespace multithreading
     {
         //
         // Singleton with lock

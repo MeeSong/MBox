@@ -3,7 +3,7 @@
 
 namespace ktl
 {
-    namespace Multithreading
+    inline namespace multithreading
     {
         template<typename _Lock>
         class lock_guard
