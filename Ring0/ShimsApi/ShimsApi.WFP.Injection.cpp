@@ -287,7 +287,7 @@ namespace MBox
             // Packet injection state tracking API.
 
             ShimsApi$CompileTime$DefineApi$3$Macro(
-                FWPS_PACKET_NOT_INJECTED, GetFwpIpsecRoutineAddress,
+                FWPS_PACKET_INJECTION_STATE_MAX, GetFwpIpsecRoutineAddress,
                 FwpsQueryPacketInjectionState0, FWPS_PACKET_INJECTION_STATE, __stdcall,
                 HANDLE, aInjectionHandle,
                 const NET_BUFFER_LIST*, aNetBufferList,

@@ -25,6 +25,12 @@ namespace MBox
                 return ShimsApi::WFP::FwpsInjectionHandleDestroy0Shims(aParameter->m_InjectionHandle);
             }
 
+            FWPS_PACKET_INJECTION_STATE QueryPacketInjectionState(QueryPacketInjectionStateParameter * aParameters)
+            {
+                return ShimsApi::WFP::FwpsQueryPacketInjectionState0Shims(
+                    aParameters->m_InjectionHandle, aParameters->m_NetBufferList, aParameters->m_InjectionContext);
+            }
+
         }
     }
 }

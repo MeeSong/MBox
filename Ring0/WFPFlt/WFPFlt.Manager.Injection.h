@@ -1,4 +1,5 @@
 #pragma once
+#include <fwpsk.h>
 
 namespace MBox
 {
@@ -56,6 +57,9 @@ namespace MBox
                 Max,
             };
 
+            static InjectionType GetInjectionTypeForLayerId(
+                UINT16 aLayerId);
+
             NTSTATUS Initialize();
             void Uninitialize();
 
@@ -63,6 +67,14 @@ namespace MBox
             void CloseInjectionHandle();
 
             HANDLE GetInjectionHandle(InjectionType aInjectionType);
+
+            FWPS_PACKET_INJECTION_STATE QueryInjectionState(
+                UINT16 aLayerId,
+                const NET_BUFFER_LIST* NetBufferList);
+
+            bool IsInjectedBySelf(
+                UINT16 aLayerId,
+                const NET_BUFFER_LIST* NetBufferList);
 
         protected:
             HANDLE  m_InjectionHandleArray[InjectionType::Max] = { nullptr };

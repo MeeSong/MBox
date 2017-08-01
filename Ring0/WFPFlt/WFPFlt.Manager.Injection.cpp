@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "WFPFlt.Manager.Injection.h"
 #include "WFPFlt.ApiWrapper.Injection.h"
+#include "WFPFlt.Utilities.h"
 
 #include <KBasic\KBasic.System.h>
 #include <fwpsk.h>
@@ -10,6 +11,14 @@ namespace MBox
 {
     namespace WFPFlt
     {
+        InjectionManager::InjectionType InjectionManager::GetInjectionTypeForLayerId(
+            UINT16 /*aLayerId*/)
+        {
+            // TODO
+
+            return InjectionType::Max;
+        }
+
         NTSTATUS InjectionManager::Initialize()
         {
             return STATUS_SUCCESS;
@@ -354,6 +363,34 @@ namespace MBox
             }
 
             return m_InjectionHandleArray[aInjectionType];
+        }
+
+        FWPS_PACKET_INJECTION_STATE InjectionManager::QueryInjectionState(
+            UINT16 aLayerId,
+            const NET_BUFFER_LIST * NetBufferList)
+        {
+            WFPApiWrapper::QueryPacketInjectionStateParameter vParameter;
+            vParameter.m_InjectionHandle = GetInjectionHandle(GetInjectionTypeForLayerId(aLayerId));
+            vParameter.m_NetBufferList = NetBufferList;
+            
+            return WFPApiWrapper::QueryPacketInjectionState(&vParameter);
+        }
+
+        bool InjectionManager::IsInjectedBySelf(
+            UINT16 aLayerId,
+            const NET_BUFFER_LIST * NetBufferList)
+        {
+            FWPS_PACKET_INJECTION_STATE vInjectionState = FWPS_PACKET_INJECTION_STATE::FWPS_PACKET_INJECTION_STATE_MAX;
+
+            vInjectionState = QueryInjectionState(aLayerId, NetBufferList);
+
+            if (FWPS_PACKET_INJECTED_BY_SELF == vInjectionState
+                || FWPS_PACKET_PREVIOUSLY_INJECTED_BY_SELF == vInjectionState)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         InjectionManager * GetInjectionManager()

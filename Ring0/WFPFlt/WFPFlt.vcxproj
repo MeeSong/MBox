@@ -38,6 +38,7 @@
     <ClInclude Include="WFPFlt.Manager.Provider.h" />
     <ClInclude Include="WFPFlt.Manager.Redirect.h" />
     <ClInclude Include="WFPFlt.Manager.Transaction.h" />
+    <ClInclude Include="WFPFlt.Utilities.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -64,6 +65,7 @@
     <ClCompile Include="WFPFlt.Manager.Provider.cpp" />
     <ClCompile Include="WFPFlt.Manager.Redirect.cpp" />
     <ClCompile Include="WFPFlt.Manager.Transaction.cpp" />
+    <ClCompile Include="WFPFlt.Utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ShimsApi\ShimsApi.vcxproj">

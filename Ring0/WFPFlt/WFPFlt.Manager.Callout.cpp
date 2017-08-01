@@ -2,6 +2,8 @@
 #include "WFPFlt.Manager.Callout.h"
 #include "WFPFlt.Manager.Engine.h"
 #include "WFPFlt.Manager.Transaction.h"
+#include "WFPFlt.Manager.Injection.h"
+
 #include "WFPFlt.ApiWrapper.Callout.h"
 #include "WFPFlt.ApiWrapper.Filter.h"
 
@@ -610,10 +612,23 @@ namespace MBox
 
             if (m_IsAsynchronous)
             {
-                vParameter.m_IsAsynchronous = TRUE;
-                // TODO
+                for (;;)
+                {
+                    if (GetInjectionManager()->IsInjectedBySelf(
+                        FWPS_BUILTIN_LAYERS(aParameter->m_IncomingValues0->layerId),
+                        static_cast<NET_BUFFER_LIST*>(aParameter->m_LayerData)))
+                    {
+                        vResult = FilterResult::Permit;
+                        break;
+                    }
 
-                vResult = ClassifyRoutineForAsynchronous(&vParameter);
+                    vParameter.m_IsAsynchronous = TRUE;
+                    // TODO
+
+                    vResult = ClassifyRoutineForAsynchronous(&vParameter);
+
+                    break;
+                }
             }
             else
             {

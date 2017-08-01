@@ -72,6 +72,9 @@
     <ClInclude Include="WFPFlt.ApiWrapper.Filter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="WFPFlt.Utilities.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -129,6 +132,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="WFPFlt.ApiWrapper.Filter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WFPFlt.Utilities.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,5 +1,6 @@
 #pragma once
 #include <MBox.Network.Socket.h>
+#include <fwpsk.h>
 
 namespace MBox
 {
@@ -27,6 +28,14 @@ namespace MBox
 
             NTSTATUS InjectionHandleDestroy(InjectionHandleDestroyParameter* aParameter);
 
+            struct QueryPacketInjectionStateParameter
+            {
+                HANDLE                  m_InjectionHandle   = nullptr;
+                const NET_BUFFER_LIST*  m_NetBufferList     = nullptr;
+                HANDLE*                 m_InjectionContext  = nullptr;
+            };
+
+            FWPS_PACKET_INJECTION_STATE QueryPacketInjectionState(QueryPacketInjectionStateParameter* aParameters);
         }
     }
 }

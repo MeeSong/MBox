@@ -211,6 +211,8 @@ namespace MBox
 
         void ThreadPool::ThreadRoutine(ThreadContext * aContext)
         {
+            NTSTATUS vStatus = STATUS_SUCCESS;
+
             KeSetSystemAffinityThread(aContext->m_Affinity);
 
             PVOID vWaitObjects[WorkerEventType::Max] = { nullptr };
@@ -221,7 +223,7 @@ namespace MBox
 
             for (;;)
             {
-                NTSTATUS vStatus = KeWaitForMultipleObjects(
+                vStatus = KeWaitForMultipleObjects(
                     WorkerEventType::Max, 
                     vWaitObjects,
                     WaitAny,
@@ -245,6 +247,7 @@ namespace MBox
                 {
                     ktl::shared_ptr<Task> vTask;
 
+                    do 
                     {
                         ktl::lock_guard<ktl::spin_lock> vLockGuard(m_TaskListLock);
                         if (m_TaskList->empty())
@@ -253,12 +256,14 @@ namespace MBox
                         }
                         vTask = m_TaskList->front();
                         m_TaskList->pop_front();
-                    }
+                    } while (false);
 
                     vTaskParameter.m_Context = vTask->m_Context;
                     vTask->m_TaskCallback(&vTaskParameter);
                 }
             }
+
+            PsTerminateSystemThread(vStatus);
         }
     }
 }
