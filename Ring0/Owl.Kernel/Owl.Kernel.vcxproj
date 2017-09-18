@@ -32,6 +32,11 @@
     <ClInclude Include="Owl.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DriverMgr\DriverMgr.vcxproj">
+      <Project>{f0cdf1dd-310c-4c2d-8449-a02c2d118dc6}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{31D5CAC7-34A6-4714-9219-4E12379283FB}</ProjectGuid>
     <TemplateGuid>{0a049372-4c4d-4ea0-a64e-dc6ad88ceca1}</TemplateGuid>
@@ -112,7 +117,7 @@
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>DeviceMgr.X86.lib</AdditionalDependencies>
+      <AdditionalDependencies>DriverMgr.X86.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)..\Output\Library\Debug\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
@@ -124,7 +129,7 @@
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>DeviceMgr.X86.lib</AdditionalDependencies>
+      <AdditionalDependencies>DriverMgr.X86.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)..\Output\Library\Release\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
@@ -136,7 +141,7 @@
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>DeviceMgr.X64.lib</AdditionalDependencies>
+      <AdditionalDependencies>DriverMgr.X64.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)..\Output\Library\Debug\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
@@ -148,7 +153,7 @@
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>DeviceMgr.X64.lib</AdditionalDependencies>
+      <AdditionalDependencies>DriverMgr.X64.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)..\Output\Library\Release\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>

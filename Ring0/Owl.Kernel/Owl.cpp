@@ -2,7 +2,6 @@
 #include "Owl.h"
 
 #include <KBasic\KBasic.Memory.h>
-#include <DeviceMgr\DriverMgr.h>
 
 namespace MBox
 {
@@ -151,7 +150,7 @@ namespace MBox
         {
             if (nullptr == s_DeviceGroupHandle)
             {
-                auto vDispatchPacket = new DeviceMgr::DispatchCallbackPacket;
+                auto vDispatchPacket = new DriverMgr::DispatchCallbackPacket;
                 if (nullptr == vDispatchPacket)
                 {
                     vStatus = STATUS_INSUFFICIENT_RESOURCES;
@@ -162,10 +161,10 @@ namespace MBox
                 vDispatchPacket->m_MajorCallback[IRP_MJ_DEVICE_CONTROL] = DeviceControl;
                 vDispatchPacket->m_UnloadCallback = DriverUnload;
 
-                vStatus = DeviceMgr::RegisterDeviceGroup(
+                vStatus = DriverMgr::RegisterDeviceGroup(
                     &s_DeviceGroupHandle,
                     vDispatchPacket,
-                    [](DeviceMgr::DispatchCallbackPacket* aDispatchPacket)->void { delete aDispatchPacket; });
+                    [](DriverMgr::DispatchCallbackPacket* aDispatchPacket)->void { delete aDispatchPacket; });
                 if (!NT_SUCCESS(vStatus))
                 {
                     delete vDispatchPacket;
@@ -207,7 +206,7 @@ namespace MBox
             if (m_CommunicationPort->m_DeviceObject)
             {
                 IoDeleteSymbolicLink(&(m_CommunicationPort->m_DeviceDosName));
-                vStatus = DeviceMgr::DeleteDeviceObject(GetGroupHandle(), m_CommunicationPort->m_DeviceObject);
+                vStatus = DriverMgr::DeleteDeviceObject(GetGroupHandle(), m_CommunicationPort->m_DeviceObject);
             }
 
             m_CommunicationPort->Uninitialize();

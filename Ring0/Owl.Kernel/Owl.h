@@ -9,7 +9,7 @@
 
 #include <MBox.Object.h>
 
-#include <DeviceMgr\DriverMgr.h>
+#include <DriverMgr\DriverMgr.h>
 
 
 namespace MBox

@@ -1,5 +1,4 @@
 #pragma once
-#include <winioctl.h>
 
 namespace MBox
 {
