@@ -1,5 +1,4 @@
 #pragma once
-#include "MiniFlt.Callback.Packet.h"
 #include "MiniFlt.Macro.h"
 
 #include <KTL\KTL.Functional.Function.h>
@@ -40,7 +39,7 @@ namespace MBox
 
         struct InstanceSetupCallbackParameterPacket
         {
-            FltInstanceContext*         m_InstanceContext{};
+            FltInstanceContext          m_InstanceContext{};
             PVOID                       m_RegisterContext{};
 
             PCFLT_RELATED_OBJECTS       m_FltObjects{};

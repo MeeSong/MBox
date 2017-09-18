@@ -2,8 +2,8 @@
 #include "KTL.Macro.h"
 
 
-static constexpr ktl::u32 DefaultPoolTag    = KTL$CompileTime$ByteSwap32$Macro('KNew');
-static POOL_TYPE DefaultPoolType  = NonPagedPoolNx;
+const ktl::u32 DefaultPoolTag = KTL$CompileTime$ByteSwap32$Macro('KNew');
+POOL_TYPE DefaultPoolType  = NonPagedPoolNx;
 
 //////////////////////////////////////////////////////////////////////////
 

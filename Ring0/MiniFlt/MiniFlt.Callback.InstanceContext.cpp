@@ -24,7 +24,7 @@ namespace MBox
 
         inline static UINT32 GetInstanceContextsArrayBytes()
         {
-            return UINT32(GetCallbackPacketList()->size() * sizeof(FltInstanceContext));
+            return UINT32(GetCallbackPacketManager()->GetCallbackPacketList()->size() * sizeof(FltInstanceContext));
         }
         
         NTSTATUS __stdcall InstanceSetupCallback(
@@ -41,14 +41,12 @@ namespace MBox
             }
 
             FltInstanceContext* vContextArray = nullptr;
-            FltInstanceContext  vTempContext{};
 
             InstanceSetupCallbackParameterPacket vParameter{};
             vParameter.m_FltObjects = aFltObjects;
             vParameter.m_SetupFlags = aFlags;
             vParameter.m_DeviceType = aVolumeDeviceType;
             vParameter.m_FileSystemType = aVolumeFilesystemType;
-            vParameter.m_InstanceContext = &vTempContext;
 
             UINT32 vContextArrayBytes = GetInstanceContextsArrayBytes();
             vStatus = FltAllocateContext(
@@ -59,8 +57,8 @@ namespace MBox
                 (PFLT_CONTEXT*)&vContextArray);
             if (STATUS_SUCCESS != vStatus)
             {
-                vParameter.m_InstanceContext->m_FltAllocateContextFailed = TRUE;
-                vParameter.m_InstanceContext->m_Status = vStatus;
+                vParameter.m_InstanceContext.m_FltAllocateContextFailed = TRUE;
+                vParameter.m_InstanceContext.m_Status = vStatus;
             }
             else
             {
@@ -72,8 +70,8 @@ namespace MBox
                     nullptr);
                 if (STATUS_SUCCESS != vStatus)
                 {
-                    vParameter.m_InstanceContext->m_FltSetContextFailed = TRUE;
-                    vParameter.m_InstanceContext->m_Status = vStatus;
+                    vParameter.m_InstanceContext.m_FltSetContextFailed = TRUE;
+                    vParameter.m_InstanceContext.m_Status = vStatus;
 
                     FltReleaseContext(vContextArray);
                     vContextArray = nullptr;
@@ -94,14 +92,16 @@ namespace MBox
                 }
                 else
                 {
-                    vParameter.m_InstanceContext->m_FltNotAttach = TRUE;
+                    vParameter.m_InstanceContext.m_FltNotAttach = TRUE;
                 }
 
                 if (vContextArray)
                 {
-                    vContextArray[aIndex] = *(vParameter.m_InstanceContext);
+                    vContextArray[aIndex] = vParameter.m_InstanceContext;
                 }
 
+                vParameter.m_InstanceContext.m_FltNotAttach = FALSE;
+                vParameter.m_InstanceContext.m_Context      = nullptr;
                 return FALSE;
             };
             TraverseInstanceSetupCallback(vCallback);

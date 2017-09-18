@@ -42,6 +42,6 @@ namespace MBox
         MiniFlt::TransactionCallbackFunction    m_TransactionCallbackFunction{};
         MiniFlt::ContextCleanupCallbackFunction m_ContextCleanupCallbackFunction{};
 
-        MiniFlt::CallbackPacket             m_CallbackPacket{};
+        MiniFlt::CallbackPacket m_CallbackPacket{};
     };
 }

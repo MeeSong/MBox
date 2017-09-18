@@ -124,7 +124,7 @@ namespace ktl
 
             void refill_rand()
             {
-                const result_type __upper_mask = (~result_type()) << __r;
+                const result_type __upper_mask = (~(result_type())) << __r;
                 const result_type __lower_mask = ~__upper_mask;
 
                 // if seed() has not been called, a default initial seed is used 

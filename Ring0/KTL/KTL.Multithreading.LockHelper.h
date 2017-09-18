@@ -9,6 +9,8 @@ namespace ktl
         class lock_guard
         {
         public:
+#pragma prefast(push)
+#pragma prefast(disable:28167, "Automatically upgrade and restore IRQL.")
             explicit lock_guard(_Lock& aLock)
                 : m_Lock(aLock)
             {
@@ -19,6 +21,7 @@ namespace ktl
             {
                 m_Lock.unlock();
             }
+#pragma prefast(pop)
 
             lock_guard(const lock_guard&) = delete;
             lock_guard& operator=(const lock_guard&) = delete;

@@ -30,6 +30,18 @@
     <ClCompile Include="KBasic.ThreadPool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="KBasic.Device.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="KBasic.Object.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="KBasic.Memory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="KBasic.DateTime.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -45,6 +57,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="KBasic.ThreadPool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="KBasic.Device.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="KBasic.Device.Macro.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="KBasic.Object.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="KBasic.Memory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="KBasic.DateTime.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

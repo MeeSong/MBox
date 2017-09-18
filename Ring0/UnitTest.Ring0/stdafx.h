@@ -15,12 +15,6 @@
 #include <MBox.System.Version.h>
 
 #include <MiniFlt\MiniFlt.h>
-#include <MiniFlt\MiniFlt.Callback.Operation.h>
-#include <MiniFlt\MiniFlt.Callback.InstanceContext.h>
-#include <MiniFlt\MiniFlt.Callback.StreamContext.h>
-#include <MiniFlt\MiniFlt.Callback.StreamHandleContext.h>
-#include <MiniFlt\MiniFlt.Callback.TransactionContext.h>
-#include <MiniFlt\MiniFlt.Callback.ContextCleanup.h>
 
 #include <WFPFlt\WFPFlt.h>
 

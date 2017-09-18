@@ -1,5 +1,4 @@
 #pragma once
-#include "MiniFlt.Callback.Packet.h"
 #include "MiniFlt.Macro.h"
 
 #include <KTL\KTL.Macro.h>

@@ -29,7 +29,7 @@ namespace MBox
 
         inline static UINT32 GetFileContextsArrayBytes()
         {
-            return UINT32(GetCallbackPacketList()->size() * sizeof(FltFileContext));
+            return UINT32(GetCallbackPacketManager()->GetCallbackPacketList()->size() * sizeof(FltFileContext));
         }
 
         NTSTATUS __stdcall FileContextCreateCallback(

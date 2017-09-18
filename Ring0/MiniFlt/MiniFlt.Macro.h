@@ -13,11 +13,11 @@ void MiniFlt$Function$TraverseCallbackPacketMemberName$Macro(aFunctionName)(F aF
 {                                                                                           \
     auto vCallback = [&aFunctor](ktl::shared_ptr<CallbackPacket> aCallbackPacket, UINT32 aIndex) -> BOOLEAN \
     {                                                                                       \
-        if (aCallbackPacket->aMember)                                                    \
+        if (aCallbackPacket->aMember)                                                       \
         {                                                                                   \
-            return aFunctor(aCallbackPacket->aMember, aIndex);                           \
+            return aFunctor(aCallbackPacket->aMember, aIndex);                              \
         }                                                                                   \
         return FALSE;                                                                       \
     };                                                                                      \
-    TraverseCallbackPacket(vCallback);                                                      \
+    GetCallbackPacketManager()->TraverseCallbackPacket(vCallback);                          \
 }

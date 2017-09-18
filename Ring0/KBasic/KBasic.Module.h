@@ -1,5 +1,6 @@
 #pragma once
 #include <KTL\KTL.Macro.h>
+#include <KTL\KTL.Memory.New.h>
 #include <Mbox.Module.Loader.h>
 
 namespace MBox
@@ -8,12 +9,6 @@ namespace MBox
     {
         namespace Modules
         {
-            enum : ktl::u32
-            {
-                DefaultModulePoolType   = ktl::u32(NonPagedPoolNx),
-                DefaultModulePoolTag    = KTL$CompileTime$ByteSwap32$Macro('MBox'),
-            };
-
             template<typename F>
             static void Traverse(F aCallback, PRTL_PROCESS_MODULES aModules)
             {
@@ -41,8 +36,8 @@ namespace MBox
                 HANDLE aProcessHandle,
                 PVOID aImageBase,
                 PUNICODE_STRING* aModuleName,
-                POOL_TYPE aPoolType = POOL_TYPE(DefaultModulePoolType),
-                ktl::u32 aPoolTag = DefaultModulePoolTag);
+                POOL_TYPE aPoolType = DefaultPoolType,
+                ktl::u32 aPoolTag = DefaultPoolTag);
 
             void DeferenceModuleNameInfo(PUNICODE_STRING aModuleName);
 
@@ -57,8 +52,8 @@ namespace MBox
 
             NTSTATUS ReferenceSystemModuleInfo(
                 PRTL_PROCESS_MODULES* aModules,
-                POOL_TYPE aPoolType = POOL_TYPE(DefaultModulePoolType),
-                ktl::u32 aPoolTag = DefaultModulePoolTag);
+                POOL_TYPE aPoolType = DefaultPoolType,
+                ktl::u32 aPoolTag = DefaultPoolTag);
 
             void DeferenceSystemModuleInfo(PRTL_PROCESS_MODULES aModules);
 
@@ -101,8 +96,8 @@ namespace MBox
             NTSTATUS ReferenceProcessModuleInfo(
                 HANDLE aProcessHandle,
                 PRTL_PROCESS_MODULES* aModules,
-                POOL_TYPE aPoolType = POOL_TYPE(DefaultModulePoolType),
-                ktl::u32 aPoolTag = DefaultModulePoolTag);
+                POOL_TYPE aPoolType = DefaultPoolType,
+                ktl::u32 aPoolTag = DefaultPoolTag);
 
             void DeferenceProcessModuleInfo(PRTL_PROCESS_MODULES aModules);
 

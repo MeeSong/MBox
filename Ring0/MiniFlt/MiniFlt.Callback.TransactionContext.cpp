@@ -28,7 +28,7 @@ namespace MBox
 
         inline static UINT32 GetTransactionContextsArrayBytes()
         {
-            return UINT32(GetCallbackPacketList()->size() * sizeof(FltTransactionContext));
+            return UINT32(GetCallbackPacketManager()->GetCallbackPacketList()->size() * sizeof(FltTransactionContext));
         }
 
         NTSTATUS __stdcall TransactionContextCreateCallback(

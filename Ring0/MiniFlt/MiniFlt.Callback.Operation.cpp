@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "MiniFlt.Callback.Operation.h"
 #include "MiniFlt.h"
+#include "MiniFlt.Callback.Packet.h"
 
 #include "ShimsApi\ShimsApi.MiniFilter.h"
 

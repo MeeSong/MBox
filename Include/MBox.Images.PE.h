@@ -44,7 +44,7 @@ namespace MBox
                 enum Machine : ktl::u16
                 {
                     Unknown = 0x0000,
-                    i386    = 0x014c,
+                    I386    = 0x014c,
                     Arm     = 0x01c0,
                     IA64    = 0x0200,
                     Amd64   = 0x8664,

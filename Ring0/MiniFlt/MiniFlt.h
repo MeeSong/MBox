@@ -1,4 +1,5 @@
 #pragma once
+#include "MiniFlt.Callback.Packet.h"
 
 namespace MBox
 {
@@ -27,5 +28,14 @@ namespace MBox
         BOOLEAN IsStartedFilter();
 
         PFLT_FILTER GetFilterHandle();
+
+        template<typename F>
+        NTSTATUS RegisterCallbackPacket(
+            CallbackPacket* aCallbackPacket,
+            F aDeletor)
+        {
+            return GetCallbackPacketManager()->RegisterCallbackPacket(
+                aCallbackPacket, aDeletor);
+        }
     }
 }

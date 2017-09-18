@@ -1,11 +1,5 @@
 #include "stdafx.h"
-#include "MiniFlt.Callback.ContextCleanup.h"
-#include "MiniFlt.Callback.InstanceContext.h"
-#include "MiniFlt.Callback.StreamContext.h"
-#include "MiniFlt.Callback.StreamHandleContext.h"
-#include "MiniFlt.Callback.FileContext.h"
-#include "MiniFlt.Callback.TransactionContext.h"
-#include "MiniFlt.Callback.SectionContext.h"
+#include "MiniFlt.Callback.Packet.h"
 
 namespace MBox
 {

@@ -76,7 +76,7 @@ namespace MBox
 
             s_DriverObject = aDriverObject;
 
-            vStatus = CreateCallbackPacketList();
+            vStatus = GetCallbackPacketManager()->Initialize();
             if (!NT_SUCCESS(vStatus))
             {
                 return vStatus;
@@ -96,7 +96,7 @@ namespace MBox
             NTSTATUS vStatus = STATUS_SUCCESS;
 
             vStatus = UnregisterFilter();
-            DestoryCallbackPacketList();
+            GetCallbackPacketManager()->Uninitialize();
 
             return vStatus;
         }

@@ -27,7 +27,7 @@ namespace MBox
 
         inline static UINT32 GetStreamContextsArrayBytes()
         {
-            return UINT32(GetCallbackPacketList()->size() * sizeof(FltStreamContext));
+            return UINT32(GetCallbackPacketManager()->GetCallbackPacketList()->size() * sizeof(FltStreamContext));
         }
 
         NTSTATUS __stdcall StreamContextCreateCallback(

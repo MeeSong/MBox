@@ -5,6 +5,9 @@ namespace ktl
 {
     inline namespace multithreading
     {
+
+#pragma prefast(push)
+#pragma prefast(disable:28167, "lock() upgrade and unlock() restore IRQL.")
         //
         // spin_lock
         //
@@ -107,6 +110,7 @@ namespace ktl
 
             return false;
         }
+#pragma prefast(pop)
 
         ktl::u32 spin_lock_shared::GetSystemBuildNumber()
         {

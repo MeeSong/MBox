@@ -18,10 +18,10 @@ namespace MBox
 
         for (;;)
         {
-            if (aParameter->m_InstanceContext->m_FltAllocateContextFailed
-                || !NT_SUCCESS(aParameter->m_InstanceContext->m_Status))
+            if (aParameter->m_InstanceContext.m_FltAllocateContextFailed
+                || !NT_SUCCESS(aParameter->m_InstanceContext.m_Status))
             {
-                vStatus = aParameter->m_InstanceContext->m_Status;
+                vStatus = aParameter->m_InstanceContext.m_Status;
 
                 UnitTest$CompileTime$Log$Macro(DPFLTR_ERROR_LEVEL,
                     "Status = %08X, Instance = %p, Instance Context Request failed!",
@@ -69,7 +69,7 @@ namespace MBox
                 }
             }
 
-            aParameter->m_InstanceContext->m_Context = vContext;
+            aParameter->m_InstanceContext.m_Context = vContext;
             vStatus = STATUS_SUCCESS;
 
             UnitTest$CompileTime$Log$Macro(DPFLTR_ERROR_LEVEL,

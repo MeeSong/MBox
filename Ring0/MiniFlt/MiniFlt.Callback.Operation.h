@@ -1,11 +1,11 @@
 #pragma once
-#include "MiniFlt.Callback.Packet.h"
 #include "MiniFlt.Macro.h"
+#include "MiniFlt.Callback.FileContext.h"
 #include "MiniFlt.Callback.InstanceContext.h"
 #include "MiniFlt.Callback.StreamContext.h"
 #include "MiniFlt.Callback.StreamHandleContext.h"
-#include "MiniFlt.Callback.FileContext.h"
 #include "MiniFlt.Callback.TransactionContext.h"
+#include "MiniFlt.Callback.ContextCleanup.h"
 
 #include <KTL\Ktl.Functional.Function.h>
 
@@ -40,15 +40,13 @@ namespace MBox
             
             PFLT_CALLBACK_DATA      m_FltCallbackData{};
             PCFLT_RELATED_OBJECTS   m_FltObjects{};
-            FltCompletionContext*   m_FltCompletionContext;
+            FltCompletionContext*   m_FltCompletionContext = nullptr;
 
             FltContext              m_FltContexts;
 
             // 自定义 Context, 来自 OperationCallbackFunction.m_RegisterContext
             PVOID                   m_RegisterContext{};
         };
-
-        const int i = sizeof(OperationCallbackParameterPacket);
 
         struct PreOperationCallbackParameterPacket : public OperationCallbackParameterPacket
         {

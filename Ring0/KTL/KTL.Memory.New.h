@@ -8,6 +8,9 @@
 
 using size_t = ktl::usize;
 
+extern const ktl::u32 DefaultPoolTag;
+extern POOL_TYPE DefaultPoolType;
+
 void KtlInitializeDefaultPoolTypeWithRuntime(
     ktl::u32 aRuntimeFlags = DrvRtPoolNxOptIn);
 

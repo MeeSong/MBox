@@ -5,10 +5,19 @@ namespace MBox
 {
     namespace MiniFlt
     {
-        static CallbackPacketList$Type* s_CallbackPacketList{};
-
-        NTSTATUS CreateCallbackPacketList()
+        CallbackPacketManager * GetCallbackPacketManager()
         {
+            static CallbackPacketManager sCallbackPacketManager;
+            return &sCallbackPacketManager;
+        }
+
+        NTSTATUS CallbackPacketManager::Initialize()
+        {
+            if (s_CallbackPacketList)
+            {
+                return STATUS_SUCCESS;
+            }
+
             s_CallbackPacketList = new CallbackPacketList$Type;
             if (nullptr == s_CallbackPacketList)
             {
@@ -18,15 +27,19 @@ namespace MBox
             return STATUS_SUCCESS;
         }
 
-        void DestoryCallbackPacketList()
+        void CallbackPacketManager::Uninitialize()
         {
-            s_CallbackPacketList->clear();
+            if (!s_CallbackPacketList)
+            {
+                return;
+            }
 
+            s_CallbackPacketList->clear();
             delete s_CallbackPacketList;
             s_CallbackPacketList = nullptr;
         }
         
-        CallbackPacketList$Type* GetCallbackPacketList()
+        CallbackPacketManager::CallbackPacketList$Type* CallbackPacketManager::GetCallbackPacketList()
         {
             return s_CallbackPacketList;
         }

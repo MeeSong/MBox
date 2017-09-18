@@ -54,7 +54,7 @@ namespace MBox
                 {
                     vHeadersSize = vNtHeader64->m_OptionalHeader.m_HeadersSize;
                 }
-                else if ((ImageFileHeader::Machine::i386 == vNtHeader64->m_FileHeader.m_Machine)
+                else if ((ImageFileHeader::Machine::I386 == vNtHeader64->m_FileHeader.m_Machine)
                     || (ImageFileHeader::Machine::Arm == vNtHeader64->m_FileHeader.m_Machine))
                 {
                     auto vNtHeader32 = static_cast<const ImageNtHeader32*>(static_cast<const void*>(vNtHeader64));
@@ -85,7 +85,7 @@ namespace MBox
             ktl::boolean IsPE32(
                 const void* aImageNtHeader)
             {
-                if ((ImageFileHeader::Machine::i386 == static_cast<const ImageNtHeader64*>(aImageNtHeader)->m_FileHeader.m_Machine)
+                if ((ImageFileHeader::Machine::I386 == static_cast<const ImageNtHeader64*>(aImageNtHeader)->m_FileHeader.m_Machine)
                     || (ImageFileHeader::Machine::Arm == static_cast<const ImageNtHeader64*>(aImageNtHeader)->m_FileHeader.m_Machine))
                 {
                     return true;
