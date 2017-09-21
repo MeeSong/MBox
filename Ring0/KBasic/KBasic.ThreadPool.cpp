@@ -74,21 +74,21 @@ namespace MBox
                     aThreadCount = 1;
                 }
 
-                m_ThreadContexts = new ThreadContext[m_ThreadCount]{};
+                m_ThreadContexts = new ThreadContext[aThreadCount]{};
                 if (nullptr == m_ThreadContexts)
                 {
                     vStatus = STATUS_INSUFFICIENT_RESOURCES;
                     break;
                 }
 
-                m_ThreadObjects = new PETHREAD[m_ThreadCount]{};
+                m_ThreadObjects = new PETHREAD[aThreadCount]{};
                 if (nullptr == m_ThreadObjects)
                 {
                     vStatus = STATUS_INSUFFICIENT_RESOURCES;
                     break;
                 }
 
-                m_WaitBlocks = new KWAIT_BLOCK[m_ThreadCount]{};
+                m_WaitBlocks = new KWAIT_BLOCK[aThreadCount]{};
                 if (nullptr == m_WaitBlocks)
                 {
                     vStatus = STATUS_INSUFFICIENT_RESOURCES;
@@ -219,8 +219,6 @@ namespace MBox
             vWaitObjects[WorkerEventType::Exit]      = &m_WorkerEvent[WorkerEventType::Exit];
             vWaitObjects[WorkerEventType::Worker]    = &m_WorkerEvent[WorkerEventType::Worker];
 
-            TaskParameter vTaskParameter;
-
             for (;;)
             {
                 vStatus = KeWaitForMultipleObjects(
@@ -245,6 +243,7 @@ namespace MBox
 
                 for (;;)
                 {
+                    TaskParameter vTaskParameter;
                     ktl::shared_ptr<Task> vTask;
 
                     do 
@@ -259,7 +258,15 @@ namespace MBox
                     } while (false);
 
                     vTaskParameter.m_Context = vTask->m_Context;
-                    vTask->m_TaskCallback(&vTaskParameter);
+
+                    __try
+                    {
+                        vTask->m_TaskCallback(&vTaskParameter);
+                    }
+                    __except (EXCEPTION_EXECUTE_HANDLER)
+                    {
+                        vStatus;
+                    }
                 }
             }
 

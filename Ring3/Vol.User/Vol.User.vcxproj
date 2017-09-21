@@ -19,11 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{C061AFD1-F69A-4240-B835-4176E667BF22}</ProjectGuid>
+    <ProjectGuid>{D9975878-ED6B-4831-9607-495969941401}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>UDIO</RootNamespace>
-    <WindowsTargetPlatformVersion>$(LatestTargetPlatformVersion)</WindowsTargetPlatformVersion>
-    <ProjectName>Owl.User</ProjectName>
+    <RootNamespace>VolUser</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -179,18 +178,19 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Include\MBox.OwlProtocol.h" />
-    <ClInclude Include="Owl.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Vol.Service.Base.h" />
+    <ClInclude Include="Vol.ThreadPool.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Owl.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Vol.Service.Base.cpp" />
+    <ClCompile Include="Vol.ThreadPool.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
