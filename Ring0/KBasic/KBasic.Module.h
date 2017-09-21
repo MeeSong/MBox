@@ -1,6 +1,8 @@
 #pragma once
 #include <KTL\KTL.Macro.h>
 #include <KTL\KTL.Memory.New.h>
+
+#include <wdm.h>
 #include <Mbox.Module.Loader.h>
 
 namespace MBox
@@ -36,7 +38,7 @@ namespace MBox
                 HANDLE aProcessHandle,
                 PVOID aImageBase,
                 PUNICODE_STRING* aModuleName,
-                POOL_TYPE aPoolType = DefaultPoolType,
+                POOL_TYPE aPoolType = POOL_TYPE(DefaultPoolType),
                 ktl::u32 aPoolTag = DefaultPoolTag);
 
             void DeferenceModuleNameInfo(PUNICODE_STRING aModuleName);
@@ -52,7 +54,7 @@ namespace MBox
 
             NTSTATUS ReferenceSystemModuleInfo(
                 PRTL_PROCESS_MODULES* aModules,
-                POOL_TYPE aPoolType = DefaultPoolType,
+                POOL_TYPE aPoolType = POOL_TYPE(DefaultPoolType),
                 ktl::u32 aPoolTag = DefaultPoolTag);
 
             void DeferenceSystemModuleInfo(PRTL_PROCESS_MODULES aModules);
@@ -96,7 +98,7 @@ namespace MBox
             NTSTATUS ReferenceProcessModuleInfo(
                 HANDLE aProcessHandle,
                 PRTL_PROCESS_MODULES* aModules,
-                POOL_TYPE aPoolType = DefaultPoolType,
+                POOL_TYPE aPoolType = POOL_TYPE(DefaultPoolType),
                 ktl::u32 aPoolTag = DefaultPoolTag);
 
             void DeferenceProcessModuleInfo(PRTL_PROCESS_MODULES aModules);

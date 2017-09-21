@@ -1,9 +1,11 @@
 #include "KTL.Memory.New.h"
 #include "KTL.Macro.h"
 
+#include <wdm.h>
+
 
 const ktl::u32 DefaultPoolTag = KTL$CompileTime$ByteSwap32$Macro('KNew');
-POOL_TYPE DefaultPoolType  = NonPagedPoolNx;
+ktl::u32 DefaultPoolType  = POOL_TYPE::NonPagedPoolNx;
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -32,7 +34,7 @@ void KtlInitializeDefaultPoolTypeWithRuntime(
         vMinorVersion = vVersionInfo.dwMinorVersion;
     }
 
-    if ((aRuntimeFlags & DrvRtPoolNxOptIn) != 0) 
+    if ((aRuntimeFlags & DrvRtPoolNxOptIn) != 0)
     {
         //
         // Discover whether NX pool support is available on this platform, and,
@@ -42,7 +44,7 @@ void KtlInitializeDefaultPoolTypeWithRuntime(
         if ((vMajorVersion < 6) ||
             (vMajorVersion == 6 && vMinorVersion < 2))
         {
-            DefaultPoolType = NonPagedPool;
+            DefaultPoolType = POOL_TYPE::NonPagedPool;
         }
     }
 }
@@ -60,7 +62,7 @@ void KtlInitializeDefaultPoolTypeWithRuntime(
 
 #pragma warning( push )
 #pragma warning( disable: 4201)
-typedef struct _POOL_HEADER
+struct PoolHeader
 {
     union
     {
@@ -77,9 +79,9 @@ typedef struct _POOL_HEADER
                 UINT16       PoolType : 8;
             };
         };
-        ULONG32      Ulong1;
+        ktl::u32    Filling;
     };
-    ULONG32      PoolTag;
+    ktl::u32        PoolTag;
     union
     {
         struct _EPROCESS* ProcessBilled;
@@ -89,7 +91,7 @@ typedef struct _POOL_HEADER
             UINT16       PoolTagHash;
         };
     };
-}POOL_HEADER, *PPOOL_HEADER;
+};
 #pragma warning( pop )
 
 void CheckPoolTag(void* aPtr, ktl::u32 aTag)
@@ -104,7 +106,7 @@ void CheckPoolTag(void* aPtr, ktl::u32 aTag)
         return;
     }
 
-    POOL_HEADER *vPoolHeader = (POOL_HEADER*)(ktl::uintptr(aPtr) - sizeof(POOL_HEADER));
+    PoolHeader *vPoolHeader = (PoolHeader*)(ktl::uintptr(aPtr) - sizeof(PoolHeader));
     if (aTag != vPoolHeader->PoolTag)
     {
         // See https://docs.microsoft.com/en-us/windows-hardware/drivers/debugger/bug-check-0x19--bad-pool-header
@@ -135,7 +137,7 @@ void * __cdecl operator new(size_t aSize) NOEXCEPT$TYPE
         aSize = 1;
     }
     
-    return ExAllocatePoolWithTag(DefaultPoolType, aSize, DefaultPoolTag);
+    return ExAllocatePoolWithTag(POOL_TYPE(DefaultPoolType), aSize, DefaultPoolTag);
 }
 
 void __cdecl operator delete(void * aPtr) NOEXCEPT$TYPE
@@ -149,19 +151,19 @@ void __cdecl operator delete(void * aPtr) NOEXCEPT$TYPE
     return ExFreePoolWithTag(aPtr, DefaultPoolTag);
 }
 
-void * __cdecl operator new(size_t aSize, POOL_TYPE aPoolType) NOEXCEPT$TYPE
+void * __cdecl operator new(size_t aSize, ktl::u32 aPoolType) NOEXCEPT$TYPE
 {
     if (0 == aSize)
     {
         aSize = 1;
     }
 
-    return ExAllocatePoolWithTag(aPoolType, aSize, DefaultPoolTag);
+    return ExAllocatePoolWithTag(POOL_TYPE(aPoolType), aSize, DefaultPoolTag);
 }
 
 void * __cdecl operator new(
     size_t aSize,
-    POOL_TYPE aPoolType,
+    ktl::u32 aPoolType,
     unsigned long aTag) NOEXCEPT$TYPE
 {
     if (0 == aSize)
@@ -169,7 +171,7 @@ void * __cdecl operator new(
         aSize = 1;
     }
 
-    return ExAllocatePoolWithTag(aPoolType, aSize, aTag);
+    return ExAllocatePoolWithTag(POOL_TYPE(aPoolType), aSize, aTag);
 }
 
 void __cdecl operator delete(void * aPtr, unsigned long aTag) NOEXCEPT$TYPE
@@ -190,7 +192,7 @@ void * __cdecl operator new[](size_t aSize) NOEXCEPT$TYPE
         aSize = 1;
     }
 
-    return ExAllocatePoolWithTag(DefaultPoolType, aSize, DefaultPoolTag);
+    return ExAllocatePoolWithTag(POOL_TYPE(DefaultPoolType), aSize, DefaultPoolTag);
 }
 
 void __cdecl operator delete[](void * aPtr) NOEXCEPT$TYPE
@@ -204,19 +206,19 @@ void __cdecl operator delete[](void * aPtr) NOEXCEPT$TYPE
     return ExFreePoolWithTag(aPtr, DefaultPoolTag);
 }
 
-void * __cdecl operator new[](size_t aSize, POOL_TYPE aPoolType) NOEXCEPT$TYPE
+void * __cdecl operator new[](size_t aSize, ktl::u32 aPoolType) NOEXCEPT$TYPE
 {
     if (0 == aSize)
     {
         aSize = 1;
     }
 
-    return ExAllocatePoolWithTag(aPoolType, aSize, DefaultPoolTag);
+    return ExAllocatePoolWithTag(POOL_TYPE(aPoolType), aSize, DefaultPoolTag);
 }
 
 void * __cdecl operator new[](
     size_t aSize,
-    POOL_TYPE aPoolType,
+    ktl::u32 aPoolType,
     unsigned long aTag) NOEXCEPT$TYPE
 {
     if (0 == aSize)
@@ -224,7 +226,7 @@ void * __cdecl operator new[](
         aSize = 1;
     }
 
-    return ExAllocatePoolWithTag(aPoolType, aSize, aTag);
+    return ExAllocatePoolWithTag(POOL_TYPE(aPoolType), aSize, aTag);
 }
 
 void __cdecl operator delete[](void * aPtr, unsigned long aTag) NOEXCEPT$TYPE

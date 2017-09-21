@@ -24,7 +24,7 @@ namespace MBox
 
                     __try
                     {
-                        vStatus = ObQueryNameString(
+                        vStatus = MBox::ObQueryNameString(
                             aObject,
                             aObjectName,
                             aInputBytes,

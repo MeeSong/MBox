@@ -4,29 +4,28 @@
 #define New_$910C2682_3929_4387_9BE4_E556DE90DABA 1
 
 #include "KTL.Type.h"
-#include <wdm.h>
 
 using size_t = ktl::usize;
 
 extern const ktl::u32 DefaultPoolTag;
-extern POOL_TYPE DefaultPoolType;
+extern ktl::u32 DefaultPoolType;
 
 void KtlInitializeDefaultPoolTypeWithRuntime(
-    ktl::u32 aRuntimeFlags = DrvRtPoolNxOptIn);
+    ktl::u32 aRuntimeFlags = 0x00000001); // DrvRtPoolNxOptIn
 
 // replaceable usual deallocation functions
 void* __cdecl operator new(size_t aSize) NOEXCEPT$TYPE;
 void __cdecl operator delete (void *aPtr) NOEXCEPT$TYPE;
 
-void* __cdecl operator new (size_t aSize, POOL_TYPE aPoolType) NOEXCEPT$TYPE;
-void* __cdecl operator new (size_t aSize, POOL_TYPE aPoolType, unsigned long aTag) NOEXCEPT$TYPE;
+void* __cdecl operator new (size_t aSize, ktl::u32 aPoolType) NOEXCEPT$TYPE;
+void* __cdecl operator new (size_t aSize, ktl::u32 aPoolType, unsigned long aTag) NOEXCEPT$TYPE;
 void __cdecl operator delete (void *aPtr, unsigned long aTag) NOEXCEPT$TYPE;
 
 void* __cdecl operator new[](size_t aSize) NOEXCEPT$TYPE;
 void  __cdecl operator delete[](void* aPtr) NOEXCEPT$TYPE;
 
-void* __cdecl operator new[](size_t aSize, POOL_TYPE aPoolType) NOEXCEPT$TYPE;
-void* __cdecl operator new[](size_t aSize, POOL_TYPE aPoolType, unsigned long aTag) NOEXCEPT$TYPE;
+void* __cdecl operator new[](size_t aSize, ktl::u32 aPoolType) NOEXCEPT$TYPE;
+void* __cdecl operator new[](size_t aSize, ktl::u32 aPoolType, unsigned long aTag) NOEXCEPT$TYPE;
 void __cdecl operator delete[](void *aPtr, unsigned long aTag) NOEXCEPT$TYPE;
 
 // replaceable placement deallocation functions

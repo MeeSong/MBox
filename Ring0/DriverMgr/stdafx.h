@@ -11,9 +11,7 @@
 #include <KTL\KTL.Type.h>
 #include <KTL\KTL.Memory.New.h>
 
+#include <wdm.h>
 #include <MBox.Macro.h>
 #include <MBox.Object.h>
 #include <MBox.System.Version.h>
-
-#include <wdm.h>
-

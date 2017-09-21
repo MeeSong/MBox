@@ -1,6 +1,9 @@
 #pragma once
-#include <MBox.Network.Socket.h>
+#include <fwpmk.h>
 #include <fwptypes.h>
+#include <MBox.Network.Socket.h>
+#include <KBasic\KBasic.System.h>
+
 
 namespace MBox
 {
@@ -8,6 +11,8 @@ namespace MBox
     {
         namespace Utilities
         {
+            BOOLEAN IsSupportedWFP();
+
             AddressFamily GetAddressFamilyForLayer(UINT16 aLayerId);
 
             FWP_DIRECTION GetPacketDirectionForLayer(UINT16 aLayerId);

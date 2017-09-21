@@ -1,14 +1,16 @@
 #pragma once
 
-extern"C"
+namespace MBox
 {
-    NTSTATUS ObQueryNameString(
-        PVOID Object,
-        POBJECT_NAME_INFORMATION ObjectNameInfo,
-        ULONG Length,
-        PULONG ReturnLength);
+    extern"C"
+    {
+        NTSTATUS ObQueryNameString(
+            PVOID Object,
+            POBJECT_NAME_INFORMATION ObjectNameInfo,
+            ULONG Length,
+            PULONG ReturnLength);
 
-    NTSTATUS ObOpenObjectByPointer(
+        NTSTATUS ObOpenObjectByPointer(
             PVOID Object,
             ULONG HandleAttributes,
             PACCESS_STATE PassedAccessState,
@@ -17,25 +19,26 @@ extern"C"
             KPROCESSOR_MODE AccessMode,
             PHANDLE Handle);
 
-    NTSTATUS ZwOpenDirectoryObject(
+        NTSTATUS ZwOpenDirectoryObject(
             PHANDLE DirectoryHandle,
             ACCESS_MASK DesiredAccess,
             POBJECT_ATTRIBUTES ObjectAttributes);
 
-    NTSTATUS ZwCreateEvent(
+        NTSTATUS ZwCreateEvent(
             PHANDLE EventHandle,
             ACCESS_MASK DesiredAccess,
             POBJECT_ATTRIBUTES ObjectAttributes,
             EVENT_TYPE EventType,
             BOOLEAN InitialState);
 
-    NTSTATUS ZwSetEvent(
+        NTSTATUS ZwSetEvent(
             HANDLE EventHandle,
             PLONG PreviousState);
 
-    NTSTATUS ZwWaitForSingleObject(
+        NTSTATUS ZwWaitForSingleObject(
             HANDLE Handle,
             BOOLEAN Alertable,
             PLARGE_INTEGER Timeout);
 
+    }
 }

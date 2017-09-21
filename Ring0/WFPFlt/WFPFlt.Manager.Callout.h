@@ -1,14 +1,23 @@
 #pragma once
-#include "WFPFlt.h"
+#include "WFPFlt.Utilities.h"
+
 #include <KTL\KTL.Functional.Function.h>
 #include <KTL\KTL.Containers.List.h>
 #include <KTL\KTL.Memory.SharedPtr.h>
+
 #include <fwpsk.h>
 
 namespace MBox
 {
     namespace WFPFlt
     {
+        NTSTATUS StartFilter();
+        NTSTATUS StopFilter();
+        BOOLEAN IsStartedFilter();
+
+        class CalloutManager;
+        CalloutManager* GetCalloutManager();
+
         class CalloutManager
         {
         public:
@@ -392,16 +401,7 @@ namespace MBox
                 UINT16  aLayerId,
                 UINT32  aCalloutId,
                 UINT64  aFlowContext);
-
         };
-
-        CalloutManager* GetCalloutManager();
-
-        template<typename F>
-        NTSTATUS RegisterCallback(CalloutManager::CallbackPacket* aCallbackPacket, F aDeletor)
-        {
-            return GetCalloutManager()->RegisterCallback(aCallbackPacket, aDeletor);
-        }
 
     }
 }

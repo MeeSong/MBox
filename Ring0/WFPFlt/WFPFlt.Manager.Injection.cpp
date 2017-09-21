@@ -4,8 +4,6 @@
 #include "WFPFlt.Utilities.h"
 
 #include <KBasic\KBasic.System.h>
-#include <fwpsk.h>
-
 
 namespace MBox
 {

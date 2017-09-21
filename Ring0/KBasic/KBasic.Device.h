@@ -1,5 +1,6 @@
 #pragma once
 #include <KTL\KTL.Macro.h>
+#include <wdm.h>
 
 namespace MBox
 {
@@ -76,7 +77,7 @@ namespace MBox
 			NTSTATUS ReferenceDeviceClassGuid(
 				DEVICE_OBJECT* aPhysicalDeviceObject,
                 wchar_t** aClassGuid,
-                POOL_TYPE aPoolType = DefaultPoolType,
+                POOL_TYPE aPoolType = POOL_TYPE(DefaultPoolType),
                 ktl::u32 aPoolTag = DefaultPoolTag);
 
 			void DeferenceDeviceClassGuid(
@@ -85,7 +86,7 @@ namespace MBox
             NTSTATUS ReferenceDeviceFriendlyName(
                 DEVICE_OBJECT* aPhysicalDeviceObject,
                 wchar_t** aDeviceFriendlyName,
-                POOL_TYPE aPoolType = DefaultPoolType,
+                POOL_TYPE aPoolType = POOL_TYPE(DefaultPoolType),
                 ktl::u32 aPoolTag = DefaultPoolTag);
 
             void DeferenceDeviceFriendlyName(wchar_t* aDeviceFriendlyName);

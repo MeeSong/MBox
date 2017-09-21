@@ -15,6 +15,27 @@ namespace MBox
 {
     namespace WFPFlt
     {
+        static volatile long    s_IsStartedFilter = FALSE;
+
+        NTSTATUS StartFilter()
+        {
+            InterlockedExchange(&s_IsStartedFilter, TRUE);
+            return STATUS_SUCCESS;
+        }
+
+        NTSTATUS StopFilter()
+        {
+            InterlockedExchange(&s_IsStartedFilter, FALSE);
+            return STATUS_SUCCESS;
+        }
+
+        BOOLEAN IsStartedFilter()
+        {
+            return BOOLEAN(s_IsStartedFilter);
+        }
+
+        //////////////////////////////////////////////////////////////////////////
+
         const GUID* GetLayerGuid(CalloutManager::CalloutType aCalloutType)
         {
             static const GUID* sLayerGuidArray[CalloutManager::CalloutType::Max] = 

@@ -1,5 +1,5 @@
 #pragma once
-
+#include <wdm.h>
 
 namespace MBox
 {
@@ -16,7 +16,7 @@ namespace MBox
             NTSTATUS ReferenceObjectName(
                 void * aObject,
                 UNICODE_STRING ** aObjectName,
-                POOL_TYPE aPoolType = DefaultPoolType,
+                POOL_TYPE aPoolType = POOL_TYPE(DefaultPoolType),
                 ktl::u32 aPoolTag = DefaultPoolTag);
             
             void DeferenceObjectName(

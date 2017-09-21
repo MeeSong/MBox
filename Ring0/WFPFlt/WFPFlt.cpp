@@ -7,25 +7,13 @@
 #include "WFPFlt.Manager.Redirect.h"
 #include "WFPFlt.Manager.Callout.h"
 
-#include <KBasic\KBasic.System.h>
-
 namespace MBox
 {
     namespace WFPFlt
     {
-        static volatile long    s_IsStartedFilter   = FALSE;
         static DRIVER_OBJECT*   s_DriverObject      = nullptr;
         static DEVICE_OBJECT*   s_DeviceObject      = nullptr;
         static PRKEVENT         s_CompleteHandle    = nullptr;
-
-        BOOLEAN IsSupportedWFP()
-        {
-            if (KBasic::System::GetSystemVersion() >= SystemVersion::WindowsVista)
-            {
-                return TRUE;
-            }
-            return FALSE;
-        }
 
         static void ComplateRegisterFilter()
         {
@@ -193,7 +181,7 @@ namespace MBox
 
             for (;;)
             {
-                if (FALSE == IsSupportedWFP())
+                if (FALSE == Utilities::IsSupportedWFP())
                 {
                     vStatus = STATUS_NOT_SUPPORTED;
                 }
@@ -234,7 +222,7 @@ namespace MBox
 
             for (;;)
             {
-                if (FALSE == IsSupportedWFP())
+                if (FALSE == Utilities::IsSupportedWFP())
                 {
                     vStatus = STATUS_NOT_SUPPORTED;
                 }
@@ -313,24 +301,6 @@ namespace MBox
             }
 
             return vStatus;
-        }
-
-
-        NTSTATUS StartFilter()
-        {
-            InterlockedExchange(&s_IsStartedFilter, TRUE);
-            return STATUS_SUCCESS;
-        }
-
-        NTSTATUS StopFilter()
-        {
-            InterlockedExchange(&s_IsStartedFilter, FALSE);
-            return STATUS_SUCCESS;
-        }
-
-        BOOLEAN IsStartedFilter()
-        {
-            return BOOLEAN(s_IsStartedFilter);
         }
 
     }

@@ -1,4 +1,5 @@
 #pragma once
+#include <wdm.h>
 
 namespace MBox
 {

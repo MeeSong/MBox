@@ -36,7 +36,7 @@ namespace MBox
                     vStatus = ZwQueryVirtualMemory(
                         aProcessHandle,
                         aImageBase,
-                        MEMORY_INFORMATION_CLASS::MemoryMappedFilenameInformation,
+                        MemoryInformationClass::MappedFilenameInformation,
                         aModuleName,
                         aInputBytes,
                         &vNeedBytes);
@@ -213,7 +213,7 @@ namespace MBox
                     SIZE_T vImageCount  = 0;
                     SIZE_T vNeedBytes   = 0;
                     PVOID vBaseAddress  = nullptr;
-                    MEMORY_BASIC_INFORMATION vMemInfo{};
+                    MemoryBasicInformation vMemInfo{};
 
                     if (aModules && (aInputBytes >= sizeof(RTL_PROCESS_MODULES)))
                     {
@@ -225,12 +225,12 @@ namespace MBox
                         vStatus = ZwQueryVirtualMemory(
                             aProcessHandle, 
                             vBaseAddress, 
-                            MEMORY_INFORMATION_CLASS::MemoryBasicInformation,
+                            MemoryInformationClass::BasicInformation,
                             &vMemInfo,
                             sizeof(vMemInfo),
                             &vNeedBytes);
 
-                        if (!(vMemInfo.Type & (MEM_TYPE_MASK::Mapped | MEM_TYPE_MASK::Image)))
+                        if (!(vMemInfo.Type & (MemoryTypeMask::Mapped | MemoryTypeMask::Image)))
                         {
                             vBaseAddress = PVOID(SIZE_T(vBaseAddress) + vMemInfo.RegionSize);
                             continue;
@@ -251,7 +251,7 @@ namespace MBox
                             vStatus = ZwQueryVirtualMemory(
                                 aProcessHandle,
                                 vBaseAddress,
-                                MEMORY_INFORMATION_CLASS::MemoryBasicInformation,
+                                MemoryInformationClass::BasicInformation,
                                 &vMemInfo,
                                 sizeof(vMemInfo),
                                 &vNeedBytes);

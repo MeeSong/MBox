@@ -1,15 +1,21 @@
 #include "stdafx.h"
 #include "WFPFlt.Utilities.h"
 
-#include <fwpsk.h>
-
-
 namespace MBox
 {
     namespace WFPFlt
     {
         namespace Utilities
         {
+            BOOLEAN IsSupportedWFP()
+            {
+                if (KBasic::System::GetSystemVersion() >= SystemVersion::WindowsVista)
+                {
+                    return TRUE;
+                }
+                return FALSE;
+            }
+
             AddressFamily GetAddressFamilyForLayer(UINT16 aLayerId)
             {
                 AddressFamily vAddressFamily = AddressFamily::Unspecified;

@@ -1,11 +1,10 @@
 #pragma once
+#include "WFPFlt.Manager.Callout.h"
 
 namespace MBox
 {
     namespace WFPFlt
     {
-        BOOLEAN IsSupportedWFP();
-
         NTSTATUS Initialize(
             DRIVER_OBJECT* aDriverObject, 
             UNICODE_STRING* aRegistryPath,
@@ -17,9 +16,11 @@ namespace MBox
             DEVICE_OBJECT* aDeviceObject = nullptr,
             PRKEVENT aCompleteHandle = nullptr);
 
-        NTSTATUS StartFilter();
-        NTSTATUS StopFilter();
-        BOOLEAN IsStartedFilter();
+        template<typename F>
+        NTSTATUS RegisterCallbackPacket(CalloutManager::CallbackPacket* aCallbackPacket, F aDeletor)
+        {
+            return GetCalloutManager()->RegisterCallback(aCallbackPacket, aDeletor);
+        }
 
     }
 }
