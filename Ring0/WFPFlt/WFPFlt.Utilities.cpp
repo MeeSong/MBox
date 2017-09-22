@@ -9,7 +9,7 @@ namespace MBox
         {
             BOOLEAN IsSupportedWFP()
             {
-                if (KBasic::System::GetSystemVersion() >= SystemVersion::WindowsVista)
+                if (Vol::System::GetSystemVersion() >= SystemVersion::WindowsVista)
                 {
                     return TRUE;
                 }

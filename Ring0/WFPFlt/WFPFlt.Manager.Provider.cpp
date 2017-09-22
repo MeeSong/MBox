@@ -5,7 +5,7 @@
 #include "WFPFlt.Manager.Engine.h"
 #include "WFPFlt.Manager.Transaction.h"
 
-#include <KBasic\KBasic.System.h>
+#include <Vol.Kernel\Vol.System.h>
 
 namespace MBox
 {
@@ -36,7 +36,7 @@ namespace MBox
 
         NTSTATUS ProviderManager::Initialize()
         {
-            if (KBasic::System::GetSystemVersion() < SystemVersion::Windows8)
+            if (Vol::System::GetSystemVersion() < SystemVersion::Windows8)
             {
                 return STATUS_NOT_SUPPORTED;
             }
@@ -51,7 +51,7 @@ namespace MBox
 
         NTSTATUS ProviderManager::AddProvider()
         {
-            if (KBasic::System::GetSystemVersion() < SystemVersion::Windows8)
+            if (Vol::System::GetSystemVersion() < SystemVersion::Windows8)
             {
                 return STATUS_NOT_SUPPORTED;
             }
@@ -124,7 +124,7 @@ namespace MBox
 
         NTSTATUS ProviderManager::DeleteProvider()
         {
-            if (KBasic::System::GetSystemVersion() < SystemVersion::Windows8)
+            if (Vol::System::GetSystemVersion() < SystemVersion::Windows8)
             {
                 return STATUS_SUCCESS;
             }

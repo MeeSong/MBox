@@ -7,7 +7,7 @@
 
 namespace MBox
 {
-    namespace KBasic
+    namespace Vol
     {
         class ThreadPool
         {

@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "KBasic.Module.h"
-#include "KBasic.PE.h"
+#include "Vol.Module.h"
+#include "Vol.PE.h"
 
 #include <ntstrsafe.h>
 
@@ -12,7 +12,7 @@
 
 namespace MBox
 {
-    namespace KBasic
+    namespace Vol
     {
         namespace Modules
         {
@@ -115,7 +115,7 @@ namespace MBox
             }
 
             NTSTATUS QuerySystemModuleInfo(
-                PRTL_PROCESS_MODULES aModules, 
+                RtlProcessModules* aModules,
                 ktl::u32 aInputBytes, 
                 ktl::u32* aNeedBytes)
             {
@@ -126,7 +126,7 @@ namespace MBox
                     ULONG vNeedBytes = 0;
 
                     vStatus = ZwQuerySystemInformation(
-                        SYSTEM_INFORMATION_CLASS::SystemModuleInformation,
+                        SystemInformationClass::SystemModuleInformation,
                         aModules,
                         aInputBytes,
                         &vNeedBytes);
@@ -142,12 +142,12 @@ namespace MBox
             }
 
             NTSTATUS ReferenceSystemModuleInfo(
-                PRTL_PROCESS_MODULES * aModules, 
+                RtlProcessModules** aModules,
                 POOL_TYPE aPoolType, 
                 ktl::u32 aPoolTag)
             {
                 NTSTATUS vStatus = STATUS_SUCCESS;
-                PRTL_PROCESS_MODULES vModules = nullptr;
+                RtlProcessModules* vModules = nullptr;
 
                 for (;;)
                 {
@@ -165,7 +165,7 @@ namespace MBox
                     }
 
                     vNeedBytes = vNeedBytes * 2;
-                    vModules = (PRTL_PROCESS_MODULES)new(aPoolType, aPoolTag) ktl::byte[vNeedBytes]{};
+                    vModules = (RtlProcessModules*)new(aPoolType, aPoolTag) ktl::byte[vNeedBytes]{};
                     if (nullptr == vModules)
                     {
                         vStatus = STATUS_INSUFFICIENT_RESOURCES;
@@ -191,7 +191,7 @@ namespace MBox
             }
 
             void DeferenceSystemModuleInfo(
-                PRTL_PROCESS_MODULES aModules)
+                RtlProcessModules* aModules)
             {
                 delete[](ktl::byte*)aModules;
             }
@@ -202,7 +202,7 @@ namespace MBox
 
             NTSTATUS QueryProcessModuleInfo(
                 HANDLE aProcessHandle, 
-                PRTL_PROCESS_MODULES aModules, 
+                RtlProcessModules* aModules,
                 ktl::u32 aInputBytes, 
                 ktl::u32* aNeedBytes)
             {
@@ -215,7 +215,7 @@ namespace MBox
                     PVOID vBaseAddress  = nullptr;
                     MemoryBasicInformation vMemInfo{};
 
-                    if (aModules && (aInputBytes >= sizeof(RTL_PROCESS_MODULES)))
+                    if (aModules && (aInputBytes >= sizeof(RtlProcessModules*)))
                     {
                         *aModules = { 0 };
                     }
@@ -291,7 +291,7 @@ namespace MBox
                         ++vImageCount;
 
                         if (nullptr == aModules
-                            || (aInputBytes < (sizeof(RTL_PROCESS_MODULES) + (vImageCount - 1) * sizeof(RTL_PROCESS_MODULE_INFORMATION))))
+                            || (aInputBytes < (sizeof(RtlProcessModules) + (vImageCount - 1) * sizeof(RtlProcessModuleInformation))))
                         {
                             DeferenceModuleNameInfo(vModuleName);
                             continue;
@@ -333,7 +333,7 @@ namespace MBox
                     } while (NT_SUCCESS(vStatus));
                     
                     if (nullptr == aModules
-                        || (aInputBytes < (sizeof(RTL_PROCESS_MODULES) + (vImageCount - 1) * sizeof(RTL_PROCESS_MODULE_INFORMATION))))
+                        || (aInputBytes < (sizeof(RtlProcessModules) + (vImageCount - 1) * sizeof(RtlProcessModuleInformation))))
                     {
                         vStatus = STATUS_INFO_LENGTH_MISMATCH;
                     }
@@ -348,7 +348,7 @@ namespace MBox
 
                     if (aNeedBytes)
                     {
-                        *aNeedBytes = ktl::u32(sizeof(RTL_PROCESS_MODULES) + (vImageCount - 1) * sizeof(RTL_PROCESS_MODULE_INFORMATION));
+                        *aNeedBytes = ktl::u32(sizeof(RtlProcessModules) + (vImageCount - 1) * sizeof(RtlProcessModuleInformation));
                     }
 
                     break;
@@ -359,12 +359,12 @@ namespace MBox
 
             NTSTATUS ReferenceProcessModuleInfo(
                 HANDLE aProcessHandle, 
-                PRTL_PROCESS_MODULES * aModules, 
+                RtlProcessModules* * aModules,
                 POOL_TYPE aPoolType, 
                 ktl::u32 aPoolTag)
             {
                 NTSTATUS vStatus = STATUS_SUCCESS;
-                PRTL_PROCESS_MODULES vModules = nullptr;
+                RtlProcessModules* vModules = nullptr;
 
                 for (;;)
                 {
@@ -379,7 +379,7 @@ namespace MBox
                     }
 
                     vNeedBytes = vNeedBytes * 2;
-                    vModules = (PRTL_PROCESS_MODULES)new(aPoolType, aPoolTag) ktl::byte[vNeedBytes]{};
+                    vModules = (RtlProcessModules*)new(aPoolType, aPoolTag) ktl::byte[vNeedBytes]{};
                     if (nullptr == vModules)
                     {
                         vStatus = STATUS_INSUFFICIENT_RESOURCES;
@@ -405,7 +405,7 @@ namespace MBox
             }
 
             void DeferenceProcessModuleInfo(
-                PRTL_PROCESS_MODULES aModules)
+                RtlProcessModules* aModules)
             {
                 delete[](ktl::byte*)aModules;
             }
@@ -427,7 +427,7 @@ namespace MBox
 
                 const void* vModuleAddress = nullptr;
                 auto vCallback = [&vModuleAddress, aModuleName](
-                    const RTL_PROCESS_MODULE_INFORMATION* aModuleInfo, 
+                    const RtlProcessModuleInformation* aModuleInfo, 
                     ktl::u32 /*aIndex*/)->bool
                 {
                     if (0 == _stricmp(reinterpret_cast<const char*>(aModuleInfo->FullPathName), aModuleName))
@@ -466,8 +466,8 @@ namespace MBox
                 const void* vRoutineAddress = nullptr;
                 auto vCallback = [aRoutineName, &vRoutineAddress](
                     const void* /*aImageAddress*/,
-                    const KBasic::PE::ImageDataDirectory* /*aDataDirectory*/,
-                    const KBasic::PE::ImageExportDirectory* /*aExportDirectory*/,
+                    const Vol::PE::ImageDataDirectory* /*aDataDirectory*/,
+                    const Vol::PE::ImageExportDirectory* /*aExportDirectory*/,
                     const char* /*aExportModuleName*/,
                     ktl::u32 /*aOrdinal*/,
                     ktl::u32 /*aNameOrdinal*/,
@@ -482,7 +482,7 @@ namespace MBox
                     }
                     return false;
                 };
-                KBasic::PE::TraverseExportDirectoryMapAsImage(vCallback, aModuleAddress);
+                Vol::PE::TraverseExportDirectoryMapAsImage(vCallback, aModuleAddress);
 
                 return vRoutineAddress;
             }

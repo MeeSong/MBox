@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "WFPFlt.ApiWrapper.Callout.h"
 #include <ShimsApi\ShimsApi.WFP.Callout.h>
-#include <KBasic\KBasic.System.h>
+#include <Vol.Kernel\Vol.System.h>
 
 namespace MBox
 {
@@ -11,7 +11,7 @@ namespace MBox
         {
             NTSTATUS CalloutRegister(CalloutRegisterParameter * aParameter)
             {
-                if (KBasic::System::GetSystemVersion() >= SystemVersion::Windows8)
+                if (Vol::System::GetSystemVersion() >= SystemVersion::Windows8)
                 {
                     FWPS_CALLOUT2 vCallout2 = { 0 };
 
@@ -20,7 +20,7 @@ namespace MBox
                         WFPFltCalloutToCallout(&vCallout2, aParameter->m_Callout),
                         aParameter->m_aCalloutId);
                 }
-                else if (KBasic::System::GetSystemVersion() >= SystemVersion::Windows7)
+                else if (Vol::System::GetSystemVersion() >= SystemVersion::Windows7)
                 {
                     FWPS_CALLOUT1 vCallout1 = { 0 };
 

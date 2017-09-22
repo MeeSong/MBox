@@ -3,7 +3,7 @@
 #include "WFPFlt.ApiWrapper.Redirect.h"
 #include "WFPFlt.Manager.Provider.h"
 
-#include <KBasic\KBasic.System.h>
+#include <Vol.Kernel\Vol.System.h>
 
 namespace MBox
 {
@@ -11,7 +11,7 @@ namespace MBox
     {
         NTSTATUS RedirectManager::Initialize()
         {
-            if (KBasic::System::GetSystemVersion() < SystemVersion::Windows8)
+            if (Vol::System::GetSystemVersion() < SystemVersion::Windows8)
             {
                 return STATUS_NOT_SUPPORTED;
             }
@@ -26,7 +26,7 @@ namespace MBox
 
         NTSTATUS RedirectManager::CreateRedirectHandle()
         {
-            if (KBasic::System::GetSystemVersion() < SystemVersion::Windows8)
+            if (Vol::System::GetSystemVersion() < SystemVersion::Windows8)
             {
                 return STATUS_NOT_SUPPORTED;
             }

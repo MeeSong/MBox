@@ -14,7 +14,7 @@
 #include <MBox.Macro.h>
 #include <MBox.System.Version.h>
 
-#include <KBasic\KBasic.Device.h>
+#include <Vol.Kernel\Vol.Device.h>
 
 #include <wdm.h>
 

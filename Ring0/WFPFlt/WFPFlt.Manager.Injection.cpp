@@ -3,7 +3,7 @@
 #include "WFPFlt.ApiWrapper.Injection.h"
 #include "WFPFlt.Utilities.h"
 
-#include <KBasic\KBasic.System.h>
+#include <Vol.Kernel\Vol.System.h>
 
 namespace MBox
 {
@@ -34,7 +34,7 @@ namespace MBox
 
             for (;;)
             {
-                if (KBasic::System::GetSystemVersion() >= SystemVersion::Windows8)
+                if (Vol::System::GetSystemVersion() >= SystemVersion::Windows8)
                 {
                     //
                     // MAC

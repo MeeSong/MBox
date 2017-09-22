@@ -1,12 +1,12 @@
 #include "stdafx.h"
-#include "KBasic.ThreadPool.h"
-#include "KBasic.DateTime.h"
+#include "Vol.ThreadPool.h"
+#include "Vol.DateTime.h"
 
 #include <KTL\KTL.Macro.h>
 
 namespace MBox
 {
-    namespace KBasic
+    namespace Vol
     {
         enum ThreadObjectTag : ktl::u32
         {

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ShimsApi.WFP.h"
 
-#include <KBasic\KBasic.Module.h>
+#include <Vol.Kernel\Vol.Module.h>
 
 namespace MBox
 {
@@ -27,7 +27,7 @@ namespace MBox
                     return STATUS_SUCCESS;
                 }
 
-                NTSTATUS vStatus = KBasic::Modules::GetModuleAddress(&sModuleAddress, s_FwpIpSecModulePath);
+                NTSTATUS vStatus = Vol::Modules::GetModuleAddress(&sModuleAddress, s_FwpIpSecModulePath);
                 
                 *aModuleAddress = sModuleAddress;
                 return vStatus;
@@ -49,7 +49,7 @@ namespace MBox
                     return nullptr;
                 }
                 
-                return KBasic::Modules::GetRoutineAddress(vModuleAddress, aRoutineName);
+                return Vol::Modules::GetRoutineAddress(vModuleAddress, aRoutineName);
             }
 
 

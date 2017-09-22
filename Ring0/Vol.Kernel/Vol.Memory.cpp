@@ -1,9 +1,9 @@
 #include "stdafx.h"
-#include "KBasic.Memory.h"
+#include "Vol.Memory.h"
 
 namespace MBox
 {
-    namespace KBasic
+    namespace Vol
     {
         namespace Memory
         {

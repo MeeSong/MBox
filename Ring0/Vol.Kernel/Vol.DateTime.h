@@ -3,7 +3,7 @@
 
 namespace MBox
 {
-    namespace KBasic
+    namespace Vol
     {
         namespace DateTime
         {

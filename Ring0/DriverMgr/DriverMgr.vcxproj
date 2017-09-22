@@ -32,7 +32,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\KBasic\KBasic.vcxproj">
+    <ProjectReference Include="..\Vol.Kernel\Vol.Kernel.vcxproj">
       <Project>{35303652-ecbe-4ed7-ae08-514922bae276}</Project>
     </ProjectReference>
   </ItemGroup>
@@ -116,7 +116,6 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>KTL.X86.lib;KBasic.X86.lib;</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)..\Output\Library\Debug\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
@@ -128,7 +127,6 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>KTL.X86.lib;KBasic.X86.lib;</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)..\Output\Library\Release\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
@@ -140,7 +138,6 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>KTL.X64.lib;KBasic.X64.lib;</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)..\Output\Library\Debug\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
@@ -152,7 +149,6 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>KTL.X64.lib;KBasic.X64.lib;</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)..\Output\Library\Release\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>

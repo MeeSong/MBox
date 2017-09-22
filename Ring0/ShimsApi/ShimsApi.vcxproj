@@ -55,7 +55,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\KBasic\KBasic.vcxproj">
+    <ProjectReference Include="..\Vol.Kernel\Vol.Kernel.vcxproj">
       <Project>{35303652-ecbe-4ed7-ae08-514922bae276}</Project>
     </ProjectReference>
   </ItemGroup>

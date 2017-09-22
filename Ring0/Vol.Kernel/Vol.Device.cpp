@@ -1,11 +1,11 @@
 #include "stdafx.h"
-#include "KBasic.Device.h"
-#include "KBasic.Device.Macro.h"
+#include "Vol.Device.h"
+#include "Vol.Device.Macro.h"
 
 
 namespace MBox
 {
-	namespace KBasic
+	namespace Vol
 	{
 		namespace Device
 		{

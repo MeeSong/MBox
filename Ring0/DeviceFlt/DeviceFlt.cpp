@@ -246,7 +246,7 @@ namespace MBox
                     break;
                 }
 
-                KBasic::Device::DeviceClasses vDeviceType = KBasic::Device::GetDeviceClasses(vDeviceContext->m_PhysicalDeviceObject);
+                Vol::Device::DeviceClasses vDeviceType = Vol::Device::GetDeviceClasses(vDeviceContext->m_PhysicalDeviceObject);
                 vStatus = InstanceSetupCallback(aDeviceObject, vDeviceType);
                 aIrp->IoStatus.Status = vStatus;
 

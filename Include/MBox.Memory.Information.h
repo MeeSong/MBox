@@ -18,38 +18,38 @@ namespace MBox
 
     enum MemoryProtectMask : UINT32
     {
-        NoAccess = 0x00000001,   // PAGE_NOACCESS
-        ReadOnly = 0x00000002,   // PAGE_READONLY
-        ReadWrite = 0x00000004,   // PAGE_READWRITE
-        WriteCopy = 0x00000008,   // PAGE_WRITECOPY
-        Execute = 0x00000010,   // PAGE_EXECUTE
-        ExecuteRead = 0x00000020,   // PAGE_EXECUTE_READ
+        NoAccess        = 0x00000001,   // PAGE_NOACCESS
+        ReadOnly        = 0x00000002,   // PAGE_READONLY
+        ReadWrite       = 0x00000004,   // PAGE_READWRITE
+        WriteCopy       = 0x00000008,   // PAGE_WRITECOPY
+        Execute         = 0x00000010,   // PAGE_EXECUTE
+        ExecuteRead     = 0x00000020,   // PAGE_EXECUTE_READ
         ExecuteReadWrite = 0x00000040,  // PAGE_EXECUTE_READWRITE
         ExecuteWriteCopy = 0x00000080,  // PAGE_EXECUTE_WRITECOPY
-        Guard = 0x00000100,   // PAGE_GUARD
-        Nocache = 0x00000200,   // PAGE_NOCACHE
-        WriteCombine = 0x00000400,  // PAGE_WRITECOMBINE
+        Guard           = 0x00000100,   // PAGE_GUARD
+        Nocache         = 0x00000200,   // PAGE_NOCACHE
+        WriteCombine    = 0x00000400,  // PAGE_WRITECOMBINE
     };
 
     enum MemoryTypeMask : UINT32
     {
-        Commit = 0x00001000,   // MEM_COMMIT
-        Reserve = 0x00002000,   // MEM_RESERVE
-        Decommit = 0x00004000,   // MEM_DECOMMIT
-        Release = 0x00008000,   // MEM_RELEASE
-        Free = 0x00010000,   // MEM_FREE
-        Private = 0x00020000,   // MEM_PRIVATE
-        Mapped = 0x00040000,   // MEM_MAPPED
-        Reset = 0x00080000,   // MEM_RESET
-        TopDown = 0x00100000,   // MEM_TOP_DOWN
-        WriteWatch = 0x00200000,   // MEM_WRITE_WATCH
-        Physical = 0x00400000,   // MEM_PHYSICAL
-        Rotate = 0x00800000,   // MEM_ROTATE
-        Image = 0x01000000,   // MEM_IMAGE or SEC_IMAGE
+        Commit      = 0x00001000,   // MEM_COMMIT
+        Reserve     = 0x00002000,   // MEM_RESERVE
+        Decommit    = 0x00004000,   // MEM_DECOMMIT
+        Release     = 0x00008000,   // MEM_RELEASE
+        Free        = 0x00010000,   // MEM_FREE
+        Private     = 0x00020000,   // MEM_PRIVATE
+        Mapped      = 0x00040000,   // MEM_MAPPED
+        Reset       = 0x00080000,   // MEM_RESET
+        TopDown     = 0x00100000,   // MEM_TOP_DOWN
+        WriteWatch  = 0x00200000,   // MEM_WRITE_WATCH
+        Physical    = 0x00400000,   // MEM_PHYSICAL
+        Rotate      = 0x00800000,   // MEM_ROTATE
+        Image       = 0x01000000,   // MEM_IMAGE or SEC_IMAGE
         DifferentImageBaseOk = 0x00800000,  // MEM_DIFFERENT_IMAGE_BASE_OK
-        ResetUndo = 0x01000000,   // MEM_RESET_UNDO
-        LargePages = 0x20000000,   // MEM_LARGE_PAGES
-        Pages4M = 0x80000000,   // MEM_4MB_PAGES
+        ResetUndo   = 0x01000000,   // MEM_RESET_UNDO
+        LargePages  = 0x20000000,   // MEM_LARGE_PAGES
+        Pages4M     = 0x80000000,   // MEM_4MB_PAGES
     };
 
     struct MemoryBasicInformation

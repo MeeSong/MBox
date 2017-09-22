@@ -7,12 +7,12 @@
 
 namespace MBox
 {
-    namespace KBasic
+    namespace Vol
     {
         namespace Modules
         {
             template<typename F>
-            static void Traverse(F aCallback, PRTL_PROCESS_MODULES aModules)
+            static void Traverse(F aCallback, RtlProcessModules* aModules)
             {
                 for (ktl::u32 vIndex = 0; vIndex < aModules->NumberOfModules; ++vIndex)
                 {
@@ -48,22 +48,22 @@ namespace MBox
             //
 
             NTSTATUS QuerySystemModuleInfo(
-                PRTL_PROCESS_MODULES aModules,
+                RtlProcessModules* aModules,
                 ktl::u32 aInputBytes,
                 ktl::u32* aNeedBytes);
 
             NTSTATUS ReferenceSystemModuleInfo(
-                PRTL_PROCESS_MODULES* aModules,
+                RtlProcessModules** aModules,
                 POOL_TYPE aPoolType = POOL_TYPE(DefaultPoolType),
                 ktl::u32 aPoolTag = DefaultPoolTag);
 
-            void DeferenceSystemModuleInfo(PRTL_PROCESS_MODULES aModules);
+            void DeferenceSystemModuleInfo(RtlProcessModules* aModules);
 
             template<typename F>
             NTSTATUS TraverseSystemModuleInfo(F aCallback)
             {
                 NTSTATUS vStatus = STATUS_SUCCESS;
-                PRTL_PROCESS_MODULES vModules = nullptr;
+                RtlProcessModules* vModules = nullptr;
 
                 for (;;)
                 {
@@ -91,23 +91,23 @@ namespace MBox
 
             NTSTATUS QueryProcessModuleInfo(
                 HANDLE aProcessHandle,
-                PRTL_PROCESS_MODULES aModules,
+                RtlProcessModules* aModules,
                 ktl::u32 aInputBytes,
                 ktl::u32* aNeedBytes);
 
             NTSTATUS ReferenceProcessModuleInfo(
                 HANDLE aProcessHandle,
-                PRTL_PROCESS_MODULES* aModules,
+                RtlProcessModules** aModules,
                 POOL_TYPE aPoolType = POOL_TYPE(DefaultPoolType),
                 ktl::u32 aPoolTag = DefaultPoolTag);
 
-            void DeferenceProcessModuleInfo(PRTL_PROCESS_MODULES aModules);
+            void DeferenceProcessModuleInfo(RtlProcessModules* aModules);
 
             template<typename F>
             NTSTATUS TraverseProcessModuleInfo(F aCallback, HANDLE aProcessHandle)
             {
                 NTSTATUS vStatus = STATUS_SUCCESS;
-                PRTL_PROCESS_MODULES vModules = nullptr;
+                RtlProcessModules* vModules = nullptr;
 
                 for (;;)
                 {

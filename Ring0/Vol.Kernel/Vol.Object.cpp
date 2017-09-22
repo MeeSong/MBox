@@ -1,12 +1,12 @@
 #include "stdafx.h"
-#include "KBasic.Object.h"
+#include "Vol.Object.h"
 
 #include <MBox.Object.h>
 
 
 namespace MBox
 {
-    namespace KBasic
+    namespace Vol
     {
         namespace Object
         {

@@ -1,7 +1,7 @@
 #pragma once
 #include "DeviceFlt.Macro.h"
 
-#include <KBasic\KBasic.Device.h>
+#include <Vol.Kernel\Vol.Device.h>
 #include <KTL\KTL.Functional.Function.h>
 
 
@@ -41,7 +41,7 @@ namespace MBox
             void*              m_RegisterContext        = nullptr;
 
             DEVICE_OBJECT*  m_DeviceObject              = nullptr;
-            KBasic::Device::DeviceClasses m_DeviceType  = KBasic::Device::DeviceClasses::Unknown;
+            Vol::Device::DeviceClasses m_DeviceType  = Vol::Device::DeviceClasses::Unknown;
         };
 
         struct InstanceTeardownCallbackParameter
@@ -163,7 +163,7 @@ DeviceFlt$Function$TraverseCallbackPacketMemberName$Macro(InstanceCallbackPacket
 
         NTSTATUS __stdcall InstanceSetupCallback(
             DEVICE_OBJECT* aDeviceObject,
-            KBasic::Device::DeviceClasses aDeviceClasses);
+            Vol::Device::DeviceClasses aDeviceClasses);
 
         NTSTATUS __stdcall InstanceQueryTeardownCallback(
             DEVICE_OBJECT* aDeviceObject);

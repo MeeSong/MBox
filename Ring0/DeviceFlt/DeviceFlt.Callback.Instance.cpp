@@ -20,7 +20,7 @@ namespace MBox
 
 		NTSTATUS __stdcall InstanceSetupCallback(
             DEVICE_OBJECT * aDeviceObject,
-			KBasic::Device::DeviceClasses aDeviceClasses)
+			Vol::Device::DeviceClasses aDeviceClasses)
 		{
 			NTSTATUS vStatus = STATUS_SUCCESS;
 

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Owl.h"
 
-#include <KBasic\KBasic.Memory.h>
+#include <Vol.Kernel\Vol.Memory.h>
 
 namespace MBox
 {

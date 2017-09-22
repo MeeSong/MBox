@@ -24,26 +24,26 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="KBasic.DateTime.h" />
-    <ClInclude Include="KBasic.Device.h" />
-    <ClInclude Include="KBasic.Device.Macro.h" />
-    <ClInclude Include="KBasic.Memory.h" />
-    <ClInclude Include="KBasic.Module.h" />
-    <ClInclude Include="KBasic.Object.h" />
-    <ClInclude Include="KBasic.PE.h" />
-    <ClInclude Include="KBasic.System.h" />
-    <ClInclude Include="KBasic.ThreadPool.h" />
+    <ClInclude Include="Vol.DateTime.h" />
+    <ClInclude Include="Vol.Device.h" />
+    <ClInclude Include="Vol.Device.Macro.h" />
+    <ClInclude Include="Vol.Memory.h" />
+    <ClInclude Include="Vol.Module.h" />
+    <ClInclude Include="Vol.Object.h" />
+    <ClInclude Include="Vol.PE.h" />
+    <ClInclude Include="Vol.System.h" />
+    <ClInclude Include="Vol.ThreadPool.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="KBasic.DateTime.cpp" />
-    <ClCompile Include="KBasic.Device.cpp" />
-    <ClCompile Include="KBasic.Memory.cpp" />
-    <ClCompile Include="KBasic.Module.cpp" />
-    <ClCompile Include="KBasic.Object.cpp" />
-    <ClCompile Include="KBasic.PE.cpp" />
-    <ClCompile Include="KBasic.System.cpp" />
-    <ClCompile Include="KBasic.ThreadPool.cpp" />
+    <ClCompile Include="Vol.DateTime.cpp" />
+    <ClCompile Include="Vol.Device.cpp" />
+    <ClCompile Include="Vol.Memory.cpp" />
+    <ClCompile Include="Vol.Module.cpp" />
+    <ClCompile Include="Vol.Object.cpp" />
+    <ClCompile Include="Vol.PE.cpp" />
+    <ClCompile Include="Vol.System.cpp" />
+    <ClCompile Include="Vol.ThreadPool.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -61,6 +61,7 @@
     <RootNamespace>KBasic</RootNamespace>
     <DriverType>KMDF</DriverType>
     <WindowsTargetPlatformVersion>$(LatestTargetPlatformVersion)</WindowsTargetPlatformVersion>
+    <ProjectName>Vol.Kernel</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

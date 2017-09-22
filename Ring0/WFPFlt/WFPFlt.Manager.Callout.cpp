@@ -8,7 +8,7 @@
 #include "WFPFlt.ApiWrapper.Filter.h"
 
 #include <KTL\KTL.UUID.h>
-#include <KBasic\KBasic.System.h>
+#include <Vol.Kernel\Vol.System.h>
 
 
 namespace MBox
@@ -406,15 +406,15 @@ namespace MBox
             }
 
             volatile ktl::u32 vMaxCallout = CalloutType::Max;
-            if (KBasic::System::GetSystemVersion() < SystemVersion::Windows8_1)
+            if (Vol::System::GetSystemVersion() < SystemVersion::Windows8_1)
             {
                 vMaxCallout = CalloutType::MaxWindows8;
             }
-            if (KBasic::System::GetSystemVersion() < SystemVersion::Windows8)
+            if (Vol::System::GetSystemVersion() < SystemVersion::Windows8)
             {
                 vMaxCallout = CalloutType::MaxWindows7;
             }
-            if (KBasic::System::GetSystemVersion() < SystemVersion::Windows7)
+            if (Vol::System::GetSystemVersion() < SystemVersion::Windows7)
             {
                 vMaxCallout = CalloutType::MaxWindowsVista;
             }
@@ -548,11 +548,11 @@ namespace MBox
             }
 
             ktl::u32 vMaxCallout = CalloutType::Max;
-            if (KBasic::System::GetSystemVersion() < SystemVersion::Windows8)
+            if (Vol::System::GetSystemVersion() < SystemVersion::Windows8)
             {
                 vMaxCallout = CalloutType::MaxWindows7;
             }
-            if (KBasic::System::GetSystemVersion() < SystemVersion::Windows7)
+            if (Vol::System::GetSystemVersion() < SystemVersion::Windows7)
             {
                 vMaxCallout = CalloutType::MaxWindowsVista;
             }
