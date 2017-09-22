@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "KBasic.ThreadPool.h"
+#include "KBasic.DateTime.h"
 
 #include <KTL\KTL.Macro.h>
 
@@ -28,7 +29,7 @@ namespace MBox
 
         void ThreadPool::Unitialize()
         {
-            DestroyThreadPool();
+            DestroyThreadPool(5*1000);
 
             delete m_TaskList;
             m_TaskList = nullptr;
@@ -44,8 +45,8 @@ namespace MBox
 
             for (;;)
             {
-                KeInitializeEvent(&m_WorkerEvent[WorkerEventType::Exit], NotificationEvent, FALSE);
-                KeInitializeEvent(&m_WorkerEvent[WorkerEventType::Worker], NotificationEvent, FALSE);
+                KeInitializeEvent(&m_WorkerEvent[WorkerEventType::Exit].m_Event, NotificationEvent, FALSE);
+                KeInitializeSemaphore(&m_WorkerEvent[WorkerEventType::Worker].m_Semaphore, 0, LONG_MAX);
 
                 if (0 >= aThreadCountPerCpu)
                 {
@@ -156,18 +157,19 @@ namespace MBox
 
             if (!NT_SUCCESS(vStatus))
             {
-                DestroyThreadPool();
+                DestroyThreadPool(500);
             }
 
             return vStatus;
         }
 
-        void ThreadPool::DestroyThreadPool()
+        void ThreadPool::DestroyThreadPool(UINT32 aMilliseconds)
         {
             if (m_ThreadCount)
             {
-                KeSetEvent(&m_WorkerEvent[WorkerEventType::Exit], IO_NO_INCREMENT, FALSE);
+                KeSetEvent(&m_WorkerEvent[WorkerEventType::Exit].m_Event, IO_NO_INCREMENT, FALSE);
 
+                LARGE_INTEGER vTimeout{};
                 KeWaitForMultipleObjects(
                     m_ThreadCount,
                     (PVOID*)m_ThreadObjects,
@@ -175,7 +177,7 @@ namespace MBox
                     Executive,
                     KernelMode,
                     FALSE,
-                    nullptr,
+                    DateTime::FormatTimeoutToLargeInteger(&vTimeout, aMilliseconds),
                     m_WaitBlocks);
 
                 for (ktl::u32 i = 0; i < m_ThreadCount; ++i)
@@ -200,7 +202,7 @@ namespace MBox
 
         void ThreadPool::Signal()
         {
-            KeSetEvent(&m_WorkerEvent[WorkerEventType::Worker], IO_NO_INCREMENT, FALSE);
+            KeReleaseSemaphore(&m_WorkerEvent[WorkerEventType::Worker].m_Semaphore, IO_NO_INCREMENT, 1, FALSE);
         }
 
         void ThreadPool::ThreadRoutine(void* aContext)
@@ -216,8 +218,8 @@ namespace MBox
             KeSetSystemAffinityThread(aContext->m_Affinity);
 
             PVOID vWaitObjects[WorkerEventType::Max] = { nullptr };
-            vWaitObjects[WorkerEventType::Exit]      = &m_WorkerEvent[WorkerEventType::Exit];
-            vWaitObjects[WorkerEventType::Worker]    = &m_WorkerEvent[WorkerEventType::Worker];
+            vWaitObjects[WorkerEventType::Exit]      = &m_WorkerEvent[WorkerEventType::Exit].m_Event;
+            vWaitObjects[WorkerEventType::Worker]    = &m_WorkerEvent[WorkerEventType::Worker].m_Semaphore;
 
             for (;;)
             {

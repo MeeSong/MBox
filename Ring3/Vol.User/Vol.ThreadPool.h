@@ -41,7 +41,7 @@ namespace MBox
                 INT32 aThreadCount = 0,
                 INT32 aThreadCountPerCpu = 1,
                 SECURITY_ATTRIBUTES* aThreadSecurityAttributes = nullptr);
-            void DestroyThreadPool();
+            void DestroyThreadPool(UINT32 aMilliseconds);
 
             void Signal();
 

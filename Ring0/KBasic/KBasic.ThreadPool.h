@@ -42,7 +42,7 @@ namespace MBox
                 ktl::i32 aThreadCountPerCpu = 1,
                 ktl::u32 aThreadDesiredAccess = THREAD_ALL_ACCESS,
                 OBJECT_ATTRIBUTES* aThreadObjectAttributes = nullptr);
-            void DestroyThreadPool();
+            void DestroyThreadPool(UINT32 aMilliseconds);
 
             void Signal();
 
@@ -101,12 +101,16 @@ namespace MBox
 
             enum WorkerEventType : ktl::u32
             {
-                Exit,   // STATUS_WAIT_0
-                Worker, // STATUS_WAIT_1
+                Exit,   // STATUS_WAIT_0    Event object
+                Worker, // STATUS_WAIT_1    Semaphore object
                 Max
             };
 
-            KEVENT          m_WorkerEvent[WorkerEventType::Max] = { 0 };
+            union
+            {
+                KEVENT      m_Event;
+                KSEMAPHORE  m_Semaphore;
+            }m_WorkerEvent[WorkerEventType::Max] = { 0 };
         };
 
     }

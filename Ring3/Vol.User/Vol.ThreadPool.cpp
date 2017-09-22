@@ -13,7 +13,7 @@ namespace MBox
 
         void ThreadPool::Uninitialize()
         {
-            DestroyThreadPool();
+            DestroyThreadPool(5*1000);
         }
 
         HRESULT ThreadPool::CreateThreadPool(
@@ -88,8 +88,10 @@ namespace MBox
                     break;
                 }
 
-                KAFFINITY vCurrentAffinity = 1;
+#pragma prefast(push)
+#pragma prefast(disable:6385 6386, "Static analysis is wrong.")
 
+                KAFFINITY vCurrentAffinity = 1;
                 for (INT32 i = 0; i < aThreadCount; ++i)
                 {
                     if (vCurrentAffinity > vActiveProcessors)
@@ -130,30 +132,40 @@ namespace MBox
                     }
                 }
 
+#pragma prefast(pop)
+
                 break;
             }
 
             if (FAILED(hr))
             {
-                DestroyThreadPool();
+                DestroyThreadPool(500);
             }
 
             return hr;
         }
 
-        void ThreadPool::DestroyThreadPool()
+        void ThreadPool::DestroyThreadPool(UINT32 aMilliseconds)
         {
             if (m_ThreadCount)
             {
                 SetEvent(m_WorkerEvent[WorkerEventType::Exit]);
-
-                WaitForMultipleObjects(m_ThreadCount, m_ThreadHandles, TRUE, 10*1000);
+                WaitForMultipleObjects(m_ThreadCount, m_ThreadHandles, TRUE, aMilliseconds);
 
                 for (UINT32 i = 0; i < m_ThreadCount; ++i)
                 {
                     CloseHandle(m_ThreadHandles[i]);
                 }
                 m_ThreadCount = 0;
+            }
+
+            for (UINT32 i = 0; i < WorkerEventType::Max; ++i)
+            {
+                if (m_WorkerEvent[i])
+                {
+                    CloseHandle(m_WorkerEvent[i]);
+                    m_WorkerEvent[i] = nullptr;
+                }
             }
 
             delete[] m_ThreadHandles;
