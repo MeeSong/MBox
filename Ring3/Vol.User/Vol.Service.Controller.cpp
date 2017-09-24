@@ -569,7 +569,6 @@ namespace MBox
 
                 if (vServiceStatus.dwCurrentState == aWaitStatus)
                 {
-                    hr = HRESULT_FROM_WIN32(ERROR_SERVICE_ALREADY_RUNNING);
                     break;
                 }
 
