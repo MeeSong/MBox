@@ -7,6 +7,14 @@ namespace MBox
 {
     namespace Vol
     {
+        using InstallHinfSection$Type = void (CALLBACK*)(
+            HWND      aWindowHandle,
+            HINSTANCE aModuleHandle,
+            PCWSTR    aCmdLineBuffer,
+            INT       aCmdShow);
+        static InstallHinfSection$Type s_InstallHinfSection = nullptr;
+
+
         HRESULT ServiceInstaller::Initialize()
         {
             HRESULT hr = S_OK;
@@ -23,6 +31,11 @@ namespace MBox
                 break;
             }
 
+            if (FAILED(hr))
+            {
+                Uninitialize();
+            }
+
             return hr;
         }
 
@@ -34,23 +47,7 @@ namespace MBox
                 m_SCMHandle = nullptr;
             }
         }
-
-        HRESULT ServiceInstaller::Install(
-            InstalledCallback$Type aInstalledCallback,
-            bool aIsStart,
-            const wchar_t * aInf)
-        {
-            HRESULT hr = S_OK;
-
-            for (;;)
-            {
-
-                break;
-            }
-
-            return hr;
-        }
-
+        
         HRESULT ServiceInstaller::Install(
             InstalledCallback$Type aInstalledCallback,
             bool aIsStart,
@@ -105,7 +102,7 @@ namespace MBox
                     m_SCMHandle,
                     aServiceName,
                     aDisplayName,
-                    SERVICE_START,
+                    SERVICE_ALL_ACCESS,
                     aServiceType,
                     aStartType,
                     aErrorControl,
@@ -167,17 +164,19 @@ namespace MBox
                 vServiceRegistry = nullptr;
             }
 
-
             return hr;
         }
 
         HRESULT ServiceInstaller::Uninstall(
             const wchar_t * aServiceName,
+            bool* aNeedReboot,
             UINT32 aWaitMilliseconds)
         {
             HRESULT hr = S_OK;
 
+            bool vNeedReboot = false;
             SC_HANDLE vServiceHandle = nullptr;
+            QUERY_SERVICE_CONFIG* vConfig = nullptr;
 
             for (;;)
             {
@@ -191,14 +190,18 @@ namespace MBox
                     break;
                 }
 
+                //
+                // First stop service.
+                //
+
                 SERVICE_STATUS vServiceStatus{};
                 if (!ControlService(vServiceHandle, SERVICE_CONTROL_STOP, &vServiceStatus))
                 {
                     hr = HRESULT_FROM_WIN32(GetLastError());
                     if (HRESULT_FROM_WIN32(ERROR_SERVICE_CANNOT_ACCEPT_CTRL) != hr
-                        || HRESULT_FROM_WIN32(ERROR_SERVICE_NOT_ACTIVE) != hr)
+                        && HRESULT_FROM_WIN32(ERROR_SERVICE_NOT_ACTIVE) != hr)
                     {
-                        break;
+                        vNeedReboot = true;
                     }
                     hr = S_OK;
                 }
@@ -214,6 +217,7 @@ namespace MBox
                         if (vTotalWaitTime >= aWaitMilliseconds)
                         {
                             hr = HRESULT_FROM_WIN32(ERROR_TIMEOUT);
+                            vNeedReboot = true;
                             break;
                         }
 
@@ -246,15 +250,32 @@ namespace MBox
                             if (GetTickCount64() - vStartTickCount > vServiceStatus.dwWaitHint)
                             {
                                 hr = HRESULT_FROM_WIN32(ERROR_TIMEOUT);
+                                vNeedReboot = true;
                                 break;
                             }
                         }
                     }
-                    if (FAILED(hr))
-                    {
-                        break;
-                    }
                 }
+
+                //
+                // Second delete binary file, if in the system directory
+                //
+
+                hr = ReferenceConfig(vServiceHandle, &vConfig);
+                if (FAILED(hr))
+                {
+                    break;
+                }
+
+                _wcslwr_s(vConfig->lpBinaryPathName, wcslen(vConfig->lpBinaryPathName));
+                if (wcsstr(vConfig->lpBinaryPathName, L"system32\\drivers"))
+                {
+                    DeleteFileW(vConfig->lpBinaryPathName);
+                }
+
+                //
+                // Third delete service
+                //
 
                 if (!DeleteService(vServiceHandle))
                 {
@@ -262,8 +283,12 @@ namespace MBox
                     break;
                 }
 
+                if (aNeedReboot) *aNeedReboot = vNeedReboot;
                 break;
             }
+
+            DeferenceConfig(vConfig);
+            vConfig = nullptr;
 
             if (vServiceHandle)
             {
@@ -317,8 +342,66 @@ namespace MBox
             delete[](wchar_t*)(aServiceName);
         }
 
-        //////////////////////////////////////////////////////////////////////////
+        HRESULT ServiceInstaller::ReferenceConfig(
+            SC_HANDLE aServiceHandle, QUERY_SERVICE_CONFIG ** aConfig)
+        {
+            HRESULT hr = S_OK;
 
+            QUERY_SERVICE_CONFIG * vConfig = nullptr;
+
+            for (;;)
+            {
+                DWORD vNeedBytes = 0;
+                if (!QueryServiceConfigW(
+                    aServiceHandle,
+                    vConfig,
+                    0,
+                    &vNeedBytes))
+                {
+                    hr = HRESULT_FROM_WIN32(GetLastError());
+                    if (HRESULT_FROM_WIN32(ERROR_INSUFFICIENT_BUFFER) != hr)
+                    {
+                        break;
+                    }
+                }
+
+                vConfig = (QUERY_SERVICE_CONFIG*)new(std::nothrow) unsigned char[vNeedBytes] {};
+                if (nullptr == vConfig)
+                {
+                    hr = E_NOT_SUFFICIENT_BUFFER;
+                    break;
+                }
+
+                if (!QueryServiceConfigW(
+                    aServiceHandle,
+                    vConfig,
+                    vNeedBytes,
+                    &vNeedBytes))
+                {
+                    hr = HRESULT_FROM_WIN32(GetLastError());
+                    break;
+                }
+                
+                *aConfig = vConfig;
+                break;
+            }
+
+            if (FAILED(hr))
+            {
+                DeferenceConfig(vConfig);
+                vConfig = nullptr;
+            }
+
+            return hr;
+        }
+
+        void ServiceInstaller::DeferenceConfig(QUERY_SERVICE_CONFIG * aConfig)
+        {
+            delete[](unsigned char*)(aConfig);
+        }
+
+        //////////////////////////////////////////////////////////////////////////
+        
         HRESULT MiniFltServiceInstaller::Install(
             InstalledCallback$Type aInstalledCallback,
             bool aIsStart,
@@ -367,7 +450,7 @@ namespace MBox
                         }
 
                         vDosError = RegCreateKeyW(vKeyHandle, L"Instances", &vInstanceKeyHandle);
-                        if (NOERROR != vInstanceKeyHandle)
+                        if (NOERROR != vDosError)
                         {
                             hr = HRESULT_FROM_WIN32(vDosError);
                             break;
@@ -380,7 +463,7 @@ namespace MBox
                             REG_SZ,
                             LPBYTE(aInstanceInformation[0].m_InstanceName),
                             UINT32(wcslen(aInstanceInformation[0].m_InstanceName) * sizeof(wchar_t)));
-                        if (NOERROR != vInstanceKeyHandle)
+                        if (NOERROR != vDosError)
                         {
                             hr = HRESULT_FROM_WIN32(vDosError);
                             break;
@@ -488,6 +571,5 @@ namespace MBox
 
             return hr;
         }
-
-}
+    }
 }

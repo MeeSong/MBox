@@ -17,11 +17,6 @@ namespace MBox
             HRESULT Install(
                 InstalledCallback$Type aInstalledCallback,
                 bool aIsStart,
-                const wchar_t* aInf);
-
-            HRESULT Install(
-                InstalledCallback$Type aInstalledCallback,
-                bool aIsStart,
                 UINT32 aArgc,
                 const wchar_t * aArgv[],
                 const wchar_t* aServiceName,
@@ -38,13 +33,19 @@ namespace MBox
 
             HRESULT Uninstall(
                 const wchar_t* aServiceName,
+                bool* aNeedReboot = nullptr,
                 UINT32 aWaitMilliseconds = 3*1000);
 
         protected:
             HRESULT ReferenceServiceRegistry(const wchar_t* aServiceName, const wchar_t** aRegistry);
             void DeferenceServiceRegistry(const wchar_t* aServiceName);
 
-            SC_HANDLE   m_SCMHandle = nullptr;
+            HRESULT ReferenceConfig(
+                SC_HANDLE aServiceHandle, QUERY_SERVICE_CONFIG** aConfig);
+            void DeferenceConfig(
+                QUERY_SERVICE_CONFIG* aConfig);
+
+            SC_HANDLE   m_SCMHandle             = nullptr;
         };
 
         class MiniFltServiceInstaller : public ServiceInstaller
@@ -109,7 +110,7 @@ namespace MBox
                 UINT32 aServiceType,
                 UINT32 aStartType,
                 UINT32 aErrorControl,
-                UINT32* aTagId);
+                UINT32* aTagId) = delete;
         };
     }
 }
