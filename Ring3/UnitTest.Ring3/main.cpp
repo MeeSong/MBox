@@ -6,7 +6,7 @@ int main(int /*argc*/, char* /*argv*/[])
 {
     HRESULT hr = S_OK;
 
-    MBox::Vol::MiniFltServiceInstaller vService;
+    MBox::Vol::Service::MiniFltServiceInstaller vService;
 
     for (;;)
     {

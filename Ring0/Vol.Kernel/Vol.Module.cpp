@@ -115,7 +115,7 @@ namespace MBox
             }
 
             NTSTATUS QuerySystemModuleInfo(
-                RtlProcessModules* aModules,
+                RtlSystemModules* aModules,
                 ktl::u32 aInputBytes, 
                 ktl::u32* aNeedBytes)
             {
@@ -142,12 +142,12 @@ namespace MBox
             }
 
             NTSTATUS ReferenceSystemModuleInfo(
-                RtlProcessModules** aModules,
+                RtlSystemModules** aModules,
                 POOL_TYPE aPoolType, 
                 ktl::u32 aPoolTag)
             {
                 NTSTATUS vStatus = STATUS_SUCCESS;
-                RtlProcessModules* vModules = nullptr;
+                RtlSystemModules* vModules = nullptr;
 
                 for (;;)
                 {
@@ -165,7 +165,7 @@ namespace MBox
                     }
 
                     vNeedBytes = vNeedBytes * 2;
-                    vModules = (RtlProcessModules*)new(aPoolType, aPoolTag) ktl::byte[vNeedBytes]{};
+                    vModules = (RtlSystemModules*)new(aPoolType, aPoolTag) ktl::byte[vNeedBytes]{};
                     if (nullptr == vModules)
                     {
                         vStatus = STATUS_INSUFFICIENT_RESOURCES;
@@ -191,7 +191,7 @@ namespace MBox
             }
 
             void DeferenceSystemModuleInfo(
-                RtlProcessModules* aModules)
+                RtlSystemModules* aModules)
             {
                 delete[](ktl::byte*)aModules;
             }

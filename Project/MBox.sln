@@ -19,6 +19,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Include", "Include", "{6900
 		..\Include\Mbox.Module.Loader.h = ..\Include\Mbox.Module.Loader.h
 		..\Include\MBox.Network.Socket.h = ..\Include\MBox.Network.Socket.h
 		..\Include\MBox.Object.h = ..\Include\MBox.Object.h
+		..\Include\MBox.Security.h = ..\Include\MBox.Security.h
+		..\Include\MBox.Security.Macro.h = ..\Include\MBox.Security.Macro.h
 		..\Include\MBox.System.Information.h = ..\Include\MBox.System.Information.h
 		..\Include\MBox.System.Version.h = ..\Include\MBox.System.Version.h
 	EndProjectSection

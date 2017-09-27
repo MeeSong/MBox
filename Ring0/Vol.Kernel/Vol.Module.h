@@ -48,16 +48,16 @@ namespace MBox
             //
 
             NTSTATUS QuerySystemModuleInfo(
-                RtlProcessModules* aModules,
+                RtlSystemModules* aModules,
                 ktl::u32 aInputBytes,
                 ktl::u32* aNeedBytes);
 
             NTSTATUS ReferenceSystemModuleInfo(
-                RtlProcessModules** aModules,
+                RtlSystemModules** aModules,
                 POOL_TYPE aPoolType = POOL_TYPE(DefaultPoolType),
                 ktl::u32 aPoolTag = DefaultPoolTag);
 
-            void DeferenceSystemModuleInfo(RtlProcessModules* aModules);
+            void DeferenceSystemModuleInfo(RtlSystemModules* aModules);
 
             template<typename F>
             NTSTATUS TraverseSystemModuleInfo(F aCallback)

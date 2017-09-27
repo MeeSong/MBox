@@ -78,7 +78,7 @@ namespace MBox
                 break;
             }
 
-            m_NotifyThread = (HANDLE)_beginthreadex(nullptr, 0, MBox::MessageNotify, this, CREATE_SUSPENDED, nullptr);
+            m_NotifyThread = (HANDLE)_beginthreadex(nullptr, 0, MBox::MessageNotify, this, 0, nullptr);
             if (nullptr == m_NotifyThread)
             {
                 vDosError = _doserrno;
@@ -193,8 +193,6 @@ namespace MBox
                 vDosError = GetLastError();
                 break;
             }
-
-            ResumeThread(m_NotifyThread);
 
             m_IsConnected = true;
             vDosError = NOERROR;

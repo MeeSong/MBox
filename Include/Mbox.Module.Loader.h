@@ -21,4 +21,6 @@ namespace MBox
         ULONG NumberOfModules;
         RtlProcessModuleInformation Modules[1];
     };
+
+    using RtlSystemModules = RtlProcessModules;
 }

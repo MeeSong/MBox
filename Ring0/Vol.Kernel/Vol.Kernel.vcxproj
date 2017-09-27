@@ -31,6 +31,7 @@
     <ClInclude Include="Vol.Module.h" />
     <ClInclude Include="Vol.Object.h" />
     <ClInclude Include="Vol.PE.h" />
+    <ClInclude Include="Vol.Security.SecurityDescriptor.h" />
     <ClInclude Include="Vol.System.h" />
     <ClInclude Include="Vol.ThreadPool.h" />
     <ClInclude Include="stdafx.h" />
@@ -42,6 +43,7 @@
     <ClCompile Include="Vol.Module.cpp" />
     <ClCompile Include="Vol.Object.cpp" />
     <ClCompile Include="Vol.PE.cpp" />
+    <ClCompile Include="Vol.Security.SecurityDescriptor.cpp" />
     <ClCompile Include="Vol.System.cpp" />
     <ClCompile Include="Vol.ThreadPool.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -70,6 +72,7 @@
     <PlatformToolset>WindowsKernelModeDriver10.0</PlatformToolset>
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <DriverTargetPlatform>Desktop</DriverTargetPlatform>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <TargetVersion>Windows7</TargetVersion>
@@ -77,6 +80,7 @@
     <PlatformToolset>WindowsKernelModeDriver10.0</PlatformToolset>
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <DriverTargetPlatform>Desktop</DriverTargetPlatform>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <TargetVersion>Windows7</TargetVersion>
@@ -84,6 +88,7 @@
     <PlatformToolset>WindowsKernelModeDriver10.0</PlatformToolset>
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <DriverTargetPlatform>Desktop</DriverTargetPlatform>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <TargetVersion>Windows7</TargetVersion>
@@ -91,6 +96,7 @@
     <PlatformToolset>WindowsKernelModeDriver10.0</PlatformToolset>
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <DriverTargetPlatform>Desktop</DriverTargetPlatform>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">

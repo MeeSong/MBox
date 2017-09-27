@@ -183,6 +183,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Vol.Security.h" />
+    <ClInclude Include="Vol.Security.Sddl.h" />
+    <ClInclude Include="Vol.Security.SecurityDescriptor.h" />
     <ClInclude Include="Vol.Service.Base.h" />
     <ClInclude Include="Vol.Service.Controller.h" />
     <ClInclude Include="Vol.Service.h" />
@@ -196,6 +199,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Vol.Security.cpp" />
+    <ClCompile Include="Vol.Security.SecurityDescriptor.cpp" />
     <ClCompile Include="Vol.Service.Base.cpp" />
     <ClCompile Include="Vol.Service.Controller.cpp" />
     <ClCompile Include="Vol.Service.cpp" />
