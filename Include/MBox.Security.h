@@ -334,10 +334,10 @@ namespace MBox
     {
         UINT8   m_Revision;
         UINT8   m_Sbz1;
-        UINT16  m_Control; // SecurityDescriptorControl
-        Sid*    m_Owner;
-        Sid*    m_Group;
-        AccessControlList* m_Sacl;
-        AccessControlList* m_Dacl;
+        UINT16  m_Control;      // SecurityDescriptorControl
+        UINT32  m_OwnerOffset;  // SID* Offset
+        UINT32  m_GroupOffset;  // SID* Offset
+        UINT32  m_SaclOffset;   // ACL* Offset
+        UINT32  m_DaclOffset;   // ACL* Offset
     };
 }

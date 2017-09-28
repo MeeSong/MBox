@@ -16,7 +16,7 @@ namespace MBox
             NTSTATUS BuildSecurityDescriptor(
                 const wchar_t* aSddl,
                 SecurityDescriptor ** aSecurityDescriptor,
-                UINT32* aSecurityDescriptorBytes);
+                UINT32* aSecurityDescriptorBytes = nullptr);
 
             void FreeSecurityDescriptor(
                 SecurityDescriptor * aSecurityDescriptor);

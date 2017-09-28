@@ -720,7 +720,7 @@ namespace MBox
 
                         if (aSecurityDescriptor)
                         {
-                            aSecurityDescriptor->m_Owner = (Sid*)(vNextOffset - (unsigned char*)aSecurityDescriptor);
+                            aSecurityDescriptor->m_OwnerOffset = UINT32(vNextOffset - (unsigned char*)aSecurityDescriptor);
                             vNextOffset += vNeedBytes;
                         }
 
@@ -739,7 +739,7 @@ namespace MBox
 
                         if (aSecurityDescriptor)
                         {
-                            aSecurityDescriptor->m_Group = (Sid*)(vNextOffset - (unsigned char*)aSecurityDescriptor);
+                            aSecurityDescriptor->m_GroupOffset = UINT32(vNextOffset - (unsigned char*)aSecurityDescriptor);
                             vNextOffset += vNeedBytes;
                         }
 
@@ -761,7 +761,7 @@ namespace MBox
                         if (aSecurityDescriptor)
                         {
                             aSecurityDescriptor->m_Control |= SeDaclPresent | vAclFlags;
-                            aSecurityDescriptor->m_Dacl = (AccessControlList*)(vNextOffset - (unsigned char*)aSecurityDescriptor);
+                            aSecurityDescriptor->m_DaclOffset = UINT32(vNextOffset - (unsigned char*)aSecurityDescriptor);
                             vNextOffset += vNeedBytes;
                         }
 
@@ -783,7 +783,7 @@ namespace MBox
                         if (aSecurityDescriptor)
                         {
                             aSecurityDescriptor->m_Control |= SeSaclPresent | vAclFlags;
-                            aSecurityDescriptor->m_Sacl = (AccessControlList*)(vNextOffset - (unsigned char*)aSecurityDescriptor);
+                            aSecurityDescriptor->m_SaclOffset = UINT32(vNextOffset - (unsigned char*)aSecurityDescriptor);
                             vNextOffset += vNeedBytes;
                         }
 
@@ -862,9 +862,9 @@ namespace MBox
             }
 
             NTSTATUS BuildSecurityDescriptor(
-                const wchar_t * aSddl,
+                const wchar_t* aSddl,
                 SecurityDescriptor ** aSecurityDescriptor,
-                UINT32 * aSecurityDescriptorBytes)
+                UINT32* aSecurityDescriptorBytes)
             {
                 NTSTATUS vStatus = STATUS_SUCCESS;
                 SecurityDescriptor* vSecurityDescriptor = nullptr;
@@ -902,7 +902,7 @@ namespace MBox
                         {
                             break;
                         }
-                        *aSecurityDescriptorBytes = vNeedBytes;
+                        if (aSecurityDescriptorBytes) *aSecurityDescriptorBytes = vNeedBytes;
                     }
                     __except (EXCEPTION_EXECUTE_HANDLER)
                     {

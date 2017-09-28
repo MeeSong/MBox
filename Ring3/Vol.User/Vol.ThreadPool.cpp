@@ -42,7 +42,7 @@ namespace MBox
                 UINT_PTR vProcessAffinityMask = 0;
                 UINT_PTR vActiveProcessors    = 0;
                 if (!GetProcessAffinityMask(GetCurrentProcess(), 
-                    &vProcessAffinityMask, &vActiveProcessors))
+                    PDWORD_PTR(&vProcessAffinityMask), PDWORD_PTR(&vActiveProcessors)))
                 {
                     hr = HRESULT_FROM_WIN32(GetLastError());
                     break;

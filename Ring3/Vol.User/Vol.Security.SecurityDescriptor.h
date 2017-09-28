@@ -1,4 +1,5 @@
 #pragma once
+#include <sddl.h>
 #include <MBox.Security.h>
 
 
@@ -16,7 +17,7 @@ namespace MBox
             HRESULT BuildSecurityDescriptor(
                 const wchar_t* aSddl,
                 SecurityDescriptor ** aSecurityDescriptor,
-                UINT32* aSecurityDescriptorBytes);
+                UINT32* aSecurityDescriptorBytes = nullptr);
 
             void FreeSecurityDescriptor(
                 SecurityDescriptor * aSecurityDescriptor);
