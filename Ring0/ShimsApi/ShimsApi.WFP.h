@@ -1,9 +1,4 @@
 #pragma once
-#include <guiddef.h>
-#include <Fwpmk.h>
-#include <fwpsk.h>
-#include <ndis.h>
-
 #include "ShimsApi.Macro.h"
 
 namespace MBox

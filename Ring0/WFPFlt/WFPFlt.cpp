@@ -7,6 +7,8 @@
 #include "WFPFlt.Manager.Redirect.h"
 #include "WFPFlt.Manager.Callout.h"
 
+#include "WFPFlt.Utilities.h"
+
 namespace MBox
 {
     namespace WFPFlt

@@ -1,11 +1,9 @@
+#include <wdm.h>
 #include "KTL.Memory.New.h"
 #include "KTL.Macro.h"
 
-#include <wdm.h>
-
-
 const ktl::u32 DefaultPoolTag = KTL$CompileTime$ByteSwap32$Macro('KNew');
-ktl::u32 DefaultPoolType  = POOL_TYPE::NonPagedPoolNx;
+POOL_TYPE DefaultPoolType  = POOL_TYPE::NonPagedPoolNx;
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -151,7 +149,7 @@ void __cdecl operator delete(void * aPtr) NOEXCEPT$TYPE
     return ExFreePoolWithTag(aPtr, DefaultPoolTag);
 }
 
-void * __cdecl operator new(size_t aSize, ktl::u32 aPoolType) NOEXCEPT$TYPE
+void * __cdecl operator new(size_t aSize, POOL_TYPE aPoolType) NOEXCEPT$TYPE
 {
     if (0 == aSize)
     {
@@ -163,7 +161,7 @@ void * __cdecl operator new(size_t aSize, ktl::u32 aPoolType) NOEXCEPT$TYPE
 
 void * __cdecl operator new(
     size_t aSize,
-    ktl::u32 aPoolType,
+    POOL_TYPE aPoolType,
     unsigned long aTag) NOEXCEPT$TYPE
 {
     if (0 == aSize)
@@ -206,7 +204,7 @@ void __cdecl operator delete[](void * aPtr) NOEXCEPT$TYPE
     return ExFreePoolWithTag(aPtr, DefaultPoolTag);
 }
 
-void * __cdecl operator new[](size_t aSize, ktl::u32 aPoolType) NOEXCEPT$TYPE
+void * __cdecl operator new[](size_t aSize, POOL_TYPE aPoolType) NOEXCEPT$TYPE
 {
     if (0 == aSize)
     {
@@ -218,7 +216,7 @@ void * __cdecl operator new[](size_t aSize, ktl::u32 aPoolType) NOEXCEPT$TYPE
 
 void * __cdecl operator new[](
     size_t aSize,
-    ktl::u32 aPoolType,
+    POOL_TYPE aPoolType,
     unsigned long aTag) NOEXCEPT$TYPE
 {
     if (0 == aSize)

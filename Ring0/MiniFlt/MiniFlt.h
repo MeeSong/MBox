@@ -1,4 +1,5 @@
 #pragma once
+#include <fltKernel.h>
 #include "MiniFlt.Callback.Packet.h"
 
 namespace MBox

@@ -1,4 +1,8 @@
 #pragma once
+#include <ndis.h>
+#include <fwpmk.h>
+#include <fwpsk.h>
+#include <fwptypes.h>
 #include "WFPFlt.Manager.Callout.h"
 
 namespace MBox

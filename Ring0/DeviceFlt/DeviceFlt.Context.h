@@ -25,9 +25,9 @@ namespace MBox
 		public:
 			struct FltContextImpl
 			{
-				ContextType		m_ContextType = ContextType::Unknown;
+				ContextType		m_ContextType  = ContextType::Unknown;
 				DEVICE_OBJECT*	m_DeviceObject = nullptr;
-				volatile long	m_UsedCount = 0;
+				volatile long	m_UsedCount    = 0;
 
 				void*			m_Context = nullptr;
 			};

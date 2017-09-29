@@ -8,7 +8,7 @@
 using size_t = ktl::usize;
 
 extern const ktl::u32 DefaultPoolTag;
-extern ktl::u32 DefaultPoolType;
+extern POOL_TYPE DefaultPoolType;
 
 void KtlInitializeDefaultPoolTypeWithRuntime(
     ktl::u32 aRuntimeFlags = 0x00000001); // DrvRtPoolNxOptIn
@@ -17,16 +17,18 @@ void KtlInitializeDefaultPoolTypeWithRuntime(
 void* __cdecl operator new(size_t aSize) NOEXCEPT$TYPE;
 void __cdecl operator delete (void *aPtr) NOEXCEPT$TYPE;
 
-void* __cdecl operator new (size_t aSize, ktl::u32 aPoolType) NOEXCEPT$TYPE;
-void* __cdecl operator new (size_t aSize, ktl::u32 aPoolType, unsigned long aTag) NOEXCEPT$TYPE;
+void* __cdecl operator new (size_t aSize, POOL_TYPE aPoolType) NOEXCEPT$TYPE;
+void* __cdecl operator new (size_t aSize, POOL_TYPE aPoolType, unsigned long aTag) NOEXCEPT$TYPE;
 void __cdecl operator delete (void *aPtr, unsigned long aTag) NOEXCEPT$TYPE;
+//void __cdecl operator delete (void *aPtr, POOL_TYPE aPoolType, unsigned long aTag) NOEXCEPT$TYPE;
 
 void* __cdecl operator new[](size_t aSize) NOEXCEPT$TYPE;
 void  __cdecl operator delete[](void* aPtr) NOEXCEPT$TYPE;
 
-void* __cdecl operator new[](size_t aSize, ktl::u32 aPoolType) NOEXCEPT$TYPE;
-void* __cdecl operator new[](size_t aSize, ktl::u32 aPoolType, unsigned long aTag) NOEXCEPT$TYPE;
+void* __cdecl operator new[](size_t aSize, POOL_TYPE aPoolType) NOEXCEPT$TYPE;
+void* __cdecl operator new[](size_t aSize, POOL_TYPE aPoolType, unsigned long aTag) NOEXCEPT$TYPE;
 void __cdecl operator delete[](void *aPtr, unsigned long aTag) NOEXCEPT$TYPE;
+//void __cdecl operator delete[](void *aPtr, POOL_TYPE aPoolType, unsigned long aTag) NOEXCEPT$TYPE;
 
 // replaceable placement deallocation functions
 void* __cdecl operator new  (size_t aSize, void* aPtr) NOEXCEPT$TYPE;

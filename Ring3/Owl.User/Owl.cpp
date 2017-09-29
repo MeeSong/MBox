@@ -1,9 +1,12 @@
 #include "stdafx.h"
+#include <MBox.Synchronize.h>
 #include "Owl.h"
 
 
 namespace MBox
 {
+#define MBox$DriverMgr$DriverExitEventName$Macro    L"\\DriverMgr{C509B8DF-71E2-473A-99C7-3ACD90ECAE74}"
+
     static unsigned __stdcall MessageNotify(void* aParameter)
     {
         auto vThis = (Owl*)aParameter;
@@ -62,6 +65,16 @@ namespace MBox
                     vDosError = ERROR_OUTOFMEMORY;
                     break;
                 }
+            }
+
+            m_EventHandles[EventClasses::DriverExit] = OpenEventW(
+                EventQueryState | Synchronize,
+                FALSE,
+                (L"Global" MBox$DriverMgr$DriverExitEventName$Macro));
+            if (nullptr == m_EventHandles[EventClasses::DriverExit])
+            {
+                vDosError = GetLastError();
+                break;
             }
 
             m_EventHandles[EventClasses::NotifySemaphore] = CreateSemaphoreW(nullptr, 0, LONG_MAX, nullptr);
@@ -263,6 +276,21 @@ namespace MBox
                 hr = S_OK;
                 break;
             }
+            else if (EventClasses::DriverExit == vWaitResult)
+            {
+                hr = ERROR_SERVER_DISABLED;
+
+                try
+                {
+                    if (m_ServerClosedNotify) m_ServerClosedNotify();
+                }
+                catch (...)
+                {
+                	break;
+                }
+
+                break;
+            }
             else if (EventClasses::NotifySemaphore == vWaitResult)
             {
                 if (false == m_IsConnected)
@@ -416,14 +444,22 @@ namespace MBox
                 break;
             }
 
-            hr = m_MessageNotifyCallback(
-                m_MessagePacket,
-                m_MessagePacketMaxBytes,
-                m_ReplyPacket,
-                m_ReplyPacketMaxBytes);
+            NTSTATUS vStatus = STATUS_SUCCESS;
+            try
+            {
+                hr = m_MessageNotifyCallback(
+                    m_MessagePacket,
+                    m_MessagePacketMaxBytes,
+                    m_ReplyPacket,
+                    m_ReplyPacketMaxBytes);
+            }
+            catch (...)
+            {
+                vStatus = 0xC0000001L; // STATUS_UNSUCCESSFUL;
+            }
 
             m_ReplyPacket->m_MessageId = m_MessagePacket->m_MessageId;
-            m_ReplyPacket->m_Status = STATUS_SUCCESS;
+            m_ReplyPacket->m_Status    = vStatus;
             hr = ReplyMessage(m_ReplyPacket, m_ReplyPacketMaxBytes);
             if (FAILED(hr))
             {

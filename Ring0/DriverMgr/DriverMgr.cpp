@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "DriverMgr.h"
 #include <ntstrsafe.h>
-
+#include <Vol.Kernel\Vol.Security.SecurityDescriptor.h>
 #include <KTL\KTL.Multithreading.LockHelper.h>
 
 namespace MBox
@@ -13,7 +13,7 @@ namespace MBox
         //
 
         static DRIVER_OBJECT        *s_DriverObject     = nullptr;
-        static PRKEVENT             s_DriverUnloadEvent = nullptr;
+        static HANDLE               s_DriverUnloadEvent = nullptr;
 
         static volatile bool        s_IsInitialize      = nullptr;
         static DeviceGroupList$Type *s_DeviceGroupList  = nullptr;
@@ -46,7 +46,7 @@ namespace MBox
 
         static void DriverUnload(DRIVER_OBJECT *aDriverObject)
         {
-            KeSetEvent(s_DriverUnloadEvent, IO_NO_INCREMENT, FALSE);
+            ZwSetEvent(s_DriverUnloadEvent, nullptr);
 
             if (s_PreUnload)
             {
@@ -193,8 +193,8 @@ namespace MBox
             void * aPostUnloadContext)
         {
             NTSTATUS vStatus = STATUS_SUCCESS;
-            HANDLE vDriverUnloadEventHandle = nullptr;
 
+            MBox::SecurityDescriptor* vSecurityDescriptor = nullptr;
             for (;;)
             {
                 if (true == s_IsInitialize)
@@ -206,6 +206,34 @@ namespace MBox
                 if (nullptr == aDriverObject)
                 {
                     vStatus = STATUS_INVALID_PARAMETER;
+                    break;
+                }
+
+                UNICODE_STRING vObjectName = RTL_CONSTANT_STRING((L"\\BaseNamedObjects" MBox$DriverMgr$DriverExitEventName$Macro));
+                vStatus = MBox::Vol::Security::BuildSecurityDescriptor(
+                    L"D:P(A;CIOI;GRGX;;;WD)",
+                    &vSecurityDescriptor);
+                if (!NT_SUCCESS(vStatus))
+                {
+                    break;
+                }
+
+                OBJECT_ATTRIBUTES vObjectAttributes{};
+                InitializeObjectAttributes(
+                    &vObjectAttributes,
+                    &vObjectName,
+                    OBJ_FORCE_ACCESS_CHECK | OBJ_CASE_INSENSITIVE,
+                    nullptr,
+                    vSecurityDescriptor);
+
+                vStatus = ZwCreateEvent(
+                    &s_DriverUnloadEvent,
+                    EVENT_ALL_ACCESS,
+                    &vObjectAttributes,
+                    EventType::NotificationEvent,
+                    FALSE);
+                if (!NT_SUCCESS(vStatus))
+                {
                     break;
                 }
 
@@ -245,11 +273,7 @@ namespace MBox
                 break;
             }
 
-            if (vDriverUnloadEventHandle)
-            {
-                ZwClose(vDriverUnloadEventHandle);
-                vDriverUnloadEventHandle = nullptr;
-            }
+            MBox::Vol::Security::FreeSecurityDescriptor(vSecurityDescriptor);
 
             if (!NT_SUCCESS(vStatus))
             {
@@ -293,7 +317,7 @@ namespace MBox
 
             if (s_DriverUnloadEvent)
             {
-                ObDereferenceObject(s_DriverUnloadEvent);
+                ZwClose(s_DriverUnloadEvent);
                 s_DriverUnloadEvent = nullptr;
             }
 
@@ -437,7 +461,7 @@ namespace MBox
             return s_DriverObject;
         }
 
-        PRKEVENT GetDriverUnloadEvent()
+        HANDLE GetDriverUnloadEvent()
         {
             return s_DriverUnloadEvent;
         }

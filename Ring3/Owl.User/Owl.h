@@ -42,7 +42,7 @@ namespace MBox
         void Uninitialize();
 
         HRESULT CreateGetMessageThread();
-        void DestroyGetMessageThread(UINT32 aSecondsForWait = 10);
+        void DestroyGetMessageThread(UINT32 aSecondsForWait = 5);
 
         HRESULT ConnectCommunicationPort(
             PCWSTR aPortName,
@@ -78,9 +78,9 @@ namespace MBox
 
     protected:
         UINT32                      m_MessagePacketMaxBytes = sizeof(MessageHeader);
-        UINT32                      m_ReplyPacketMaxBytes = sizeof(ReplyHeader);
-        MessageHeader*         m_MessagePacket = nullptr;
-        ReplyHeader*           m_ReplyPacket = nullptr;
+        UINT32                      m_ReplyPacketMaxBytes   = sizeof(ReplyHeader);
+        MessageHeader*              m_MessagePacket         = nullptr;
+        ReplyHeader*                m_ReplyPacket           = nullptr;
         MessageNotifyCallback$Type  m_MessageNotifyCallback;
 
         ServerClosedNotifyCallback$Type m_ServerClosedNotify;
@@ -90,6 +90,7 @@ namespace MBox
         enum EventClasses : UINT32
         {
             ThreadExit,         // WAIT_OBJECT_0
+            DriverExit,
             NotifySemaphore,
             Max
         };

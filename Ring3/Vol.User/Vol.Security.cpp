@@ -2,6 +2,7 @@
 #include "Vol.Security.h"
 
 #include <sddl.h>
+#include <AclAPI.h>
 #include <stddef.h>
 #include <new>
 

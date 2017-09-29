@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <fltKernel.h>
 #include "ShimsApi.MiniFilter.h"
 
 namespace MBox

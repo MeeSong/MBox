@@ -1,13 +1,15 @@
 #pragma once
-
 #include <KTL\KTL.Memory.SharedPtr.h>
 #include <KTL\KTL.Containers.List.h>
 #include <KTL\KTL.Multithreading.SpinLock.h>
+
 
 namespace MBox
 {
     namespace DriverMgr
     {
+#define MBox$DriverMgr$DriverExitEventName$Macro    L"\\DriverMgr{C509B8DF-71E2-473A-99C7-3ACD90ECAE74}"
+
         using DriverUnload$Type = NTSTATUS(*)(DRIVER_OBJECT* aDriverObject, void* aContext);
 
         struct DispatchCallbackPacket
@@ -59,7 +61,7 @@ namespace MBox
             PDEVICE_OBJECT aDeviceObject);
 
         DRIVER_OBJECT* GetDriverObject();
-        PRKEVENT GetDriverUnloadEvent();
+        HANDLE GetDriverUnloadEvent();
 
         template<typename F>
         NTSTATUS RegisterDeviceGroup(

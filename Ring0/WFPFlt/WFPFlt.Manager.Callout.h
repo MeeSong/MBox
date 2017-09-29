@@ -1,11 +1,7 @@
 #pragma once
-#include "WFPFlt.Utilities.h"
-
 #include <KTL\KTL.Functional.Function.h>
 #include <KTL\KTL.Containers.List.h>
 #include <KTL\KTL.Memory.SharedPtr.h>
-
-#include <fwpsk.h>
 
 namespace MBox
 {

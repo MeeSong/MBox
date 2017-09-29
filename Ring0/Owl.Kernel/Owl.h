@@ -1,15 +1,15 @@
 #pragma once
-#include <MBox.OwlProtocol.h>
 #include <ntstrsafe.h>
+
+#include <MBox.OwlProtocol.h>
+#include <MBox.Object.h>
+
+#include <DriverMgr\DriverMgr.h>
 
 #include <KTL\KTL.Functional.Function.h>
 #include <KTL\KTL.Containers.List.h>
 #include <KTL\KTL.Multithreading.LockHelper.h>
 #include <KTL\KTL.Multithreading.SpinLock.h>
-
-#include <MBox.Object.h>
-
-#include <DriverMgr\DriverMgr.h>
 
 
 namespace MBox
@@ -234,7 +234,7 @@ namespace MBox
                     break;
                 }
 
-                vStatus = DeviceMgr::CreateDeviceObject(
+                vStatus = DriverMgr::CreateDeviceObject(
                     GetGroupHandle(),
                     0,
                     &(vCommunicationPort->m_DeviceName),

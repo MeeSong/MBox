@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <Vol.Kernel\Vol.System.h>
 #include "WFPFlt.Utilities.h"
 
 namespace MBox

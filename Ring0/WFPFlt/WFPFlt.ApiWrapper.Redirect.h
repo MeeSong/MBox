@@ -1,6 +1,5 @@
 #pragma once
 #include "WFPFlt.ApiWrapper.h"
-#include <fwpsk.h>
 
 namespace MBox
 {

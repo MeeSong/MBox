@@ -55,25 +55,35 @@ bool TestSecurityDescriptor()
     return vResult;
 }
 
+#ifndef EVENT_QUERY_STATE
+#define EVENT_QUERY_STATE 0x0001
+#endif
+
 int main(int /*argc*/, char* /*argv*/[])
 {
-    HRESULT hr = S_OK;
+    static const wchar_t vEventName[] = L"Global\\DriverMgr{C509B8DF-71E2-473A-99C7-3ACD90ECAE74}";
 
+    HRESULT hr = S_OK;
     HANDLE vEventHandle = nullptr;
 
     for (;;)
     {
+        printf("Open Event : %ws\n", vEventName);
         vEventHandle = OpenEventW(
-            EVENT_MODIFY_STATE | SYNCHRONIZE,
+            EVENT_QUERY_STATE | SYNCHRONIZE,
             FALSE,
-            L"Global\\UnitTest{C509B8DF-71E2-473A-99C7-3ACD90ECAE74}");
+            vEventName);
         if (nullptr == vEventHandle)
         {
-            hr = HRESULT_FROM_WIN32(GetLastError());
+            auto vDosError = GetLastError();
+            hr = HRESULT_FROM_WIN32(vDosError);
+            printf("Error = 0x%08X, OpenEvent() failed!", vDosError);
             break;
         }
 
-        getchar();
+        printf("Wait Driver exit...\n");
+        WaitForSingleObject(vEventHandle, INFINITE);
+        printf("Drvier exited!\n");
 
         break;
     }

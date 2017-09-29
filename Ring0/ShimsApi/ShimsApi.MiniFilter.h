@@ -1,5 +1,4 @@
 #pragma once
-#include <fltKernel.h>
 
 namespace MBox
 {

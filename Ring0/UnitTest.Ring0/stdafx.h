@@ -11,6 +11,8 @@
 #define NDIS_SUPPORT_NDIS6 1
 #endif
 
+#include <fltKernel.h>
+
 #include <KTL\KTL.Type.h>
 #include <KTL\KTL.Memory.New.h>
 #include <MBox.System.Version.h>

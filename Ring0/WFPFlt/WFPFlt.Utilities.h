@@ -1,8 +1,5 @@
 #pragma once
-#include <fwpmk.h>
-#include <fwptypes.h>
 #include <MBox.Network.Socket.h>
-#include <Vol.Kernel\Vol.System.h>
 
 
 namespace MBox

@@ -1,7 +1,6 @@
 #pragma once
-#include "MiniFlt.Macro.h"
 #include <KTL\KTL.Functional.Function.h>
-#include <fltKernel.h>
+#include "MiniFlt.Macro.h"
 
 //////////////////////////////////////////////////////////////////////////
 

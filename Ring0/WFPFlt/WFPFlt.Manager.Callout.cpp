@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "WFPFlt.Utilities.h"
 #include "WFPFlt.Manager.Callout.h"
 #include "WFPFlt.Manager.Engine.h"
 #include "WFPFlt.Manager.Transaction.h"

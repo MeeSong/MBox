@@ -1,9 +1,6 @@
 #pragma once
-#include <KTL\KTL.Macro.h>
-#include <KTL\KTL.Memory.New.h>
-
-#include <wdm.h>
 #include <Mbox.Module.Loader.h>
+#include <KTL\KTL.Memory.New.h>
 
 namespace MBox
 {
