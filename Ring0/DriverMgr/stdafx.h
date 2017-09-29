@@ -11,6 +11,6 @@
 #include <wdm.h>
 #include <KTL\KTL.Memory.New.h>
 
-#include <MBox.Macro.h>
-#include <MBox.Synchronize.h>
-#include <MBox.System.Version.h>
+#include <Common\MBox.Macro.h>
+#include <Microsoft\MBox.Object.Synchronize.h>
+#include <Microsoft\MBox.System.Version.h>

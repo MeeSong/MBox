@@ -3,9 +3,6 @@
 #include "DeviceFlt.Callback.Instance.h"
 #include "DeviceFlt.Callback.Context.h"
 
-#include <KTL\KTL.Containers.List.h>
-#include <KTL\KTL.Memory.SharedPtr.h>
-
 namespace MBox
 {
 	namespace DeviceFlt

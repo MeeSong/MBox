@@ -12,19 +12,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ring3", "Ring3", "{CB3E6D17-BEA2-40E0-B92F-EB9612FD7C99}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Include", "Include", "{6900FBAC-17E6-4AC2-AA96-A653C41154D7}"
-	ProjectSection(SolutionItems) = preProject
-		..\Include\MBox.Images.PE.h = ..\Include\MBox.Images.PE.h
-		..\Include\MBox.Macro.h = ..\Include\MBox.Macro.h
-		..\Include\MBox.Memory.Information.h = ..\Include\MBox.Memory.Information.h
-		..\Include\Mbox.Module.Loader.h = ..\Include\Mbox.Module.Loader.h
-		..\Include\MBox.Network.Socket.h = ..\Include\MBox.Network.Socket.h
-		..\Include\MBox.Object.h = ..\Include\MBox.Object.h
-		..\Include\MBox.Security.h = ..\Include\MBox.Security.h
-		..\Include\MBox.Security.Macro.h = ..\Include\MBox.Security.Macro.h
-		..\Include\MBox.Synchronize.h = ..\Include\MBox.Synchronize.h
-		..\Include\MBox.System.Information.h = ..\Include\MBox.System.Information.h
-		..\Include\MBox.System.Version.h = ..\Include\MBox.System.Version.h
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTest.Ring0", "..\Ring0\UnitTest.Ring0\UnitTest.Ring0.vcxproj", "{B31E2FCC-6BB3-449E-956C-770F757A4EE4}"
 EndProject
@@ -49,6 +36,35 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Vol.Kernel", "..\Ring0\Vol.Kernel\Vol.Kernel.vcxproj", "{35303652-ECBE-4ED7-AE08-514922BAE276}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTest.Ring3", "..\Ring3\UnitTest.Ring3\UnitTest.Ring3.vcxproj", "{D825A258-3FE0-49EE-B02C-E6639597FC6A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Microsoft", "Microsoft", "{EF045944-29C3-4E7D-A5A1-16E4F62948CC}"
+	ProjectSection(SolutionItems) = preProject
+		..\Include\Microsoft\MBox.Base.h = ..\Include\Microsoft\MBox.Base.h
+		..\Include\Microsoft\MBox.Images.PE.h = ..\Include\Microsoft\MBox.Images.PE.h
+		..\Include\Microsoft\MBox.Memory.Information.h = ..\Include\Microsoft\MBox.Memory.Information.h
+		..\Include\Microsoft\Mbox.Module.Loader.h = ..\Include\Microsoft\Mbox.Module.Loader.h
+		..\Include\Microsoft\MBox.Network.Socket.h = ..\Include\Microsoft\MBox.Network.Socket.h
+		..\Include\Microsoft\MBox.Object.Directory.h = ..\Include\Microsoft\MBox.Object.Directory.h
+		..\Include\Microsoft\MBox.Object.h = ..\Include\Microsoft\MBox.Object.h
+		..\Include\Microsoft\MBox.Object.Job.h = ..\Include\Microsoft\MBox.Object.Job.h
+		..\Include\Microsoft\MBox.Object.Synchronize.h = ..\Include\Microsoft\MBox.Object.Synchronize.h
+		..\Include\Microsoft\MBox.Process.h = ..\Include\Microsoft\MBox.Process.h
+		..\Include\Microsoft\MBox.Security.h = ..\Include\Microsoft\MBox.Security.h
+		..\Include\Microsoft\MBox.Security.Macro.h = ..\Include\Microsoft\MBox.Security.Macro.h
+		..\Include\Microsoft\MBox.System.Information.h = ..\Include\Microsoft\MBox.System.Information.h
+		..\Include\Microsoft\MBox.System.Version.h = ..\Include\Microsoft\MBox.System.Version.h
+		..\Include\Microsoft\MBox.Thread.h = ..\Include\Microsoft\MBox.Thread.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{48374AC9-6C08-4DA2-B9DA-9F62A04919B0}"
+	ProjectSection(SolutionItems) = preProject
+		..\Include\Common\MBox.Macro.h = ..\Include\Common\MBox.Macro.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Owl", "Owl", "{C4E100BB-ECFC-4EBF-98F2-C456B2DDA28A}"
+	ProjectSection(SolutionItems) = preProject
+		..\Include\Owl\MBox.OwlProtocol.h = ..\Include\Owl\MBox.OwlProtocol.h
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -229,5 +245,8 @@ Global
 		{7C9C7EB7-3DC3-4E5A-9992-382C92B2A4ED} = {CB3E6D17-BEA2-40E0-B92F-EB9612FD7C99}
 		{35303652-ECBE-4ED7-AE08-514922BAE276} = {8977ACD6-1A78-49CF-A6F2-78802DED85D8}
 		{D825A258-3FE0-49EE-B02C-E6639597FC6A} = {CB3E6D17-BEA2-40E0-B92F-EB9612FD7C99}
+		{EF045944-29C3-4E7D-A5A1-16E4F62948CC} = {6900FBAC-17E6-4AC2-AA96-A653C41154D7}
+		{48374AC9-6C08-4DA2-B9DA-9F62A04919B0} = {6900FBAC-17E6-4AC2-AA96-A653C41154D7}
+		{C4E100BB-ECFC-4EBF-98F2-C456B2DDA28A} = {6900FBAC-17E6-4AC2-AA96-A653C41154D7}
 	EndGlobalSection
 EndGlobal

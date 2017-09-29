@@ -1,18 +1,14 @@
 #include "stdafx.h"
+#include <KTL\KTL.Macro.h>
+#include <KTL\KTL.Memory.New.h>
 #include "DeviceFlt.Callback.Instance.h"
 #include "DeviceFlt.Callback.Packet.h"
 
-#include <KTL\KTL.Macro.h>
 
 namespace MBox
 {
 	namespace DeviceFlt
 	{
-		enum : UINT32
-		{
-			DefaultInstanceContextPoolType = NonPagedPoolNx,
-		};
-
 		inline static UINT32 GetInstanceContextsArrayBytes()
 		{
 			return UINT32(GetCallbackPacketManager()->GetCallbackPacketList()->size() * sizeof(FltInstanceContext));
@@ -35,7 +31,7 @@ namespace MBox
 				aDeviceObject,
 				ContextType::Instance,
 				vContextArrayBytes,
-				POOL_TYPE(DefaultInstanceContextPoolType),
+				POOL_TYPE(DefaultPoolType),
 				(void**)&vContextArray);
 			if (!NT_SUCCESS(vStatus))
 			{

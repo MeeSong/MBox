@@ -32,7 +32,7 @@
     <ClInclude Include="Owl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Include\MBox.OwlProtocol.h">
+    <ClInclude Include="..\..\Include\Owl\MBox.OwlProtocol.h">
       <Filter>Include</Filter>
     </ClInclude>
   </ItemGroup>

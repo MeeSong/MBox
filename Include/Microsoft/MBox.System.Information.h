@@ -69,7 +69,7 @@ namespace MBox
         SystemEmulationBasicInformation,    // q
         SystemEmulationProcessorInformation,
         SystemExtendedHandleInformation,    // q: SYSTEM_HANDLE_INFORMATION_EX
-        SystemLostDelayedWriteInformation,  // q: ULONG
+        SystemLostDelayedWriteInformation,  // q: UINT32
         SystemBigPoolInformation,           // q: SYSTEM_BIGPOOL_INFORMATION
         SystemSessionPoolTagInformation,    // q: SYSTEM_SESSION_POOLTAG_INFORMATION
         SystemSessionMappedViewInformation, // q: SYSTEM_SESSION_MAPPED_VIEW_INFORMATION
@@ -115,7 +115,7 @@ namespace MBox
         SystemProcessorCycleTimeInformation, // q: SYSTEM_PROCESSOR_CYCLE_TIME_INFORMATION[]
         SystemStoreInformation,             // q; s // SmQueryStoreInformation
         SystemRegistryAppendString,         // s: SYSTEM_REGISTRY_APPEND_STRING_PARAMETERS // 110
-        SystemAitSamplingValue,             // s: ULONG (requires SeProfileSingleProcessPrivilege)
+        SystemAitSamplingValue,             // s: UINT32 (requires SeProfileSingleProcessPrivilege)
         SystemVhdBootInformation,           // q: SYSTEM_VHD_BOOT_INFORMATION
         SystemCpuQuotaInformation,          // q; s // PsQueryCpuQuotaInformation
         SystemNativeBasicInformation,       // not implemented
@@ -202,18 +202,18 @@ namespace MBox
 
     extern"C"
     {
-        NTSTATUS __stdcall ZwQuerySystemInformation(
+        NTSTATUS NTAPI ZwQuerySystemInformation(
             SystemInformationClass aSystemInformationClass,
             PVOID SystemInformation,
-            ULONG SystemInformationLength,
-            PULONG ReturnLength);
+            UINT32 SystemInformationLength,
+            UINT32* ReturnLength);
 
-        NTSTATUS __stdcall ZwQuerySystemInformationEx(
+        NTSTATUS NTAPI ZwQuerySystemInformationEx(
             SystemInformationClass aSystemInformationClass,
             PVOID InputBuffer,
-            ULONG InputBufferLength,
+            UINT32 InputBufferLength,
             PVOID SystemInformation,
-            ULONG SystemInformationLength,
-            PULONG ReturnLength);
+            UINT32 SystemInformationLength,
+            UINT32* ReturnLength);
     }
 }

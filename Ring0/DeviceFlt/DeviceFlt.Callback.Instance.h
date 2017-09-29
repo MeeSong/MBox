@@ -1,8 +1,8 @@
 #pragma once
-#include "DeviceFlt.Macro.h"
-
-#include <Vol.Kernel\Vol.Device.h>
 #include <KTL\KTL.Functional.Function.h>
+#include <Vol.Kernel\Vol.Device.h>
+
+#include "DeviceFlt.Macro.h"
 
 
 namespace MBox

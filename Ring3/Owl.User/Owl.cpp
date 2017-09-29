@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include <MBox.Synchronize.h>
+#include <Microsoft\MBox.Object.Synchronize.h>
 #include "Owl.h"
 
 

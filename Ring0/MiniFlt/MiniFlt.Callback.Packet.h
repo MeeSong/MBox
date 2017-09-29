@@ -1,8 +1,8 @@
 #pragma once
-#include "MiniFlt.Callback.Operation.h"
-
 #include <KTL\KTL.Memory.SharedPtr.h>
 #include <KTL\KTL.Containers.List.h>
+
+#include "MiniFlt.Callback.Operation.h"
 
 //////////////////////////////////////////////////////////////////////////
 

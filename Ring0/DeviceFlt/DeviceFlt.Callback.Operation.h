@@ -1,8 +1,8 @@
 #pragma once
+#include <KTL\KTL.Functional.Function.h>
+
 #include "DeviceFlt.Callback.Instance.h"
 #include "DeviceFlt.Macro.h"
-
-#include <KTL\KTL.Functional.Function.h>
 
 
 namespace MBox

@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "Vol.Object.h"
 
-#include <MBox.Object.h>
-
 
 namespace MBox
 {
@@ -10,6 +8,41 @@ namespace MBox
     {
         namespace Object
         {
+            NTSTATUS ObjectToHandle(
+                HANDLE * aHandle, 
+                PVOID aObject, 
+                POBJECT_TYPE aObjectType, 
+                ACCESS_MASK aDesiredAccess, 
+                UINT32 aHandleAttributes,
+                KPROCESSOR_MODE aAccessMode,
+                PACCESS_STATE aPassedAccessState)
+            {
+                return ObOpenObjectByPointer(
+                    aObject,
+                    aHandleAttributes,
+                    aPassedAccessState, 
+                    aDesiredAccess,
+                    aObjectType,
+                    aAccessMode,
+                    aHandle);
+            }
+
+            NTSTATUS HandleToObject(
+                PVOID * aObject, 
+                HANDLE aHandle,
+                POBJECT_TYPE aObjectType,
+                ACCESS_MASK aDesiredAccess,
+                KPROCESSOR_MODE aAccessMode)
+            {
+                return ObReferenceObjectByHandle(
+                    aHandle,
+                    aDesiredAccess,
+                    aObjectType,
+                    aAccessMode,
+                    aObject, 
+                    nullptr);
+            }
+
             NTSTATUS QueryObjectName(
                 void * aObject, 
                 POBJECT_NAME_INFORMATION aObjectName,
@@ -20,13 +53,13 @@ namespace MBox
 
                 for (;;)
                 {
-                    ULONG vNeedBytes = 0;
+                    UINT32 vNeedBytes = 0;
 
                     __try
                     {
                         vStatus = MBox::ObQueryNameString(
                             aObject,
-                            aObjectName,
+                            (ObjectNameInformation*)(aObjectName),
                             aInputBytes,
                             &vNeedBytes);
                         if (STATUS_INFO_LENGTH_MISMATCH == vStatus

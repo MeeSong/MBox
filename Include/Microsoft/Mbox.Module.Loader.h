@@ -7,18 +7,18 @@ namespace MBox
         HANDLE Section;
         PVOID MappedBase;
         PVOID ImageBase;
-        ULONG ImageSize;
-        ULONG Flags;
-        USHORT LoadOrderIndex;
-        USHORT InitOrderIndex;
-        USHORT LoadCount;
-        USHORT OffsetToFileName;
+        UINT32 ImageSize;
+        UINT32 Flags;
+        UINT16 LoadOrderIndex;
+        UINT16 InitOrderIndex;
+        UINT16 LoadCount;
+        UINT16 OffsetToFileName;
         UCHAR FullPathName[256];
     };
 
     struct RtlProcessModules
     {
-        ULONG NumberOfModules;
+        UINT32 NumberOfModules;
         RtlProcessModuleInformation Modules[1];
     };
 

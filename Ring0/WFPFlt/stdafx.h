@@ -19,4 +19,5 @@
 
 #include <KTL\KTL.Type.h>
 #include <KTL\KTL.Memory.New.h>
-#include <MBox.System.Version.h>
+#include <Microsoft\MBox.System.Version.h>
+#include <Microsoft\MBox.Network.Socket.h>

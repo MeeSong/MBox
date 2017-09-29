@@ -10,8 +10,8 @@
 #include <wdm.h>
 #include <KTL\KTL.Memory.New.h>
 
-#include <MBox.Macro.h>
-#include <MBox.System.Version.h>
+#include <Common\MBox.Macro.h>
+#include <Microsoft\MBox.System.Version.h>
 
 #include <Vol.Kernel\Vol.Device.h>
 

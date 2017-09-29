@@ -4,8 +4,8 @@
 
 #include <ntstrsafe.h>
 
-#include <MBox.System.Information.h>
-#include <MBox.Memory.Information.h>
+#include <Microsoft\MBox.System.Information.h>
+#include <Microsoft\MBox.Memory.Information.h>
 
 #include <KTL\KTL.Strings.h>
 
@@ -123,7 +123,7 @@ namespace MBox
 
                 for (;;)
                 {
-                    ULONG vNeedBytes = 0;
+                    UINT32 vNeedBytes = 0;
 
                     vStatus = ZwQuerySystemInformation(
                         SystemInformationClass::SystemModuleInformation,
@@ -230,13 +230,13 @@ namespace MBox
                             sizeof(vMemInfo),
                             &vNeedBytes);
 
-                        if (!(vMemInfo.Type & (MemoryTypeMask::Mapped | MemoryTypeMask::Image)))
+                        if (!(vMemInfo.m_Type & (MemoryTypeMask::Mapped | MemoryTypeMask::Image)))
                         {
-                            vBaseAddress = PVOID(SIZE_T(vBaseAddress) + vMemInfo.RegionSize);
+                            vBaseAddress = PVOID(SIZE_T(vBaseAddress) + vMemInfo.m_RegionSize);
                             continue;
                         }
 
-                        PVOID vImageBase = vMemInfo.AllocationBase;
+                        PVOID vImageBase = vMemInfo.m_AllocationBase;
                         SIZE_T vImageSize = 0;
 
                         do 
@@ -245,8 +245,8 @@ namespace MBox
                             // 计算总大小
                             //
 
-                            vBaseAddress = PVOID(SIZE_T(vBaseAddress) + vMemInfo.RegionSize);
-                            vImageSize += vMemInfo.RegionSize;
+                            vBaseAddress = PVOID(SIZE_T(vBaseAddress) + vMemInfo.m_RegionSize);
+                            vImageSize += vMemInfo.m_RegionSize;
 
                             vStatus = ZwQueryVirtualMemory(
                                 aProcessHandle,
@@ -256,7 +256,7 @@ namespace MBox
                                 sizeof(vMemInfo),
                                 &vNeedBytes);
                             
-                        } while (NT_SUCCESS(vStatus) && vImageBase == vMemInfo.AllocationBase);
+                        } while (NT_SUCCESS(vStatus) && vImageBase == vMemInfo.m_AllocationBase);
 
                         //
                         // 查询模块名

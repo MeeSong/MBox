@@ -18,4 +18,4 @@ using NTSTATUS = LONG;
 #define STATUS_SUCCESS ((NTSTATUS)0x00000000L) 
 #endif
 
-#include <MBox.OwlProtocol.h>
+#include <Owl\MBox.OwlProtocol.h>

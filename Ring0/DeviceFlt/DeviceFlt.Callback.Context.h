@@ -1,8 +1,9 @@
 #pragma once
+#include <KTL\KTL.Functional.Function.h>
+
 #include "DeviceFlt.Context.h"
 #include "DeviceFlt.Macro.h"
 
-#include <KTL\KTL.Functional.Function.h>
 
 namespace MBox
 {

@@ -179,7 +179,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Include\MBox.OwlProtocol.h" />
+    <ClInclude Include="..\..\Include\Owl\MBox.OwlProtocol.h" />
     <ClInclude Include="Owl.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>

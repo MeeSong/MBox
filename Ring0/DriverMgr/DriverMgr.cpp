@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "DriverMgr.h"
-#include <ntstrsafe.h>
 #include <Vol.Kernel\Vol.Security.SecurityDescriptor.h>
-#include <KTL\KTL.Multithreading.LockHelper.h>
+
+#include <ntstrsafe.h>
+#include "DriverMgr.h"
 
 namespace MBox
 {
@@ -229,7 +229,7 @@ namespace MBox
                 vStatus = ZwCreateEvent(
                     &s_DriverUnloadEvent,
                     EVENT_ALL_ACCESS,
-                    &vObjectAttributes,
+                    (ObjectAttributes*)(&vObjectAttributes),
                     EventType::NotificationEvent,
                     FALSE);
                 if (!NT_SUCCESS(vStatus))

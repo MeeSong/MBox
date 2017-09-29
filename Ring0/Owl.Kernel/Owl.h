@@ -1,15 +1,8 @@
 #pragma once
 #include <ntstrsafe.h>
-
-#include <MBox.OwlProtocol.h>
-#include <MBox.Object.h>
-
 #include <DriverMgr\DriverMgr.h>
-
 #include <KTL\KTL.Functional.Function.h>
-#include <KTL\KTL.Containers.List.h>
-#include <KTL\KTL.Multithreading.LockHelper.h>
-#include <KTL\KTL.Multithreading.SpinLock.h>
+#include <Owl\MBox.OwlProtocol.h>
 
 
 namespace MBox

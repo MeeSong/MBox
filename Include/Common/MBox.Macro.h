@@ -1,5 +1,8 @@
 #pragma once
 
+namespace MBox
+{
+
 #ifndef MBox$CompileTime$Log$Macro
 #define MBox$CompileTime$Log$Macro(aLevel, aFormat, ...) \
 do{ \
@@ -8,3 +11,5 @@ do{ \
         __LINE__, __FUNCTION__, __VA_ARGS__);   \
 }while(0)
 #endif
+
+}

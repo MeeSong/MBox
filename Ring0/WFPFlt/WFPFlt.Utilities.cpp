@@ -2,6 +2,8 @@
 #include <Vol.Kernel\Vol.System.h>
 #include "WFPFlt.Utilities.h"
 
+#include <Microsoft\MBox.Network.Socket.h>
+
 namespace MBox
 {
     namespace WFPFlt

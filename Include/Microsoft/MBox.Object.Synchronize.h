@@ -21,13 +21,13 @@ namespace MBox
         NTSTATUS ZwCreateEvent(
             PHANDLE EventHandle,
             ACCESS_MASK DesiredAccess,
-            struct _OBJECT_ATTRIBUTES* ObjectAttributes,
+            ObjectAttributes* ObjectAttributes,
             EventType aEventType,
             BOOLEAN InitialState);
 
         NTSTATUS ZwSetEvent(
             HANDLE EventHandle,
-            PLONG PreviousState);
+            INT32* PreviousState);
 
     }
 }

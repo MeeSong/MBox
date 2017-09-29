@@ -1,6 +1,11 @@
 #include "stdafx.h"
-#include "Owl.h"
+#include <Microsoft\MBox.Object.h>
+#include <KTL\KTL.Memory.SharedPtr.h>
+#include <KTL\KTL.Containers.List.h>
+#include <KTL\KTL.Multithreading.LockHelper.h>
+#include <KTL\KTL.Multithreading.SpinLock.h>
 
+#include "Owl.h"
 #include <Vol.Kernel\Vol.Memory.h>
 
 namespace MBox

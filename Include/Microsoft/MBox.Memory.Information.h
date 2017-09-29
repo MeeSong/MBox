@@ -54,50 +54,50 @@ namespace MBox
 
     struct MemoryBasicInformation
     {
-        PVOID BaseAddress;
-        PVOID AllocationBase;
-        ULONG AllocationProtect;
-        SIZE_T RegionSize;
-        ULONG State;
-        ULONG Protect;
-        ULONG Type;
+        PVOID m_BaseAddress;
+        PVOID m_AllocationBase;
+        UINT32 m_AllocationProtect;
+        SIZE_T m_RegionSize;
+        UINT32 m_State;
+        UINT32 m_Protect;
+        UINT32 m_Type;
     };
 
     struct MemoryWorkingSetBlock
     {
-        ULONG_PTR Protection : 5;
-        ULONG_PTR ShareCount : 3;
-        ULONG_PTR Shared : 1;
-        ULONG_PTR Node : 3;
-        ULONG_PTR VirtualPage : sizeof(ULONG_PTR) * 8 - 12;
+        UINT_PTR m_Protection : 5;
+        UINT_PTR m_ShareCount : 3;
+        UINT_PTR m_Shared : 1;
+        UINT_PTR m_Node : 3;
+        UINT_PTR m_VirtualPage : sizeof(UINT_PTR) * 8 - 12;
     };
 
     struct MemoryWorkingSetInformation
     {
-        ULONG_PTR NumberOfEntries;
-        MemoryWorkingSetBlock WorkingSetInfo[1];
+        UINT_PTR m_NumberOfEntries;
+        MemoryWorkingSetBlock m_WorkingSetInfo[1];
     };
 
     struct MemoryReginInformation
     {
-        PVOID AllocationBase;
-        ULONG AllocationProtect;
+        PVOID m_AllocationBase;
+        UINT32 m_AllocationProtect;
         union
         {
-            ULONG RegionType;
+            UINT32 m_RegionType;
             struct
             {
-                ULONG Private : 1;
-                ULONG MappedDataFile : 1;
-                ULONG MappedImage : 1;
-                ULONG MappedPageFile : 1;
-                ULONG MappedPhysical : 1;
-                ULONG DirectMapped : 1;
-                ULONG Reserved : 26;
+                UINT32 m_Private : 1;
+                UINT32 m_MappedDataFile : 1;
+                UINT32 m_MappedImage : 1;
+                UINT32 m_MappedPageFile : 1;
+                UINT32 m_MappedPhysical : 1;
+                UINT32 m_DirectMapped : 1;
+                UINT32 m_Reserved : 26;
             };
         };
-        SIZE_T RegionSize;
-        SIZE_T CommitSize;
+        SIZE_T m_RegionSize;
+        SIZE_T m_CommitSize;
     };
 
     struct MemoryWorkingSetExBlock
@@ -106,68 +106,68 @@ namespace MBox
         {
             struct
             {
-                ULONG_PTR Valid : 1;
-                ULONG_PTR ShareCount : 3;
-                ULONG_PTR Win32Protection : 11;
-                ULONG_PTR Shared : 1;
-                ULONG_PTR Node : 6;
-                ULONG_PTR Locked : 1;
-                ULONG_PTR LargePage : 1;
-                ULONG_PTR Priority : 3;
-                ULONG_PTR Reserved : 3;
-                ULONG_PTR SharedOriginal : 1;
-                ULONG_PTR Bad : 1;
+                UINT_PTR m_Valid : 1;
+                UINT_PTR m_ShareCount : 3;
+                UINT_PTR m_Win32Protection : 11;
+                UINT_PTR m_Shared : 1;
+                UINT_PTR m_Node : 6;
+                UINT_PTR m_Locked : 1;
+                UINT_PTR m_LargePage : 1;
+                UINT_PTR m_Priority : 3;
+                UINT_PTR m_Reserved : 3;
+                UINT_PTR m_SharedOriginal : 1;
+                UINT_PTR m_Bad : 1;
 #ifdef _WIN64
-                ULONG_PTR ReservedUlong : 32;
+                UINT_PTR m_ReservedUlong : 32;
 #endif
             };
             struct
             {
-                ULONG_PTR Valid : 1;
-                ULONG_PTR Reserved0 : 14;
-                ULONG_PTR Shared : 1;
-                ULONG_PTR Reserved1 : 5;
-                ULONG_PTR PageTable : 1;
-                ULONG_PTR Location : 2;
-                ULONG_PTR Priority : 3;
-                ULONG_PTR ModifiedList : 1;
-                ULONG_PTR Reserved2 : 2;
-                ULONG_PTR SharedOriginal : 1;
-                ULONG_PTR Bad : 1;
+                UINT_PTR m_Valid : 1;
+                UINT_PTR m_Reserved0 : 14;
+                UINT_PTR m_Shared : 1;
+                UINT_PTR m_Reserved1 : 5;
+                UINT_PTR m_PageTable : 1;
+                UINT_PTR m_Location : 2;
+                UINT_PTR m_Priority : 3;
+                UINT_PTR m_ModifiedList : 1;
+                UINT_PTR m_Reserved2 : 2;
+                UINT_PTR m_SharedOriginal : 1;
+                UINT_PTR m_Bad : 1;
 #ifdef _WIN64
-                ULONG_PTR ReservedUlong : 32;
+                UINT_PTR m_ReservedUlong : 32;
 #endif
-            } Invalid;
+            } m_Invalid;
         };
     };
 
     struct MemoryWorkingSetExInformation
     {
-        PVOID VirtualAddress;
+        PVOID m_VirtualAddress;
         union
         {
-            MemoryWorkingSetExBlock VirtualAttributes;
-            ULONG_PTR Long;
-        } u1;
+            MemoryWorkingSetExBlock m_VirtualAttributes;
+            UINT_PTR m_Long;
+        } m_u1;
     };
 
     struct MemorySharedCommitInformation
     {
-        SIZE_T CommitSize;
+        SIZE_T m_CommitSize;
     };
 
     struct MemoryImageInformation
     {
-        PVOID ImageBase;
-        SIZE_T SizeOfImage;
+        PVOID m_ImageBase;
+        SIZE_T m_SizeOfImage;
         union
         {
-            ULONG ImageFlags;
+            UINT32 m_ImageFlags;
             struct
             {
-                ULONG ImagePartialMap : 1;
-                ULONG ImageNotExecutable : 1;
-                ULONG Reserved : 30;
+                UINT32 m_ImagePartialMap : 1;
+                UINT32 m_ImageNotExecutable : 1;
+                UINT32 m_Reserved : 30;
             };
         };
     };

@@ -1,4 +1,7 @@
 #include "stdafx.h"
+#include <KTL\KTL.Containers.List.h>
+#include <KTL\KTL.Memory.SharedPtr.h>
+
 #include "DeviceFlt.Callback.Packet.h"
 
 
