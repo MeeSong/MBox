@@ -2,7 +2,7 @@
 
 namespace MBox
 {
-    enum MemoryInformationClass : UINT32
+    enum class VirtualMemoryInformationClass : UINT32
     {
         BasicInformation,             // MEMORY_BASIC_INFORMATION
         WorkingSetInformation,        // MEMORY_WORKING_SET_INFORMATION
@@ -177,7 +177,7 @@ namespace MBox
         NTSTATUS __stdcall ZwQueryVirtualMemory(
             HANDLE aProcessHandle,
             PVOID aBaseAddress,
-            MemoryInformationClass aMemoryInformationClass,
+            VirtualMemoryInformationClass aMemoryInformationClass,
             PVOID aMemoryInformation,
             SIZE_T aMemoryInformationLength,
             PSIZE_T aReturnLength);

@@ -1,4 +1,5 @@
 #pragma once
+#include "MBox.Base.h"
 
 namespace MBox
 {
@@ -29,6 +30,49 @@ namespace MBox
         UINT8   m_SubAuthorityCount;
         SidIdentifierAuthority  m_IdentifierAuthority;
         UINT32  m_SubAuthority[SidMaxSubAuthorities];
+    };
+
+    using SeSid = MaxSid;
+
+    enum SidNameUseType : UINT32
+    {
+        SidTypeUser = 1,
+        SidTypeGroup,
+        SidTypeDomain,
+        SidTypeAlias,
+        SidTypeWellKnownGroup,
+        SidTypeDeletedAccount,
+        SidTypeInvalid,
+        SidTypeUnknown,
+        SidTypeComputer,
+        SidTypeLabel,
+        SidTypeLogonSession
+    };
+
+    struct SidAndAttributes
+    {
+        Sid*    m_Sid;
+        UINT32  m_Attributes;
+    };
+
+    struct LuidAndAttributes
+    {
+        Luid    m_Luid;
+        UINT32  m_Attributes;
+    };
+
+    using SidHashEntry = UINT_PTR;
+
+    struct SidAndAttributesHash
+    {
+        enum : UINT32
+        {
+            SidHashSize = 32
+        };
+
+        UINT32              m_SidCount;
+        SidAndAttributes*   m_SidAttributes;
+        SidHashEntry        m_Hash[SidHashSize];
     };
 
     enum class WellKnownSidType : UINT32{
@@ -340,4 +384,6 @@ namespace MBox
         UINT32  m_SaclOffset;   // ACL* Offset
         UINT32  m_DaclOffset;   // ACL* Offset
     };
+
+
 }

@@ -2,7 +2,7 @@
 
 namespace MBox
 {
-    enum SystemInformationClass : UINT32
+    enum class SystemInformationClass : UINT32
     {
         SystemBasicInformation,             // q: SYSTEM_BASIC_INFORMATION
         SystemProcessorInformation,         // q: SYSTEM_PROCESSOR_INFORMATION

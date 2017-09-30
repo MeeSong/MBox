@@ -26,7 +26,7 @@ namespace MBox
 #endif
     };
 
-    enum ThreadInformationClass : UINT32
+    enum class ThreadInformationClass : UINT32
     {
         ThreadBasicInformation          = 0,
         ThreadTimes                     = 1,

@@ -14,6 +14,12 @@ namespace MBox
         };
     };
 
+    struct Luid
+    {
+        UINT32  m_LowPart;
+        INT32   m_HighPart;
+    };
+
     struct UnicodeString
     {
         UINT16   m_Length;
@@ -25,6 +31,16 @@ namespace MBox
     {
         HANDLE m_UniqueProcess;
         HANDLE m_UniqueThread;
+    };
+
+    struct IoCounters 
+    {
+        UINT64 m_ReadOperationCount;
+        UINT64 m_WriteOperationCount;
+        UINT64 m_OtherOperationCount;
+        UINT64 m_ReadTransferCount;
+        UINT64 m_WriteTransferCount;
+        UINT64 m_OtherTransferCount;
     };
     
     extern"C"

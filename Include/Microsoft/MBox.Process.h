@@ -27,7 +27,7 @@ namespace MBox
 #endif
     };
 
-    enum ProcessInformationClass : UINT32
+    enum class ProcessInformationClass : UINT32
     {
         ProcessBasicInformation             = 0,
         ProcessQuotaLimits                  = 1,
@@ -128,15 +128,15 @@ namespace MBox
         PVOID PsGetProcessDebugPort(
             struct _EPROCESS* aProcess);
 
-        PPEB NTAPI PsGetProcessPeb(
+        struct _PEB* NTAPI PsGetProcessPeb(
             struct _EPROCESS* aProcess);
 
 #ifdef _AMD64_
-        PPEB NTAPI PsGetProcessWow64Process(
+        struct _PEB32* NTAPI PsGetProcessWow64Process(
             struct _EPROCESS* aProcess
         );
 
-        PPEB NTAPI PsGetCurrentProcessWow64Process(
+        struct _PEB32* NTAPI PsGetCurrentProcessWow64Process(
             struct _EPROCESS* aProcess
         );
 #endif
@@ -170,6 +170,7 @@ namespace MBox
             HANDLE aThreadId,
             struct _ETHREAD** aThread);
 
+        // This routine is available starting with Windows Vista.
         NTSTATUS NTAPI PsReferenceProcessFilePointer(
             struct _EPROCESS* aProcess,
             struct _FILE_OBJECT** aFileObject);
@@ -185,6 +186,16 @@ namespace MBox
             PVOID aProcessInformation,
             UINT32 aProcessInforamtionLength,
             UINT32* aReturnLength);
+
+        NTSTATUS NTAPI ZwTerminateProcess(
+                HANDLE ProcessHandle,
+                NTSTATUS ExitStatus);
+
+        NTSTATUS NTAPI ZwOpenProcess(
+                PHANDLE aProcessHandle,
+                ACCESS_MASK aDesiredAccess,
+                ObjectAttributes* aObjectAttributes,
+                ClientId* aClientId);
 
     }
 }

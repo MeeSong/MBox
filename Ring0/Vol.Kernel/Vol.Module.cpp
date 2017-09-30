@@ -36,7 +36,7 @@ namespace MBox
                     vStatus = ZwQueryVirtualMemory(
                         aProcessHandle,
                         aImageBase,
-                        MemoryInformationClass::MappedFilenameInformation,
+                        VirtualMemoryInformationClass::MappedFilenameInformation,
                         aModuleName,
                         aInputBytes,
                         &vNeedBytes);
@@ -225,7 +225,7 @@ namespace MBox
                         vStatus = ZwQueryVirtualMemory(
                             aProcessHandle, 
                             vBaseAddress, 
-                            MemoryInformationClass::BasicInformation,
+                            VirtualMemoryInformationClass::BasicInformation,
                             &vMemInfo,
                             sizeof(vMemInfo),
                             &vNeedBytes);
@@ -251,7 +251,7 @@ namespace MBox
                             vStatus = ZwQueryVirtualMemory(
                                 aProcessHandle,
                                 vBaseAddress,
-                                MemoryInformationClass::BasicInformation,
+                                VirtualMemoryInformationClass::BasicInformation,
                                 &vMemInfo,
                                 sizeof(vMemInfo),
                                 &vNeedBytes);

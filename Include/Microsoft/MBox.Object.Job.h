@@ -1,5 +1,6 @@
 #pragma once
 #include "MBox.Object.h"
+#include "MBox.Security.Token.h"
 
 namespace MBox
 {
@@ -131,7 +132,7 @@ namespace MBox
         SIZE_T m_MinimumWorkingSetSize;
         SIZE_T m_MaximumWorkingSetSize;
         UINT32 m_ActiveProcessLimit;
-        ULONG_PTR m_Affinity;
+        UINT_PTR m_Affinity;
         UINT32 m_PriorityClass;
         UINT32 m_SchedulingClass;
     };
@@ -139,7 +140,7 @@ namespace MBox
     struct JobObjectExtendedLimitInformation
     {
         JobObjectBasicLimitInformation m_BasicLimitInformation;
-        IO_COUNTERS m_IoInfo;
+        IoCounters m_IoInfo;
         SIZE_T m_ProcessMemoryLimit;
         SIZE_T m_JobMemoryLimit;
         SIZE_T m_PeakProcessMemoryUsed;
@@ -150,7 +151,7 @@ namespace MBox
     {
         UINT32 m_NumberOfAssignedProcesses;
         UINT32 m_NumberOfProcessIdsInList;
-        ULONG_PTR m_ProcessIdList[1];
+        UINT_PTR m_ProcessIdList[1];
     };
 
     struct JobObjectBasicUIRestrictions
@@ -162,9 +163,9 @@ namespace MBox
     {
         UINT32 m_SecurityLimitFlags;
         HANDLE m_JobToken;
-        PTOKEN_GROUPS m_SidsToDisable;
-        PTOKEN_PRIVILEGES m_PrivilegesToDelete;
-        PTOKEN_GROUPS m_RestrictedSids;
+        TokenGroups* m_SidsToDisable;
+        TokenPrivileges* m_PrivilegesToDelete;
+        TokenGroups* m_RestrictedSids;
     };
 
     enum EndOfJobTimeActionValue : UINT32
@@ -187,7 +188,7 @@ namespace MBox
     struct JobObjectBasicAndIoAccountingInformation
     {
         JobObjectBasicAccountingInformation m_BasicInfo;
-        IO_COUNTERS m_IoInfo;
+        IoCounters m_IoInfo;
     };
 
     struct JobObjectJobSetInformation
@@ -200,12 +201,12 @@ namespace MBox
         NTSTATUS NTAPI ZwCreateJobObject(
             PHANDLE aJobHandle,
             ACCESS_MASK aDesiredAccess,
-            POBJECT_ATTRIBUTES aObjectAttributes);
+            ObjectAttributes* aObjectAttributes);
 
         NTSTATUS NTAPI ZwOpenJobObject(
             PHANDLE aJobHandle,
             ACCESS_MASK aDesiredAccess,
-            POBJECT_ATTRIBUTES aObjectAttributes);
+            ObjectAttributes* aObjectAttributes);
 
         NTSTATUS NTAPI ZwAssignProcessToJobObject(
             HANDLE aJobHandle,
