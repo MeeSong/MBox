@@ -1,4 +1,6 @@
 #pragma once
+#include "MBox.Base.h"
+
 
 namespace MBox
 {

@@ -62,11 +62,11 @@ namespace MBox
                 PEPROCESS aProcess,
                 NTSTATUS aExitStatus = STATUS_SUCCESS);
 
-            NTSTATUS TerminateProcessByIdWithJob(
+            NTSTATUS TerminateProcessWithJobById(
                 HANDLE aProcessId,
                 NTSTATUS aExitStatus = STATUS_SUCCESS);
 
-            NTSTATUS TerminateProcessByHandleWithJob(
+            NTSTATUS TerminateProcessWithJobByHandle(
                 HANDLE aProcessHandle,
                 NTSTATUS aExitStatus = STATUS_SUCCESS);
 
@@ -80,13 +80,13 @@ namespace MBox
                 UINT32 aBufferBytes,
                 UINT32* aNeedBytes);
 
-            NTSTATUS ReferenceProcessFileName(
+            NTSTATUS ReferenceProcessFileNtName(
                 HANDLE aProcessHandle,
                 UNICODE_STRING** aBuffer,
                 POOL_TYPE aPoolType = DefaultPoolType,
                 UINT32 aTag = DefaultPoolTag);
 
-            void DeferenceProcessFileName(
+            void DeferenceProcessFileNtName(
                 UNICODE_STRING* aBuffer);
 
             //

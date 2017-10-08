@@ -30,10 +30,13 @@
     <ClInclude Include="Vol.Memory.h" />
     <ClInclude Include="Vol.Module.h" />
     <ClInclude Include="Vol.Object.h" />
+    <ClInclude Include="Vol.Paths.h" />
     <ClInclude Include="Vol.PE.h" />
     <ClInclude Include="Vol.Process.h" />
     <ClInclude Include="Vol.Security.SecurityDescriptor.h" />
+    <ClInclude Include="Vol.Symboliclinks.h" />
     <ClInclude Include="Vol.System.h" />
+    <ClInclude Include="Vol.Thread.h" />
     <ClInclude Include="Vol.ThreadPool.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
@@ -43,10 +46,13 @@
     <ClCompile Include="Vol.Memory.cpp" />
     <ClCompile Include="Vol.Module.cpp" />
     <ClCompile Include="Vol.Object.cpp" />
+    <ClCompile Include="Vol.Paths.cpp" />
     <ClCompile Include="Vol.PE.cpp" />
     <ClCompile Include="Vol.Process.cpp" />
     <ClCompile Include="Vol.Security.SecurityDescriptor.cpp" />
+    <ClCompile Include="Vol.Symboliclinks.cpp" />
     <ClCompile Include="Vol.System.cpp" />
+    <ClCompile Include="Vol.Thread.cpp" />
     <ClCompile Include="Vol.ThreadPool.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

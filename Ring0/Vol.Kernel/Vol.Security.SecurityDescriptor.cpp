@@ -906,7 +906,7 @@ namespace MBox
                     }
                     __except (EXCEPTION_EXECUTE_HANDLER)
                     {
-                        vStatus = STATUS_UNHANDLED_EXCEPTION;
+                        vStatus = GetExceptionCode();
                         break;
                     }
 

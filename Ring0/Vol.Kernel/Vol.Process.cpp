@@ -128,13 +128,13 @@ namespace MBox
                     return vStatus;
                 }
 
-                vStatus = TerminateProcessByHandleWithJob(vProcessHandle, aExitStatus);
+                vStatus = TerminateProcessWithJobByHandle(vProcessHandle, aExitStatus);
                 ZwClose(vProcessHandle);
 
                 return vStatus;
             }
 
-            NTSTATUS TerminateProcessByIdWithJob(HANDLE aProcessId, NTSTATUS aExitStatus)
+            NTSTATUS TerminateProcessWithJobById(HANDLE aProcessId, NTSTATUS aExitStatus)
             {
                 NTSTATUS vStatus = STATUS_SUCCESS;
                 HANDLE vProcessHandle = nullptr;
@@ -145,13 +145,13 @@ namespace MBox
                     return vStatus;
                 }
 
-                vStatus = TerminateProcessByHandleWithJob(vProcessHandle, aExitStatus);
+                vStatus = TerminateProcessWithJobByHandle(vProcessHandle, aExitStatus);
                 ZwClose(vProcessHandle);
 
                 return vStatus;
             }
 
-            NTSTATUS TerminateProcessByHandleWithJob(HANDLE aProcessHandle, NTSTATUS aExitStatus)
+            NTSTATUS TerminateProcessWithJobByHandle(HANDLE aProcessHandle, NTSTATUS aExitStatus)
             {
                 NTSTATUS vStatus = STATUS_SUCCESS;
                 HANDLE vJobHandle = nullptr;
@@ -224,7 +224,7 @@ namespace MBox
                 return vStatus;
             }
 
-            NTSTATUS ReferenceProcessFileName(
+            NTSTATUS ReferenceProcessFileNtName(
                 HANDLE aProcessHandle, 
                 UNICODE_STRING ** aBuffer, 
                 POOL_TYPE aPoolType, 
@@ -262,7 +262,7 @@ namespace MBox
                 return vStatus;
             }
 
-            void DeferenceProcessFileName(
+            void DeferenceProcessFileNtName(
                 UNICODE_STRING * aBuffer)
             {
                 delete[](unsigned char*)(aBuffer);

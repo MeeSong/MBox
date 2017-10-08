@@ -197,6 +197,9 @@ namespace MBox
         SystemCodeIntegrityUnlockInformation, // SYSTEM_CODEINTEGRITY_UNLOCK_INFORMATION // 190
         SystemIntegrityQuotaInformation,
         SystemFlushInformation,             // q: SYSTEM_FLUSH_INFORMATION
+        SystemProcessorIdleMaskInformation, // since REDSTONE3
+        SystemSecureDumpEncryptionInformation,
+        SystemWriteConstraintInformation,
         MaxSystemInfoClass
     };
 

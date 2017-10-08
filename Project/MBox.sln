@@ -39,7 +39,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTest.Ring3", "..\Ring3\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Microsoft", "Microsoft", "{EF045944-29C3-4E7D-A5A1-16E4F62948CC}"
 	ProjectSection(SolutionItems) = preProject
+		..\Include\Microsoft\MBox.Apc.h = ..\Include\Microsoft\MBox.Apc.h
 		..\Include\Microsoft\MBox.Base.h = ..\Include\Microsoft\MBox.Base.h
+		..\Include\Microsoft\MBox.Context.h = ..\Include\Microsoft\MBox.Context.h
 		..\Include\Microsoft\MBox.File.h = ..\Include\Microsoft\MBox.File.h
 		..\Include\Microsoft\MBox.Images.PE.h = ..\Include\Microsoft\MBox.Images.PE.h
 		..\Include\Microsoft\MBox.Memory.Information.h = ..\Include\Microsoft\MBox.Memory.Information.h
@@ -55,7 +57,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Microsoft", "Microsoft", "{
 		..\Include\Microsoft\MBox.Security.Token.h = ..\Include\Microsoft\MBox.Security.Token.h
 		..\Include\Microsoft\MBox.System.Information.h = ..\Include\Microsoft\MBox.System.Information.h
 		..\Include\Microsoft\MBox.System.Version.h = ..\Include\Microsoft\MBox.System.Version.h
+		..\Include\Microsoft\MBox.Thread.EThread.14393.h = ..\Include\Microsoft\MBox.Thread.EThread.14393.h
+		..\Include\Microsoft\MBox.Thread.EThread.15063.h = ..\Include\Microsoft\MBox.Thread.EThread.15063.h
+		..\Include\Microsoft\MBox.Thread.EThread.h = ..\Include\Microsoft\MBox.Thread.EThread.h
 		..\Include\Microsoft\MBox.Thread.h = ..\Include\Microsoft\MBox.Thread.h
+		..\Include\Microsoft\MBox.Thread.KThread.14393.h = ..\Include\Microsoft\MBox.Thread.KThread.14393.h
+		..\Include\Microsoft\MBox.Thread.KThread.15063.h = ..\Include\Microsoft\MBox.Thread.KThread.15063.h
+		..\Include\Microsoft\MBox.Thread.KThread.h = ..\Include\Microsoft\MBox.Thread.KThread.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{48374AC9-6C08-4DA2-B9DA-9F62A04919B0}"

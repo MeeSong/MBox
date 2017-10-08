@@ -1,6 +1,6 @@
 #pragma once
 #include <Microsoft\MBox.Object.Directory.h>
-
+#include <stddef.h>
 
 namespace MBox
 {
@@ -70,7 +70,7 @@ namespace MBox
                 POBJECT_TYPE vObjectType = nullptr;
                 BOOLEAN      vIndex = 2;
 
-                vObjectType = (POBJECT_TYPE)ObGetObjectType((HANDLE)(&vIndex - FIELD_OFFSET(ObjectHeader, m_TypeIndex) + FIELD_OFFSET(ObjectHeader, m_Body)));
+                vObjectType = (POBJECT_TYPE)ObGetObjectType((HANDLE)(&vIndex - offsetof(ObjectHeader, m_TypeIndex) + offsetof(ObjectHeader, m_Body)));
                 while (vObjectType)
                 {
                     if (!MmIsAddressValid(vObjectType))
@@ -80,6 +80,10 @@ namespace MBox
 
                     __try
                     {
+                        /*
+                        bool Callback(OBJECT_TYPE*);
+                        */
+
                         if (aCallback(vObjectType))
                         {
                             break;
@@ -87,6 +91,7 @@ namespace MBox
                     }
                     __except (EXCEPTION_EXECUTE_HANDLER)
                     {
+                        vStatus = GetExceptionCode();
                         break;
                     }
 
@@ -166,9 +171,20 @@ namespace MBox
                     {
                         for (ULONG i = 0; i < vReturnCount; ++i)
                         {
-                            vStatus = aCallback(&vObjectDirectoryInformation[i]);
-                            if (vStatus == STATUS_SUCCESS)
+                            __try
                             {
+                                /*
+                                bool Callback(ObjectDirectoryInformation*);
+                                */
+
+                                if (aCallback(&vObjectDirectoryInformation[i]))
+                                {
+                                    break;
+                                }
+                            }
+                            __except (EXCEPTION_EXECUTE_HANDLER)
+                            {
+                                vStatus = GetExceptionCode();
                                 break;
                             }
                         }

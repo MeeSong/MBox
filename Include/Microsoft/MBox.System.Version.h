@@ -25,7 +25,7 @@ namespace MBox
         Windows10_1511,             // 10.0.10586
         Windows10_1607,             // 10.0.14393
         Windows10_1703,             // 10.0.10563
-        // Windows10_1709           // 10.0.?????
+        // Windows10_1710           // 10.0.?????
         WindowsMax,
     };
 }

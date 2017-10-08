@@ -3,21 +3,26 @@
 
 namespace MBox
 {
+    enum ThreadPriorityIncrement : KPRIORITY
+    {
+        TerminateThreadPriorityIncrement = 2,
+    };
+
     enum ThreadAccessMask : UINT32
     {
-        ThreadTerminate     = 0x0001,
-        ThreadSuspendResume = 0x0002,
-        ThreadAlert         = 0x0004,
-        ThreadGetContext    = 0x0008,
-        ThreadSetContext    = 0x0010,
-        ThreadSertInformation   = 0x0020,
-        ThreadQueryInformation  = 0x0040,
-        ThreadSetThreadToken    = 0x0080,
-        ThreadImpersonate       = 0x0100,
-        ThreadDirectImpersonation   = 0x0200,
-        ThreadSetLimitedInformation = 0x0400,
-        ThreadQueryLimitedInformation = 0x0800,
-        ThreadResume                = 0x1000,
+        ThreadTerminate                 = 0x0001,
+        ThreadSuspendResume             = 0x0002,
+        ThreadAlert                     = 0x0004,
+        ThreadGetContext                = 0x0008,
+        ThreadSetContext                = 0x0010,
+        ThreadSertInformation           = 0x0020,
+        ThreadQueryInformation          = 0x0040,
+        ThreadSetThreadToken            = 0x0080,
+        ThreadImpersonate               = 0x0100,
+        ThreadDirectImpersonation       = 0x0200,
+        ThreadSetLimitedInformation     = 0x0400,
+        ThreadQueryLimitedInformation   = 0x0800,
+        ThreadResume                    = 0x1000,
 
 #if (NTDDI_VERSION >= NTDDI_VISTA)
         ThreadAllAccess = (StandardRightsRequired | Synchronize | 0xFFFF),
@@ -28,57 +33,73 @@ namespace MBox
 
     enum class ThreadInformationClass : UINT32
     {
-        ThreadBasicInformation          = 0,
-        ThreadTimes                     = 1,
-        ThreadPriority                  = 2,
-        ThreadBasePriority              = 3,
-        ThreadAffinityMask              = 4,
-        ThreadImpersonationToken        = 5,
-        ThreadDescriptorTableEntry      = 6,
-        ThreadEnableAlignmentFaultFixup = 7,
-        ThreadEventPair_Reusable        = 8,
-        ThreadQuerySetWin32StartAddress = 9,
-        ThreadZeroTlsCell               = 10,
-        ThreadPerformanceCount          = 11,
-        ThreadAmILastThread             = 12,
-        ThreadIdealProcessor            = 13,
-        ThreadPriorityBoost             = 14,
-        ThreadSetTlsArrayAddress        = 15,   // Obsolete
-        ThreadIsIoPending               = 16,
-        ThreadHideFromDebugger          = 17,
-        ThreadBreakOnTermination        = 18,
-        ThreadSwitchLegacyState         = 19,
-        ThreadIsTerminated              = 20,
-        ThreadLastSystemCall            = 21,
-        ThreadIoPriority                = 22,
-        ThreadCycleTime                 = 23,
-        ThreadPagePriority              = 24,
-        ThreadActualBasePriority        = 25,
-        ThreadTebInformation            = 26,
-        ThreadCSwitchMon                = 27,   // Obsolete
-        ThreadCSwitchPmu                = 28,
-        ThreadWow64Context              = 29,
-        ThreadGroupInformation          = 30,
-        ThreadUmsInformation            = 31,   // UMS
-        ThreadCounterProfiling          = 32,
-        ThreadIdealProcessorEx          = 33,
-        ThreadCpuAccountingInformation  = 34,
-        ThreadSuspendCount              = 35,
-        ThreadActualGroupAffinity       = 41,
-        ThreadDynamicCodePolicyInfo     = 42,
-        ThreadSubsystemInformation      = 45,
-        MaxThreadInfoClass              = 48,
+        ThreadBasicInformation,         // q: THREAD_BASIC_INFORMATION
+        ThreadTimes,                    // q: KERNEL_USER_TIMES
+        ThreadPriority,                 // s: KPRIORITY
+        ThreadBasePriority,             // s: LONG
+        ThreadAffinityMask,             // s: KAFFINITY
+        ThreadImpersonationToken,       // s: HANDLE
+        ThreadDescriptorTableEntry,     // q: DESCRIPTOR_TABLE_ENTRY (or WOW64_DESCRIPTOR_TABLE_ENTRY)
+        ThreadEnableAlignmentFaultFixup, // s: BOOLEAN
+        ThreadEventPair,
+        ThreadQuerySetWin32StartAddress, // q: PVOID
+        ThreadZeroTlsCell,              // 10
+        ThreadPerformanceCount,         // q: LARGE_INTEGER
+        ThreadAmILastThread,            // q: ULONG
+        ThreadIdealProcessor,           // s: ULONG
+        ThreadPriorityBoost,            // qs: ULONG
+        ThreadSetTlsArrayAddress,
+        ThreadIsIoPending,              // q: ULONG
+        ThreadHideFromDebugger,         // s: void
+        ThreadBreakOnTermination,       // qs: ULONG
+        ThreadSwitchLegacyState,
+        ThreadIsTerminated,             // q: ULONG // 20
+        ThreadLastSystemCall,           // q: THREAD_LAST_SYSCALL_INFORMATION
+        ThreadIoPriority,               // qs: IO_PRIORITY_HINT
+        ThreadCycleTime,                // q: THREAD_CYCLE_TIME_INFORMATION
+        ThreadPagePriority,             // q: ULONG
+        ThreadActualBasePriority,
+        ThreadTebInformation,           // q: THREAD_TEB_INFORMATION (requires THREAD_GET_CONTEXT + THREAD_SET_CONTEXT)
+        ThreadCSwitchMon,
+        ThreadCSwitchPmu,
+        ThreadWow64Context,             // q: WOW64_CONTEXT
+        ThreadGroupInformation,         // q: GROUP_AFFINITY // 30
+        ThreadUmsInformation,           // q: THREAD_UMS_INFORMATION
+        ThreadCounterProfiling,
+        ThreadIdealProcessorEx,         // q: PROCESSOR_NUMBER
+        ThreadCpuAccountingInformation, // since WIN8
+        ThreadSuspendCount,             // since WINBLUE
+        ThreadHeterogeneousCpuPolicy,   // q: KHETERO_CPU_POLICY // since THRESHOLD
+        ThreadContainerId,              // q: GUID
+        ThreadNameInformation,          // qs: THREAD_NAME_INFORMATION
+        ThreadSelectedCpuSets,
+        ThreadSystemThreadInformation,  // q: SYSTEM_THREAD_INFORMATION // 40
+        ThreadActualGroupAffinity,      // since THRESHOLD2
+        ThreadDynamicCodePolicyInfo,
+        ThreadExplicitCaseSensitivity,
+        ThreadWorkOnBehalfTicket,
+        ThreadSubsystemInformation,     // q: SUBSYSTEM_INFORMATION_TYPE // since REDSTONE2
+        ThreadDbgkWerReportActive,
+        ThreadAttachContainer,
+        ThreadManageWritesToExecutableMemory, // since REDSTONE3
+        ThreadPowerThrottlingState,
+        MaxThreadInfoClass
     };
 
     extern"C"
     {
-        NTSTATUS NTAPI PsSuspendThread(
-            struct _ETHREAD* Thread,
-            UINT32* PreviousSuspendCount);
+        PEPROCESS NTAPI PsGetThreadProcess(
+            PETHREAD aThread);
 
-        NTSTATUS NTAPI PsResumeThread(
-            struct _ETHREAD* Thread,
-            UINT32* PreviousCount);
+        BOOLEAN NTAPI PsIsSystemThread(
+            PETHREAD aThread);
+
+        BOOLEAN NTAPI PsIsThreadTerminating(
+                PETHREAD aThread);
+
+        NTSTATUS PsLookupThreadByThreadId(
+            HANDLE aThreadId,
+            PETHREAD* aThread);
 
         KPROCESSOR_MODE NTAPI PsGetCurrentThreadPreviousMode();
 
@@ -88,20 +109,20 @@ namespace MBox
 
         PVOID NTAPI PsGetCurrentThreadWin32Thread();
 
-        CCHAR NTAPI PsGetThreadFreezeCount(struct _ETHREAD* Thread);
+        CCHAR NTAPI PsGetThreadFreezeCount(PETHREAD Thread);
 
         // PTEB
-        PVOID NTAPI PsGetThreadTeb(struct _ETHREAD* Thread);
+        PTEB NTAPI PsGetThreadTeb(PETHREAD Thread);
 
-        PVOID NTAPI PsGetThreadWin32Thread(struct _ETHREAD* Thread);
+        PVOID NTAPI PsGetThreadWin32Thread(PETHREAD Thread);
 
         NTSTATUS NTAPI PsGetContextThread(
-            struct _ETHREAD* Thread,
+            PETHREAD Thread,
             PCONTEXT ThreadContext,
             KPROCESSOR_MODE Mode);
 
         NTSTATUS NTAPI PsSetContextThread(
-            struct _ETHREAD* Thread,
+            PETHREAD Thread,
             PCONTEXT ThreadContext,
             KPROCESSOR_MODE Mode);
 

@@ -29,154 +29,166 @@ namespace MBox
 
     enum class ProcessInformationClass : UINT32
     {
-        ProcessBasicInformation             = 0,
-        ProcessQuotaLimits                  = 1,
-        ProcessIoCounters                   = 2,
-        ProcessVmCounters                   = 3,
-        ProcessTimes                        = 4,
-        ProcessBasePriority                 = 5,
-        ProcessRaisePriority                = 6,
-        ProcessDebugPort                    = 7,
-        ProcessExceptionPort                = 8,
-        ProcessAccessToken                  = 9,
-        ProcessLdtInformation               = 10,
-        ProcessLdtSize                      = 11,
-        ProcessDefaultHardErrorMode         = 12,
-        ProcessIoPortHandlers               = 13,   // Note: this is kernel mode only
-        ProcessPooledUsageAndLimits         = 14,
-        ProcessWorkingSetWatch              = 15,
-        ProcessUserModeIOPL                 = 16,
-        ProcessEnableAlignmentFaultFixup    = 17,
-        ProcessPriorityClass                = 18,
-        ProcessWx86Information              = 19,
-        ProcessHandleCount                  = 20,
-        ProcessAffinityMask                 = 21,
-        ProcessPriorityBoost                = 22,
-        ProcessDeviceMap                    = 23,
-        ProcessSessionInformation           = 24,
-        ProcessForegroundInformation        = 25,
-        ProcessWow64Information             = 26,
-        ProcessImageFileName                = 27,
-        ProcessLUIDDeviceMapsEnabled        = 28,
-        ProcessBreakOnTermination           = 29,
-        ProcessDebugObjectHandle            = 30,
-        ProcessDebugFlags                   = 31,
-        ProcessHandleTracing                = 32,
-        ProcessIoPriority                   = 33,
-        ProcessExecuteFlags                 = 34,
-        ProcessTlsInformation               = 35,
-        ProcessCookie                       = 36,
-        ProcessImageInformation             = 37,
-        ProcessCycleTime                    = 38,
-        ProcessPagePriority                 = 39,
-        ProcessInstrumentationCallback      = 40,
-        ProcessThreadStackAllocation        = 41,
-        ProcessWorkingSetWatchEx            = 42,
-        ProcessImageFileNameWin32           = 43,
-        ProcessImageFileMapping             = 44,
-        ProcessAffinityUpdateMode           = 45,
-        ProcessMemoryAllocationMode         = 46,
-        ProcessGroupInformation             = 47,
-        ProcessTokenVirtualizationEnabled   = 48,
-        ProcessOwnerInformation             = 49,
-        ProcessWindowInformation            = 50,
-        ProcessHandleInformation            = 51,
-        ProcessMitigationPolicy             = 52,
-        ProcessDynamicFunctionTableInformation = 53,
-        ProcessHandleCheckingMode           = 54,
-        ProcessKeepAliveCount               = 55,
-        ProcessRevokeFileHandles            = 56,
-        ProcessWorkingSetControl            = 57,
-        ProcessHandleTable                  = 58,
-        ProcessCheckStackExtentsMode        = 59,
-        ProcessCommandLineInformation       = 60,
-        ProcessProtectionInformation        = 61,
-        ProcessMemoryExhaustion             = 62,
-        ProcessFaultInformation             = 63,
-        ProcessTelemetryIdInformation       = 64,
-        ProcessCommitReleaseInformation     = 65,
-        ProcessReserved1Information         = 66,
-        ProcessReserved2Information         = 67,
-        ProcessSubsystemProcess             = 68,
-        ProcessInPrivate                    = 70,
-        ProcessRaiseUMExceptionOnInvalidHandleClose = 71,
-        ProcessSubsystemInformation         = 75,
-        ProcessWin32kSyscallFilterInformation = 79,
-        ProcessEnergyTrackingState          = 82,
-        MaxProcessInfoClass                             // MaxProcessInfoClass should always be the last enum
+        ProcessBasicInformation,                // q: PROCESS_BASIC_INFORMATION, PROCESS_EXTENDED_BASIC_INFORMATION
+        ProcessQuotaLimits,                     // qs: QUOTA_LIMITS, QUOTA_LIMITS_EX
+        ProcessIoCounters,                      // q: IO_COUNTERS
+        ProcessVmCounters,                      // q: VM_COUNTERS, VM_COUNTERS_EX, VM_COUNTERS_EX2
+        ProcessTimes,                           // q: KERNEL_USER_TIMES
+        ProcessBasePriority,                    // s: KPRIORITY
+        ProcessRaisePriority,                   // s: ULONG
+        ProcessDebugPort,                       // q: HANDLE
+        ProcessExceptionPort,                   // s: HANDLE
+        ProcessAccessToken,                     // s: PROCESS_ACCESS_TOKEN
+        ProcessLdtInformation,                  // qs: PROCESS_LDT_INFORMATION // 10
+        ProcessLdtSize,                         // s: PROCESS_LDT_SIZE
+        ProcessDefaultHardErrorMode,            // qs: ULONG
+        ProcessIoPortHandlers,                  // (kernel-mode only)
+        ProcessPooledUsageAndLimits,            // q: POOLED_USAGE_AND_LIMITS
+        ProcessWorkingSetWatch,                 // q: PROCESS_WS_WATCH_INFORMATION[]; s: void
+        ProcessUserModeIOPL,
+        ProcessEnableAlignmentFaultFixup,       // s: BOOLEAN
+        ProcessPriorityClass,                   // qs: PROCESS_PRIORITY_CLASS
+        ProcessWx86Information,
+        ProcessHandleCount,                     // q: ULONG, PROCESS_HANDLE_INFORMATION // 20
+        ProcessAffinityMask,                    // s: KAFFINITY
+        ProcessPriorityBoost,                   // qs: ULONG
+        ProcessDeviceMap,                       // qs: PROCESS_DEVICEMAP_INFORMATION, PROCESS_DEVICEMAP_INFORMATION_EX
+        ProcessSessionInformation,              // q: PROCESS_SESSION_INFORMATION
+        ProcessForegroundInformation,           // s: PROCESS_FOREGROUND_BACKGROUND
+        ProcessWow64Information,                // q: ULONG_PTR
+        ProcessImageFileName,                   // q: UNICODE_STRING
+        ProcessLUIDDeviceMapsEnabled,           // q: ULONG
+        ProcessBreakOnTermination,              // qs: ULONG
+        ProcessDebugObjectHandle,               // q: HANDLE // 30
+        ProcessDebugFlags,                      // qs: ULONG
+        ProcessHandleTracing,                   // q: PROCESS_HANDLE_TRACING_QUERY; s: size 0 disables, otherwise enables
+        ProcessIoPriority,                      // qs: IO_PRIORITY_HINT
+        ProcessExecuteFlags,                    // qs: ULONG
+        ProcessResourceManagement,
+        ProcessCookie,                          // q: ULONG
+        ProcessImageInformation,                // q: SECTION_IMAGE_INFORMATION
+        ProcessCycleTime,                       // q: PROCESS_CYCLE_TIME_INFORMATION // since VISTA
+        ProcessPagePriority,                    // q: ULONG
+        ProcessInstrumentationCallback,         // 40
+        ProcessThreadStackAllocation,           // s: PROCESS_STACK_ALLOCATION_INFORMATION, PROCESS_STACK_ALLOCATION_INFORMATION_EX
+        ProcessWorkingSetWatchEx,               // q: PROCESS_WS_WATCH_INFORMATION_EX[]
+        ProcessImageFileNameWin32,              // q: UNICODE_STRING
+        ProcessImageFileMapping,                // q: HANDLE (input)
+        ProcessAffinityUpdateMode,              // qs: PROCESS_AFFINITY_UPDATE_MODE
+        ProcessMemoryAllocationMode,            // qs: PROCESS_MEMORY_ALLOCATION_MODE
+        ProcessGroupInformation,                // q: USHORT[]
+        ProcessTokenVirtualizationEnabled,      // s: ULONG
+        ProcessConsoleHostProcess,              // q: ULONG_PTR
+        ProcessWindowInformation,               // q: PROCESS_WINDOW_INFORMATION // 50
+        ProcessHandleInformation,               // q: PROCESS_HANDLE_SNAPSHOT_INFORMATION // since WIN8
+        ProcessMitigationPolicy,                // s: PROCESS_MITIGATION_POLICY_INFORMATION
+        ProcessDynamicFunctionTableInformation,
+        ProcessHandleCheckingMode,
+        ProcessKeepAliveCount,                  // q: PROCESS_KEEPALIVE_COUNT_INFORMATION
+        ProcessRevokeFileHandles,               // s: PROCESS_REVOKE_FILE_HANDLES_INFORMATION
+        ProcessWorkingSetControl,               // s: PROCESS_WORKING_SET_CONTROL
+        ProcessHandleTable,                     // since WINBLUE
+        ProcessCheckStackExtentsMode,
+        ProcessCommandLineInformation,          // q: UNICODE_STRING // 60
+        ProcessProtectionInformation,           // q: PS_PROTECTION
+        ProcessMemoryExhaustion,                // PROCESS_MEMORY_EXHAUSTION_INFO // since THRESHOLD
+        ProcessFaultInformation,                // PROCESS_FAULT_INFORMATION
+        ProcessTelemetryIdInformation,          // PROCESS_TELEMETRY_ID_INFORMATION
+        ProcessCommitReleaseInformation,        // PROCESS_COMMIT_RELEASE_INFORMATION
+        ProcessDefaultCpuSetsInformation,
+        ProcessAllowedCpuSetsInformation,
+        ProcessSubsystemProcess,
+        ProcessJobMemoryInformation,            // PROCESS_JOB_MEMORY_INFO
+        ProcessInPrivate,                       // since THRESHOLD2 // 70
+        ProcessRaiseUMExceptionOnInvalidHandleClose,
+        ProcessIumChallengeResponse,
+        ProcessChildProcessInformation,         // PROCESS_CHILD_PROCESS_INFORMATION
+        ProcessHighGraphicsPriorityInformation,
+        ProcessSubsystemInformation,            // q: SUBSYSTEM_INFORMATION_TYPE // since REDSTONE2
+        ProcessEnergyValues,                    // PROCESS_ENERGY_VALUES, PROCESS_EXTENDED_ENERGY_VALUES
+        ProcessActivityThrottleState,           // PROCESS_ACTIVITY_THROTTLE_STATE
+        ProcessActivityThrottlePolicy,          // PROCESS_ACTIVITY_THROTTLE_POLICY
+        ProcessWin32kSyscallFilterInformation,
+        ProcessDisableSystemAllowedCpuSets,
+        ProcessWakeInformation,                 // PROCESS_WAKE_INFORMATION
+        ProcessEnergyTrackingState,             // PROCESS_ENERGY_TRACKING_STATE
+        ProcessManageWritesToExecutableMemory,  // since REDSTONE3
+        ProcessCaptureTrustletLiveDump,
+        ProcessTelemetryCoverage,
+        ProcessEnclaveInformation,
+        ProcessEnableReadWriteVmLogging,
+        ProcessUptimeInformation,
+        ProcessImageSection,
+        MaxProcessInfoClass
     };
 
     extern"C"
     {
         NTSTATUS NTAPI PsSuspendProcess(
-            struct _EPROCESS* aProcess);
+            PEPROCESS aProcess);
 
         NTSTATUS NTAPI PsResumeProcess(
-            struct _EPROCESS* aProcess);
+            PEPROCESS aProcess);
 
         // Get parent Pid
         HANDLE NTAPI PsGetProcessInheritedFromUniqueProcessId(
-            struct _EPROCESS* aProcess);
+            PEPROCESS aProcess);
 
         UCHAR* NTAPI PsGetProcessImageFileName(
-            struct _EPROCESS* aProcess);
+            PEPROCESS aProcess);
 
         UINT32 NTAPI PsGetCurrentProcessSessionId();
 
         PVOID NTAPI PsGetCurrentProcessWin32Process();
 
         PVOID PsGetProcessDebugPort(
-            struct _EPROCESS* aProcess);
+            PEPROCESS aProcess);
 
-        struct _PEB* NTAPI PsGetProcessPeb(
-            struct _EPROCESS* aProcess);
+        PPEB NTAPI PsGetProcessPeb(
+            PEPROCESS aProcess);
 
 #ifdef _AMD64_
-        struct _PEB32* NTAPI PsGetProcessWow64Process(
-            struct _EPROCESS* aProcess
+        PPEB32 NTAPI PsGetProcessWow64Process(
+            PEPROCESS aProcess
         );
 
-        struct _PEB32* NTAPI PsGetCurrentProcessWow64Process(
-            struct _EPROCESS* aProcess
+        PPEB32 NTAPI PsGetCurrentProcessWow64Process(
+            PEPROCESS aProcess
         );
 #endif
 
         // 区别在于 Ex 会返回 -1
         UINT32 NTAPI PsGetProcessSessionId(
-            struct _EPROCESS* aProcess);
+            PEPROCESS aProcess);
 
         UINT32 NTAPI PsGetProcessSessionIdEx(
-            struct _EPROCESS* aProcess);
+            PEPROCESS aProcess);
 
         PVOID NTAPI PsGetProcessWin32Process(
-            struct _EPROCESS* aProcess);
+            PEPROCESS aProcess);
 
         BOOLEAN NTAPI PsIsSystemProcess(
-            struct _EPROCESS* aProcess);
+            PEPROCESS aProcess);
 
         BOOLEAN NTAPI PsIsProtectedProcess(
-            struct _EPROCESS* aProcess);
+            PEPROCESS aProcess);
 
         NTSTATUS NTAPI PsLookupProcessThreadByCid(
             ClientId* aCid,
-            struct _EPROCESS** aProcess,
-            struct _ETHREAD** aThread);
+            PEPROCESS* aProcess,
+            PETHREAD* aThread);
 
         NTSTATUS PsLookupProcessByProcessId(
             HANDLE aProcessId,
-            struct _EPROCESS** aProcess);
-
-        NTSTATUS PsLookupThreadByThreadId(
-            HANDLE aThreadId,
-            struct _ETHREAD** aThread);
+            PEPROCESS* aProcess);
 
         // This routine is available starting with Windows Vista.
         NTSTATUS NTAPI PsReferenceProcessFilePointer(
-            struct _EPROCESS* aProcess,
-            struct _FILE_OBJECT** aFileObject);
+            PEPROCESS aProcess,
+            PFILE_OBJECT* aFileObject);
 
         NTSTATUS NTAPI PsSetProcessWin32Process(
-            struct _EPROCESS* aProcess,
+            PEPROCESS aProcess,
             PVOID aWin32Process,
             PVOID aPrevWin32Process);
 

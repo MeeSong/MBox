@@ -267,7 +267,7 @@ namespace MBox
                     }
                     __except (EXCEPTION_EXECUTE_HANDLER)
                     {
-                        vStatus;
+                        vStatus = GetExceptionCode();
                     }
                 }
             }

@@ -10,7 +10,7 @@ static MBox::Listener* s_Listener = nullptr;
 
 static NTSTATUS PreUnload(FLT_FILTER_UNLOAD_FLAGS /*aFlags*/, PVOID /*aParameter*/)
 {
-    MBox::WFPFlt::StopFilter();
+    //MBox::WFPFlt::StopFilter();
 
     if (s_Listener)
     {
@@ -22,7 +22,7 @@ static NTSTATUS PreUnload(FLT_FILTER_UNLOAD_FLAGS /*aFlags*/, PVOID /*aParameter
 
 static NTSTATUS PostUnload(FLT_FILTER_UNLOAD_FLAGS /*aFlags*/, PVOID /*aParameter*/)
 {
-    MBox::WFPFlt::Unitialize();
+    //MBox::WFPFlt::Unitialize();
 
     delete s_Listener;
     s_Listener = nullptr;
@@ -73,6 +73,9 @@ static void UnitializeControllers()
     }
 }
 
+#include <Microsoft\MBox.Thread.h>
+#include <Vol.Kernel\Vol.Thread.h>
+
 NTSTATUS DriverEntry(
     PDRIVER_OBJECT aDriverObject,
     PUNICODE_STRING aRegistryPath)
@@ -93,14 +96,14 @@ NTSTATUS DriverEntry(
             break;
         }
 
-        vStatus = MBox::WFPFlt::Initialize(aDriverObject, aRegistryPath);
+        /*vStatus = MBox::WFPFlt::Initialize(aDriverObject, aRegistryPath, false);
         if (!NT_SUCCESS(vStatus))
         {
             if (vStatus != STATUS_NOT_SUPPORTED)
             {
                 break;
             }
-        }
+        }*/
 
         vStatus = InitializeControllers(aDriverObject);
         if (!NT_SUCCESS(vStatus))
@@ -117,14 +120,14 @@ NTSTATUS DriverEntry(
             break;
         }
 
-        vStatus = MBox::WFPFlt::RegisterFilter();
+        /*vStatus = MBox::WFPFlt::RegisterFilter();
         if (!NT_SUCCESS(vStatus))
         {
             if (vStatus != STATUS_NOT_SUPPORTED)
             {
                 break;
             }
-        }
+        }*/
 
         vStatus = MBox::MiniFlt::StartFilter();
         if (!NT_SUCCESS(vStatus))
@@ -132,11 +135,11 @@ NTSTATUS DriverEntry(
             break;
         }
 
-        vStatus = MBox::WFPFlt::StartFilter();
+        /*vStatus = MBox::WFPFlt::StartFilter();
         if (!NT_SUCCESS(vStatus))
         {
             break;
-        }
+        }*/
 
         break;
     }

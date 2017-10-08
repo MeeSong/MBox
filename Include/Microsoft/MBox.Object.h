@@ -48,15 +48,17 @@ namespace MBox
         };
 
         EX_PUSH_LOCK    m_Lock;
-        BOOLEAN         m_TypeIndex;
-        BOOLEAN         m_TraceFlags;
-        BOOLEAN         m_InfoMask;
-        BOOLEAN         m_Flags;
+        UINT8           m_TypeIndex;
+        UINT8           m_TraceFlags;
+        UINT8           m_InfoMask;
+        UINT8           m_Flags;
+        UINT32          Reserved;
         union
         {
             struct _OBJECT_CREATE_INFORMATION *  m_ObjectCreateInfo;
             PVOID               m_QuotaBlockCharged;
         };
+
         PSECURITY_DESCRIPTOR    m_SecurityDescriptor;
         Quad                    m_Body;       // 这个位置就是 Object
     };
@@ -73,7 +75,7 @@ namespace MBox
 
     extern"C"
     {
-        extern struct _OBJECT_TYPE** IoDriverObjectType;
+        extern POBJECT_TYPE* IoDriverObjectType;
 
         PVOID NTAPI ObGetObjectType(
             HANDLE  aObject);
@@ -92,18 +94,18 @@ namespace MBox
         NTSTATUS NTAPI ObReferenceObjectByName(
             UnicodeString* aObjectName,
             UINT32 aAttributes,
-            struct _ACCESS_STATE* aPassedAccessState,
+            PACCESS_STATE aPassedAccessState,
             ACCESS_MASK aDesiredAccess,
-            struct _OBJECT_TYPE* aObjectType,
+            POBJECT_TYPE aObjectType,
             KPROCESSOR_MODE aAccessMode,
             PVOID aParseContext,
             PVOID* aObject);
 
         NTSTATUS NTAPI ObOpenObjectByName(
             ObjectAttributes* aObjectAttributes,
-            struct _OBJECT_TYPE* aObjectType,
+            POBJECT_TYPE aObjectType,
             KPROCESSOR_MODE aAccessMode,
-            struct _ACCESS_STATE* aPassedAccessState,
+            PACCESS_STATE aPassedAccessState,
             ACCESS_MASK aDesiredAccess,
             PVOID aParseContext,
             PHANDLE aHandle);
@@ -111,18 +113,18 @@ namespace MBox
         NTSTATUS NTAPI ObOpenObjectByPointer(
             PVOID aObject,
             UINT32 aHandleAttributes,
-            struct _ACCESS_STATE* aPassedAccessState,
+            PACCESS_STATE aPassedAccessState,
             ACCESS_MASK aDesiredAccess,
-            struct _OBJECT_TYPE* aObjectType,
+            POBJECT_TYPE aObjectType,
             KPROCESSOR_MODE aAccessMode,
             PHANDLE aHandle);
 
         NTSTATUS NTAPI ObOpenObjectByPointerWithTag(
             PVOID aObject,
             UINT32 aHandleAttributes,
-            struct _ACCESS_STATE* aPassedAccessState,
+            PACCESS_STATE aPassedAccessState,
             ACCESS_MASK aDesiredAccess,
-            struct _OBJECT_TYPE* aObjectType,
+            POBJECT_TYPE aObjectType,
             KPROCESSOR_MODE aAccessMode,
             UINT32 aTag,
             PHANDLE aHandle);
