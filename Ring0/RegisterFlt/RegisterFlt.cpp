@@ -16,6 +16,11 @@ namespace MBox
         RegisterFlt* vThis = (RegisterFlt*)aCallbackContext;
         REG_NOTIFY_CLASS vNotifyClass = REG_NOTIFY_CLASS((UINT_PTR)aArgument1);
 
+        if (!vThis->IsStartedFilter())
+        {
+            return STATUS_SUCCESS;
+        }
+
         return vThis->RegistryCallbackDispatch(vNotifyClass, aArgument2);
     }
 

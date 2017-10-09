@@ -1,5 +1,6 @@
 #pragma once
 #include "MBox.Security.h"
+#include "MBox.Object.h"
 
 namespace MBox
 {
@@ -115,6 +116,82 @@ namespace MBox
 
     extern"C"
     {
+        NTSTATUS NTAPI ZwOpenThreadToken(
+            HANDLE aThreadHandle,
+            ACCESS_MASK aDesiredAccess,
+            BOOLEAN aOpenAsSelf,
+            PHANDLE aTokenHandle);
+
+        NTSTATUS NTAPI ZwOpenThreadTokenEx(
+            HANDLE aThreadHandle,
+            ACCESS_MASK aDesiredAccess,
+            BOOLEAN aOpenAsSelf,
+            UINT32 aHandleAttributes,
+            PHANDLE aTokenHandle);
+
+        NTSTATUS NTAPI ZwOpenProcessToken(
+            HANDLE aProcessHandle,
+            ACCESS_MASK aDesiredAccess,
+            PHANDLE aTokenHandle);
+
+        NTSTATUS NTAPI ZwOpenProcessTokenEx(
+            HANDLE aProcessHandle,
+            ACCESS_MASK aDesiredAccess,
+            UINT32 aHandleAttributes,
+            PHANDLE aTokenHandle);
+
+        NTSTATUS NTAPI ZwOpenJobObjectToken(
+            HANDLE aJobHandle,
+            ACCESS_MASK aDesiredAccess,
+            PHANDLE aTokenHandle);
+
+        NTSTATUS NTAPI ZwDuplicateToken(
+            HANDLE aExistingTokenHandle,
+            ACCESS_MASK aDesiredAccess,
+            POBJECT_ATTRIBUTES aObjectAttributes,
+            BOOLEAN aEffectiveOnly,
+            TokenTypeValue aTokenType,
+            PHANDLE aNewTokenHandle);
+
+        NTSTATUS NTAPI ZwFilterToken(
+            HANDLE aExistingTokenHandle,
+            UINT32 aFlags,
+            TokenGroups* aSidsToDisable,
+            TokenPrivileges* aPrivilegesToDelete,
+            TokenGroups* aRestrictedSids,
+            PHANDLE aNewTokenHandle);
+
+        NTSTATUS NTAPI ZwImpersonateAnonymousToken(
+            HANDLE aThreadHandle);
+
+        NTSTATUS NTAPI ZwQueryInformationToken(
+            HANDLE aTokenHandle,
+            TokenInformationClass aTokenInformationClass,
+            PVOID aTokenInformation,
+            UINT32 aTokenInformationLength,
+            PUINT32 aReturnLength);
+
+        NTSTATUS NTAPI ZwSetInformationToken(
+            HANDLE aTokenHandle,
+            TokenInformationClass aTokenInformationClass,
+            PVOID aTokenInformation,
+            UINT32 aTokenInformationLength);
+
+        NTSTATUS NTAPI ZwAdjustPrivilegesToken(
+            HANDLE aTokenHandle,
+            BOOLEAN aDisableAllPrivileges,
+            TokenPrivileges* aNewState,
+            UINT32 aBufferLength,
+            TokenPrivileges* aPreviousState,
+            PUINT32 aReturnLength);
+
+        NTSTATUS NTAPI ZwAdjustGroupsToken(
+            HANDLE aTokenHandle,
+            BOOLEAN aResetToDefault,
+            TokenGroups* aNewState,
+            UINT32 aBufferLength,
+            TokenGroups* aPreviousState,
+            PUINT32 aReturnLength);
 
     }
 }

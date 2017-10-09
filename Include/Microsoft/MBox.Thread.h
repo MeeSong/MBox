@@ -97,6 +97,9 @@ namespace MBox
         BOOLEAN NTAPI PsIsThreadTerminating(
                 PETHREAD aThread);
 
+        BOOLEAN NTAPI PsIsThreadImpersonating(
+            PETHREAD aThread);
+
         NTSTATUS PsLookupThreadByThreadId(
             HANDLE aThreadId,
             PETHREAD* aThread);

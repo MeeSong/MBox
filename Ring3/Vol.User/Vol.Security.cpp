@@ -222,7 +222,7 @@ namespace MBox
                 {
                     UINT32 vNeedBytes = 0;
                     hr = QueryTokenInformation(aToken, aClasses, nullptr, 0, &vNeedBytes);
-                    if (FAILED(hr))
+                    if (0 == vNeedBytes)
                     {
                         break;
                     }

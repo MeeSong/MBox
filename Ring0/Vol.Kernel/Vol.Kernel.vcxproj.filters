@@ -43,6 +43,12 @@
     <ClCompile Include="Vol.Thread.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Vol.Security.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Vol.Registry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -88,6 +94,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Vol.Thread.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Vol.Security.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Vol.Registry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

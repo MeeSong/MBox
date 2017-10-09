@@ -33,6 +33,8 @@
     <ClInclude Include="Vol.Paths.h" />
     <ClInclude Include="Vol.PE.h" />
     <ClInclude Include="Vol.Process.h" />
+    <ClInclude Include="Vol.Registry.h" />
+    <ClInclude Include="Vol.Security.h" />
     <ClInclude Include="Vol.Security.SecurityDescriptor.h" />
     <ClInclude Include="Vol.Symboliclinks.h" />
     <ClInclude Include="Vol.System.h" />
@@ -49,6 +51,8 @@
     <ClCompile Include="Vol.Paths.cpp" />
     <ClCompile Include="Vol.PE.cpp" />
     <ClCompile Include="Vol.Process.cpp" />
+    <ClCompile Include="Vol.Registry.cpp" />
+    <ClCompile Include="Vol.Security.cpp" />
     <ClCompile Include="Vol.Security.SecurityDescriptor.cpp" />
     <ClCompile Include="Vol.Symboliclinks.cpp" />
     <ClCompile Include="Vol.System.cpp" />
