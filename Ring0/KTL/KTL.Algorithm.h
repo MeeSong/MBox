@@ -100,6 +100,17 @@ namespace ktl
             return minmax_element(aFirst, aLast, less<>());
         }
 
+        template<typename ForwardIt, typename F>
+        void enumerate(ForwardIt aFirst, ForwardIt aLast, F aCallback)
+        {
+            for (ktl::usize vIndex = 0; aFirst != aLast; ++aFirst, ++vIndex)
+            {
+                if (aCallback(vIndex, *aFirst))
+                {
+                    break;
+                }
+            }
+        }
     }
 
 }

@@ -76,6 +76,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Owl", "Owl", "{C4E100BB-ECF
 		..\Include\Owl\MBox.OwlProtocol.h = ..\Include\Owl\MBox.OwlProtocol.h
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RegisterFlt", "..\Ring0\RegisterFlt\RegisterFlt.vcxproj", "{36EFE126-9B1F-448C-931C-F0A370646446}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -236,6 +238,18 @@ Global
 		{D825A258-3FE0-49EE-B02C-E6639597FC6A}.Release|x64.Build.0 = Release|x64
 		{D825A258-3FE0-49EE-B02C-E6639597FC6A}.Release|x86.ActiveCfg = Release|Win32
 		{D825A258-3FE0-49EE-B02C-E6639597FC6A}.Release|x86.Build.0 = Release|Win32
+		{36EFE126-9B1F-448C-931C-F0A370646446}.Debug|x64.ActiveCfg = Debug|x64
+		{36EFE126-9B1F-448C-931C-F0A370646446}.Debug|x64.Build.0 = Debug|x64
+		{36EFE126-9B1F-448C-931C-F0A370646446}.Debug|x64.Deploy.0 = Debug|x64
+		{36EFE126-9B1F-448C-931C-F0A370646446}.Debug|x86.ActiveCfg = Debug|Win32
+		{36EFE126-9B1F-448C-931C-F0A370646446}.Debug|x86.Build.0 = Debug|Win32
+		{36EFE126-9B1F-448C-931C-F0A370646446}.Debug|x86.Deploy.0 = Debug|Win32
+		{36EFE126-9B1F-448C-931C-F0A370646446}.Release|x64.ActiveCfg = Release|x64
+		{36EFE126-9B1F-448C-931C-F0A370646446}.Release|x64.Build.0 = Release|x64
+		{36EFE126-9B1F-448C-931C-F0A370646446}.Release|x64.Deploy.0 = Release|x64
+		{36EFE126-9B1F-448C-931C-F0A370646446}.Release|x86.ActiveCfg = Release|Win32
+		{36EFE126-9B1F-448C-931C-F0A370646446}.Release|x86.Build.0 = Release|Win32
+		{36EFE126-9B1F-448C-931C-F0A370646446}.Release|x86.Deploy.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -258,5 +272,6 @@ Global
 		{EF045944-29C3-4E7D-A5A1-16E4F62948CC} = {6900FBAC-17E6-4AC2-AA96-A653C41154D7}
 		{48374AC9-6C08-4DA2-B9DA-9F62A04919B0} = {6900FBAC-17E6-4AC2-AA96-A653C41154D7}
 		{C4E100BB-ECFC-4EBF-98F2-C456B2DDA28A} = {6900FBAC-17E6-4AC2-AA96-A653C41154D7}
+		{36EFE126-9B1F-448C-931C-F0A370646446} = {8977ACD6-1A78-49CF-A6F2-78802DED85D8}
 	EndGlobalSection
 EndGlobal

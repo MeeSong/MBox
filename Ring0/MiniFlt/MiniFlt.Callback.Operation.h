@@ -122,7 +122,7 @@ MiniFlt$Function$TraverseCallbackPacketMemberName$Macro(OperationCallbackPacket)
             {
                 if (aOperationCallbackPacket->m_PreOperation[aMajorFunction].m_IsEnable)
                 {
-                    aFunctor(&aOperationCallbackPacket->m_PreOperation[aMajorFunction], aIndex);
+                    return aFunctor(&aOperationCallbackPacket->m_PreOperation[aMajorFunction], aIndex);
                 }
                 return FALSE;
             };
@@ -136,7 +136,7 @@ MiniFlt$Function$TraverseCallbackPacketMemberName$Macro(OperationCallbackPacket)
             {
                 if (aOperationCallbackPacket->m_PostOperation[aMajorFunction].m_IsEnable)
                 {
-                    aFunctor(&aOperationCallbackPacket->m_PostOperation[aMajorFunction], aIndex);
+                    return aFunctor(&aOperationCallbackPacket->m_PostOperation[aMajorFunction], aIndex);
                 }
                 return FALSE;
             };

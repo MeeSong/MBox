@@ -81,7 +81,12 @@ namespace MBox
 
             PVOID GetProcessWow64Peb(PEPROCESS aProcess)
             {
+#ifdef _AMD64_
                 return PVOID(PsGetProcessWow64Process(aProcess));
+#else
+                aProcess;
+                return nullptr;
+#endif
             }
 
             bool IsWow64Process(PEPROCESS aProcess)
