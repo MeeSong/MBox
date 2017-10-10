@@ -229,6 +229,7 @@ namespace MBox
                 m_KeyHandle = vKeyHandle;
                 break;
             }
+            DeferenceRegistryFullPath(vKeyFullPath);
 
             return vStatus;
         }
@@ -314,6 +315,7 @@ namespace MBox
                 m_KeyHandle = vKeyHandle;
                 break;
             }
+            DeferenceRegistryFullPath(vKeyFullPath);
 
             return vStatus;
         }
