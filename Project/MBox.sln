@@ -52,6 +52,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Microsoft", "Microsoft", "{
 		..\Include\Microsoft\MBox.Object.Job.h = ..\Include\Microsoft\MBox.Object.Job.h
 		..\Include\Microsoft\MBox.Object.Synchronize.h = ..\Include\Microsoft\MBox.Object.Synchronize.h
 		..\Include\Microsoft\MBox.Process.h = ..\Include\Microsoft\MBox.Process.h
+		..\Include\Microsoft\MBox.Runtime.h = ..\Include\Microsoft\MBox.Runtime.h
 		..\Include\Microsoft\MBox.Security.h = ..\Include\Microsoft\MBox.Security.h
 		..\Include\Microsoft\MBox.Security.Macro.h = ..\Include\Microsoft\MBox.Security.Macro.h
 		..\Include\Microsoft\MBox.Security.Token.h = ..\Include\Microsoft\MBox.Security.Token.h
