@@ -1,5 +1,8 @@
 #pragma once
 
+
+#pragma warning(push)
+#pragma warning(disable: 4201)
 namespace MBox
 {
     struct RtlProcessModuleInformation
@@ -24,3 +27,4 @@ namespace MBox
 
     using RtlSystemModules = RtlProcessModules;
 }
+#pragma warning(pop)

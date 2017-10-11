@@ -1,5 +1,8 @@
 #pragma once
 
+
+#pragma warning(push)
+#pragma warning(disable: 4201)
 namespace MBox
 {
     enum class SystemInformationClass : UINT32
@@ -220,3 +223,4 @@ namespace MBox
             UINT32* ReturnLength);
     }
 }
+#pragma warning(pop)

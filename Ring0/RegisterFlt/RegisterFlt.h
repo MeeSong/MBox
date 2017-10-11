@@ -22,9 +22,9 @@ namespace MBox
 
         struct CallbackParameterPacket
         {
-            PVOID               m_Context;
-            REG_NOTIFY_CLASS    m_NotifyClass;
-            PVOID               m_NotifyInformation;
+            PVOID               m_Context           = nullptr;
+            REG_NOTIFY_CLASS    m_NotifyClass       = REG_NOTIFY_CLASS::MaxRegNtNotifyClass;
+            PVOID               m_NotifyInformation = nullptr;
         };
 
         using Callback$Fun  = ktl::function<FilterResult(CallbackParameterPacket*)>;
@@ -36,8 +36,8 @@ namespace MBox
             UINT32  m_IsPreNotify  : 1;
             UINT32  m_IsPostNotify : 1;
 
-            PVOID           m_Context;
-            Callback$Fun    m_Callback;
+            PVOID           m_Context = nullptr;
+            Callback$Fun    m_OperationCallback;
 
             CallbackFunction()
             {
@@ -60,16 +60,30 @@ namespace MBox
             DRIVER_OBJECT* aDriverObject,
             UNICODE_STRING* aRegistryPath);
 
+        static NTSTATUS Initialize$Static(
+            DRIVER_OBJECT* aDriverObject,
+            UNICODE_STRING* aRegistryPath);
+
         NTSTATUS Uninitialize();
 
+        static NTSTATUS Uninitialize$Static();
+
         NTSTATUS RegisterFilter(
+            UNICODE_STRING* aAltitude);
+
+        static NTSTATUS RegisterFilter$Static(
             UNICODE_STRING* aAltitude);
 
         NTSTATUS UnregisterFilter();
 
         NTSTATUS StartFilter();
+        static NTSTATUS StartFilter$Static();
+
         NTSTATUS StopFilter();
+        static NTSTATUS StopFilter$Static();
+
         BOOLEAN IsStartedFilter();
+        static BOOLEAN IsStartedFilter$Static();
 
         template<typename F>
         NTSTATUS RegisterCallbackPacket(

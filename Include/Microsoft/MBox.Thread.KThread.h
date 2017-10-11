@@ -2,6 +2,8 @@
 #include "MBox.Apc.h"
 
 
+#pragma warning(push)
+#pragma warning(disable: 4201)
 namespace MBox
 {
     //////////////////////////////////////////////////////////////////////////
@@ -159,6 +161,7 @@ namespace MBox
 #endif
 
 }
+#pragma warning(pop)
 
 
 #include "MBox.Thread.KThread.14393.h"

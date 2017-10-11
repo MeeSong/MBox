@@ -3,8 +3,8 @@
 namespace MBox
 {
 
-#ifndef MBox$CompileTime$Log$Macro
-#define MBox$CompileTime$Log$Macro(aLevel, aFormat, ...) \
+#ifndef MBoxCompileTimeLog$
+#define MBoxCompileTimeLog$(aLevel, aFormat, ...) \
 do{ \
     DbgPrintEx(DPFLTR_IHVDRIVER_ID, aLevel,     \
         "MBox [%04u, %s]-> " aFormat "\n",      \

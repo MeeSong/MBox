@@ -73,9 +73,6 @@ static void UnitializeControllers()
     }
 }
 
-#include <Microsoft\MBox.Thread.h>
-#include <Vol.Kernel\Vol.Thread.h>
-
 NTSTATUS DriverEntry(
     PDRIVER_OBJECT aDriverObject,
     PUNICODE_STRING aRegistryPath)

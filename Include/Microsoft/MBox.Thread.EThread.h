@@ -2,6 +2,8 @@
 #include "MBox.Thread.KThread.h"
 #include "MBox.Context.h"
 
+#pragma warning(push)
+#pragma warning(disable: 4201)
 namespace MBox
 {
     union PsClientSecurityContext
@@ -21,6 +23,7 @@ namespace MBox
         UINT64 Lock;
     };
 }
+#pragma warning(pop)
 
 #include "MBox.Thread.EThread.14393.h"
 #include "MBox.Thread.EThread.15063.h"

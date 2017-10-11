@@ -1,6 +1,8 @@
 #pragma once
 #include "MBox.Object.h"
 
+#pragma warning(push)
+#pragma warning(disable: 4201)
 namespace MBox
 {
     enum DirectoryAccessMask : UINT32
@@ -38,3 +40,4 @@ namespace MBox
 
     }
 }
+#pragma warning(pop)

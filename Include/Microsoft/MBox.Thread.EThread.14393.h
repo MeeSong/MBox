@@ -1,5 +1,8 @@
 #pragma once
 
+
+#pragma warning(push)
+#pragma warning(disable: 4201)
 namespace MBox
 {
     struct EThread14393
@@ -158,3 +161,4 @@ namespace MBox
 #endif
 
 }
+#pragma warning(pop)

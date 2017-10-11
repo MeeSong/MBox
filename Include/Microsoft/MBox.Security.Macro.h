@@ -1,5 +1,8 @@
 #pragma once
 
+
+#pragma warning(push)
+#pragma warning(disable: 4201)
 namespace MBox
 {
 
@@ -357,3 +360,4 @@ namespace MBox
 #define MBox$Security$TrustedInstallerRid5$Macro 2271478464
 
 }
+#pragma warning(pop)

@@ -1,5 +1,7 @@
 #pragma once
 
+#pragma warning(push)
+#pragma warning(disable: 4201)
 namespace MBox
 {
     enum AddressFamily : ktl::u16
@@ -19,3 +21,4 @@ namespace MBox
     };
 
 }
+#pragma warning(pop)

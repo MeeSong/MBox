@@ -2,6 +2,8 @@
 #include "MBox.Object.h"
 #include "MBox.Security.Token.h"
 
+#pragma warning(push)
+#pragma warning(disable: 4201)
 namespace MBox
 {
     enum JobAccessMask : UINT32
@@ -241,3 +243,4 @@ namespace MBox
 
     }
 }
+#pragma warning(pop)

@@ -1,5 +1,8 @@
 #pragma once
 
+
+#pragma warning(push)
+#pragma warning(disable: 4201)
 namespace MBox
 {
     namespace Images
@@ -465,3 +468,4 @@ namespace MBox
         }
     }
 }
+#pragma warning(pop)

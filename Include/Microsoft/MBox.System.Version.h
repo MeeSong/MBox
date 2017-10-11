@@ -1,8 +1,10 @@
 #pragma once
 
+#pragma warning(push)
+#pragma warning(disable: 4201)
 namespace MBox
 {
-    enum class SystemVersion : ktl::u32
+    enum class SystemVersion : UINT32
     {
         WindowsUnknown,
 
@@ -29,3 +31,4 @@ namespace MBox
         WindowsMax,
     };
 }
+#pragma warning(pop)

@@ -2,6 +2,8 @@
 #include "MBox.Base.h"
 
 
+#pragma warning(push)
+#pragma warning(disable: 4201)
 namespace MBox
 {
 
@@ -14,3 +16,4 @@ namespace MBox
 
     }
 }
+#pragma warning(pop)

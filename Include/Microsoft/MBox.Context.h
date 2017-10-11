@@ -1,6 +1,8 @@
 #pragma once
 
 
+#pragma warning(push)
+#pragma warning(disable: 4201)
 namespace MBox
 {
 #ifdef _X86_
@@ -244,3 +246,4 @@ namespace MBox
 #endif
 
 }
+#pragma warning(pop)

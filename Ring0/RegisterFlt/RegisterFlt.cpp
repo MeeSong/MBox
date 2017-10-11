@@ -16,7 +16,8 @@ namespace MBox
         RegisterFlt* vThis = (RegisterFlt*)aCallbackContext;
         REG_NOTIFY_CLASS vNotifyClass = REG_NOTIFY_CLASS((UINT_PTR)aArgument1);
 
-        if (!vThis->IsStartedFilter())
+        if (!vThis->IsStartedFilter()
+            || (nullptr == aArgument2))
         {
             return STATUS_SUCCESS;
         }
@@ -65,7 +66,7 @@ namespace MBox
             }
 
             vParameter.m_Context = aOperation->m_Context;
-            aOperation->m_Callback(&vParameter);
+            aOperation->m_OperationCallback(&vParameter);
 
             return false;
         };
@@ -85,7 +86,7 @@ namespace MBox
             }
 
             vParameter.m_Context = aOperation->m_Context;
-            vResult = aOperation->m_Callback(&vParameter);
+            vResult = aOperation->m_OperationCallback(&vParameter);
 
             switch (vResult)
             {
@@ -126,7 +127,7 @@ namespace MBox
             }
 
             vParameter.m_Context = aOperation->m_Context;
-            aOperation->m_Callback(&vParameter);
+            aOperation->m_OperationCallback(&vParameter);
 
             return false;
         };
@@ -174,6 +175,16 @@ namespace MBox
         return vStatus;
     }
 
+#pragma prefast(push)
+#pragma prefast(disable:28101, "This function is not DRIVER_INITIALIZE.")
+    NTSTATUS RegisterFlt::Initialize$Static(
+        DRIVER_OBJECT * aDriverObject,
+        UNICODE_STRING * aRegistryPath)
+    {
+        return GetRegisterFlt()->Initialize(aDriverObject, aRegistryPath);
+    }
+#pragma prefast(pop)
+
     NTSTATUS RegisterFlt::Uninitialize()
     {
         NTSTATUS vStatus = STATUS_SUCCESS;
@@ -188,6 +199,11 @@ namespace MBox
         }
 
         return vStatus;
+    }
+
+    NTSTATUS RegisterFlt::Uninitialize$Static()
+    {
+        return GetRegisterFlt()->Uninitialize();
     }
 
     NTSTATUS RegisterFlt::RegisterFilter(UNICODE_STRING * aAltitude)
@@ -235,6 +251,11 @@ namespace MBox
         return vStatus;
     }
 
+    NTSTATUS RegisterFlt::RegisterFilter$Static(UNICODE_STRING * aAltitude)
+    {
+        return GetRegisterFlt()->RegisterFilter(aAltitude);
+    }
+
     NTSTATUS RegisterFlt::UnregisterFilter()
     {
         NTSTATUS vStatus = STATUS_SUCCESS;
@@ -261,6 +282,11 @@ namespace MBox
         return STATUS_SUCCESS;
     }
 
+    NTSTATUS RegisterFlt::StartFilter$Static()
+    {
+        return GetRegisterFlt()->StartFilter();
+    }
+
     NTSTATUS RegisterFlt::StopFilter()
     {
         if (!m_Cookie.QuadPart)
@@ -272,9 +298,19 @@ namespace MBox
         return STATUS_SUCCESS;
     }
 
+    NTSTATUS RegisterFlt::StopFilter$Static()
+    {
+        return GetRegisterFlt()->StopFilter();
+    }
+
     BOOLEAN RegisterFlt::IsStartedFilter()
     {
         return BOOLEAN(m_IsStartedFilter);
+    }
+
+    BOOLEAN RegisterFlt::IsStartedFilter$Static()
+    {
+        return GetRegisterFlt()->IsStartedFilter();
     }
     
 }

@@ -1,5 +1,8 @@
 #pragma once
 
+
+#pragma warning(push)
+#pragma warning(disable: 4201)
 namespace MBox
 {
     enum class VirtualMemoryInformationClass : UINT32
@@ -183,3 +186,4 @@ namespace MBox
             PSIZE_T aReturnLength);
     }
 }
+#pragma warning(pop)

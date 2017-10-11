@@ -1,6 +1,8 @@
 #pragma once
 
 
+#pragma warning(push)
+#pragma warning(disable: 4201)
 namespace MBox
 {
     typedef CCHAR KPROCESSOR_MODE;
@@ -130,3 +132,4 @@ namespace MBox
 
     }
 }
+#pragma warning(pop)

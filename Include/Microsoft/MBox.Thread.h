@@ -1,6 +1,8 @@
 #pragma once
 #include "MBox.Object.h"
 
+#pragma warning(push)
+#pragma warning(disable: 4201)
 namespace MBox
 {
     enum ThreadPriorityIncrement : KPRIORITY
@@ -131,3 +133,4 @@ namespace MBox
 
     }
 }
+#pragma warning(pop)
