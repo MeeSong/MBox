@@ -2,7 +2,7 @@
 #define WIN32_LEAN_AND_MEAN
 
 #include <Windows.h>
-#include <fltUser.h>
+#include <process.h>
 
 #include <new>
 

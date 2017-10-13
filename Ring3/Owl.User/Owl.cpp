@@ -7,12 +7,6 @@ namespace MBox
 {
 #define MBox$DriverMgr$DriverExitEventName$Macro    L"\\DriverMgr{C509B8DF-71E2-473A-99C7-3ACD90ECAE74}"
 
-    static unsigned __stdcall MessageNotify(void* aParameter)
-    {
-        auto vThis = (Owl*)aParameter;
-        return vThis->MessageNotify();
-    }
-
     HRESULT Owl::Initialize()
     {
         HRESULT hr = S_OK;
@@ -91,7 +85,7 @@ namespace MBox
                 break;
             }
 
-            m_NotifyThread = (HANDLE)_beginthreadex(nullptr, 0, MBox::MessageNotify, this, 0, nullptr);
+            m_NotifyThread = (HANDLE)_beginthreadex(nullptr, 0, MessageNotify, this, 0, nullptr);
             if (nullptr == m_NotifyThread)
             {
                 vDosError = _doserrno;
@@ -99,6 +93,11 @@ namespace MBox
             }
 
             break;
+        }
+
+        if (NOERROR != vDosError)
+        {
+            DestroyGetMessageThread();
         }
 
         hr = HRESULT_FROM_WIN32(vDosError);
@@ -259,6 +258,12 @@ namespace MBox
         return hr;
     }
 
+    unsigned __stdcall Owl::MessageNotify(void* aParameter)
+    {
+        auto vThis = (Owl*)aParameter;
+        return vThis->MessageNotify();
+    }
+
     HRESULT Owl::MessageNotify()
     {
         HRESULT hr = S_OK;
@@ -278,15 +283,11 @@ namespace MBox
             }
             else if (EventClasses::DriverExit == vWaitResult)
             {
-                hr = ERROR_SERVER_DISABLED;
-
-                try
+                hr = HRESULT_FROM_WIN32(ERROR_SERVER_DISABLED);
+                hr = m_FailedNotifyCallback(hr, true);
+                if (SUCCEEDED(hr))
                 {
-                    if (m_ServerClosedNotify) m_ServerClosedNotify();
-                }
-                catch (...)
-                {
-                	break;
+                    continue;
                 }
 
                 break;
@@ -300,10 +301,6 @@ namespace MBox
 
                 hr = MessageHandler();
             }
-            else if (WAIT_TIMEOUT == vWaitResult)
-            {
-                continue;
-            }
             else
             {
                 //
@@ -311,6 +308,12 @@ namespace MBox
                 //
 
                 hr = HRESULT_FROM_WIN32(GetLastError());
+                hr = m_FailedNotifyCallback(hr, false);
+                if (SUCCEEDED(hr))
+                {
+                    continue;
+                }
+
                 break;
             }
         }

@@ -35,6 +35,7 @@ namespace MBox
         {
             UINT64      m_MessageId = 0;
             NTSTATUS    m_Status    = 0;
+            UINT32      m_Reserve   = 0;
         };
 
         struct MessageHeader

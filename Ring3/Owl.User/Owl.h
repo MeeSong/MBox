@@ -9,13 +9,15 @@ namespace MBox
     class Owl
     {
     public:
+        using FailedNotifyCallback$Type = std::function<HRESULT(
+            HRESULT hr,
+            bool aIsServerClosed)>;
+
         using MessageNotifyCallback$Type = std::function<HRESULT(
             MessageHeader* aSenderBuffer,
             UINT32 aSenderBytes,
             ReplyHeader* aReplyBuffer,
             UINT32 aReplyBytes)>;
-
-        using ServerClosedNotifyCallback$Type = std::function<void()>;
 
         template <typename F>
         void SetMessageNotifyCallback(
@@ -33,9 +35,9 @@ namespace MBox
         }
 
         template<typename F>
-        void SetServerClosedNotifyCallback(F aCallback)
+        void SetFailedNotifyCallback(const F& aCallback)
         {
-            m_ServerClosedNotify = aCallback;
+            m_FailedNotifyCallback = aCallback;
         }
 
         HRESULT Initialize();
@@ -58,7 +60,7 @@ namespace MBox
             UINT32* aReturnedBytes);
 
     protected:
-        friend static unsigned __stdcall MessageNotify(void* aParameter);
+        static unsigned __stdcall MessageNotify(void* aParameter);
         HRESULT MessageNotify();
 
         HRESULT GetMessage(
@@ -82,9 +84,9 @@ namespace MBox
         UINT32                      m_ReplyPacketMaxBytes   = sizeof(ReplyHeader);
         MessageHeader*              m_MessagePacket         = nullptr;
         ReplyHeader*                m_ReplyPacket           = nullptr;
-        MessageNotifyCallback$Type  m_MessageNotifyCallback;
 
-        ServerClosedNotifyCallback$Type m_ServerClosedNotify;
+        FailedNotifyCallback$Type   m_FailedNotifyCallback;
+        MessageNotifyCallback$Type  m_MessageNotifyCallback;
 
         bool    m_IsConnected = false;
 
