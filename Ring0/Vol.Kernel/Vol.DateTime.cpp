@@ -11,7 +11,7 @@ namespace MBox
             PLARGE_INTEGER FormatTimeoutToLargeInteger(PLARGE_INTEGER aTimeout, UINT32 aMilliseconds)
             {
                 //if (INFINITE == aMilliseconds)
-                if (0xFFFFFFFF == aMilliseconds)
+                if (Infinite == aMilliseconds)
                 {
                     return nullptr;
                 }

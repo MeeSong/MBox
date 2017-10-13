@@ -6,6 +6,11 @@ namespace MBox
     {
         namespace DateTime
         {
+            enum : UINT32
+            {
+                Infinite = 0xFFFFFFFF,
+            };
+
             PLARGE_INTEGER FormatTimeoutToLargeInteger(
                 PLARGE_INTEGER aTimeout,
                 UINT32 aMilliseconds);

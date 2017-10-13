@@ -22,8 +22,8 @@
     <ProjectGuid>{C061AFD1-F69A-4240-B835-4176E667BF22}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>UDIO</RootNamespace>
-    <WindowsTargetPlatformVersion>$(LatestTargetPlatformVersion)</WindowsTargetPlatformVersion>
     <ProjectName>Owl.User</ProjectName>
+    <WindowsTargetPlatformVersion>$(LatestTargetPlatformVersion)</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -114,6 +114,7 @@
     </Link>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)..\Output\Library\Debug\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <TreatLibWarningAsErrors>true</TreatLibWarningAsErrors>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -132,6 +133,7 @@
     </Link>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)..\Output\Library\Debug\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <TreatLibWarningAsErrors>true</TreatLibWarningAsErrors>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -154,6 +156,7 @@
     </Link>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)..\Output\Library\Release\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <TreatLibWarningAsErrors>true</TreatLibWarningAsErrors>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -176,6 +179,7 @@
     </Link>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)..\Output\Library\Release\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <TreatLibWarningAsErrors>true</TreatLibWarningAsErrors>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>

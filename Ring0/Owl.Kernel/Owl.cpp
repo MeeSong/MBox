@@ -14,6 +14,102 @@ namespace MBox
 
     //////////////////////////////////////////////////////////////////////////
 
+    NTSTATUS Owl::PacketProtocol::Initialize(
+        void * aSendBuffer,
+        UINT32 aSendBytes,
+        void * aReplyBuffer,
+        UINT32 aReplyBytes)
+    {
+        m_SenderBuffer = aSendBuffer;
+        m_SenderBytes = aSendBytes;
+        m_ReplyBuffer = aReplyBuffer;
+        m_ReplyBytes = aReplyBytes;
+
+        KeInitializeEvent(&m_ReplyEvent, EVENT_TYPE::NotificationEvent, FALSE);
+        return STATUS_SUCCESS;
+    }
+
+    bool Owl::CommunicationPort::IsUserThreadActived()
+    {
+        LARGE_INTEGER vTimeout{ 0 };
+        NTSTATUS vStatus = KeWaitForSingleObject(m_UserThread, Executive, KernelMode, FALSE, &vTimeout);
+        if (STATUS_TIMEOUT == vStatus)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    NTSTATUS Owl::CommunicationPort::Initialize(const wchar_t * aPortName, UINT32 aPortNameLength)
+    {
+        NTSTATUS vStatus = STATUS_SUCCESS;
+
+        static const wchar_t sDeviceDirectory[]    = L"\\Device";
+        static const wchar_t sDeviceDosDirectory[] = L"\\DosDevices\\Global";
+
+        for (;;)
+        {
+            new(&m_PacketList) ktl::list<PacketProtocol *>;
+
+            USHORT vDeviceNameMaxBytes    = USHORT((aPortNameLength * 2) + sizeof(sDeviceDirectory) + (sizeof(L"\\")));
+            USHORT vDeviceDosNameMaxBytes = USHORT((aPortNameLength * 2) + sizeof(sDeviceDosDirectory) + (sizeof(L"\\")));
+
+            m_DeviceName.Buffer     = (PWCH)new ktl::byte[vDeviceNameMaxBytes]{};
+            m_DeviceDosName.Buffer  = (PWCH)new ktl::byte[vDeviceDosNameMaxBytes]{};
+
+            if (nullptr == m_DeviceName.Buffer
+                || nullptr == m_DeviceDosName.Buffer)
+            {
+                vStatus = STATUS_INSUFFICIENT_RESOURCES;
+                break;
+            }
+            m_DeviceName.MaximumLength      = vDeviceNameMaxBytes;
+            m_DeviceDosName.MaximumLength   = vDeviceDosNameMaxBytes;
+
+            vStatus = RtlUnicodeStringPrintf(&m_DeviceName, L"%s%s", sDeviceDirectory, aPortName);
+            if (!NT_SUCCESS(vStatus))
+            {
+                break;
+            }
+
+            vStatus = RtlUnicodeStringPrintf(&m_DeviceDosName, L"%s%s", sDeviceDosDirectory, aPortName);
+            if (!NT_SUCCESS(vStatus))
+            {
+                break;
+            }
+
+            break;
+        }
+
+        if (!NT_SUCCESS(vStatus))
+        {
+            Uninitialize();
+        }
+
+        return vStatus;
+    }
+
+    void Owl::CommunicationPort::Uninitialize()
+    {
+        if (m_DeviceName.Buffer)
+        {
+            delete[](ktl::byte*)(m_DeviceName.Buffer);
+            m_DeviceName.Buffer = nullptr;
+
+            m_DeviceName.Length = m_DeviceName.MaximumLength = 0;
+        }
+
+        if (m_DeviceDosName.Buffer)
+        {
+            delete[](ktl::byte*)(m_DeviceDosName.Buffer);
+            m_DeviceDosName.Buffer = nullptr;
+
+            m_DeviceDosName.Length = m_DeviceDosName.MaximumLength = 0;
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+
     static void DriverUnload(DRIVER_OBJECT* /*aDriverObject*/)
     {
         //Uninitialize();
@@ -44,13 +140,13 @@ namespace MBox
         NTSTATUS vStatus = STATUS_SUCCESS;
         auto vIrp = IoGetCurrentIrpStackLocation(aIrp);
 
-        Owl* vDIO = nullptr;
+        Owl* vThis = nullptr;
         UINT32 vResponseBytes = 0;
 
         for (;;)
         {
-            vDIO = (Owl*)(aDeviceObject->DeviceExtension);
-            if (nullptr == vDIO)
+            vThis = (Owl*)(aDeviceObject->DeviceExtension);
+            if (nullptr == vThis)
             {
                 vStatus = STATUS_DEVICE_DATA_ERROR;
                 break;
@@ -66,7 +162,7 @@ namespace MBox
 
             case IoCode::Connecttion:
             {
-                vStatus = vDIO->ConnectHandler(
+                vStatus = vThis->ConnectHandler(
                     aIrp->RequestorMode,
                     (ConnectContext*)aIrp->AssociatedIrp.SystemBuffer,
                     vIrp->Parameters.DeviceIoControl.InputBufferLength,
@@ -77,7 +173,7 @@ namespace MBox
 
             case IoCode::Disconnection:
             {
-                vStatus = vDIO->DisconnectHandler();
+                vStatus = vThis->DisconnectHandler();
                 break;
             }
 
@@ -95,7 +191,7 @@ namespace MBox
                     }
                 }
 
-                vStatus = vDIO->UserMessageHandler(
+                vStatus = vThis->UserMessageHandler(
                     aIrp->AssociatedIrp.SystemBuffer,
                     vIrp->Parameters.DeviceIoControl.InputBufferLength,
                     vReplyBuffer,
@@ -118,7 +214,7 @@ namespace MBox
                     }
                 }
 
-                vStatus = vDIO->KernelRequestHandler(
+                vStatus = vThis->KernelRequestHandler(
                     (MessageHeader*)(vReplyBuffer),
                     vIrp->Parameters.DeviceIoControl.OutputBufferLength,
                     &vResponseBytes);
@@ -127,7 +223,7 @@ namespace MBox
 
             case  IoCode::ReplyRequest:
             {
-                vStatus = vDIO->ReplyRequestHandler(
+                vStatus = vThis->ReplyRequestHandler(
                     (ReplyHeader*)(aIrp->AssociatedIrp.SystemBuffer),
                     vIrp->Parameters.DeviceIoControl.InputBufferLength,
                     &vResponseBytes);
@@ -162,7 +258,7 @@ namespace MBox
                     break;
                 }
                 vDispatchPacket->m_MajorCallback[IRP_MJ_CREATE] = DeviceCreate;
-                vDispatchPacket->m_MajorCallback[IRP_MJ_CLOSE] = DeviceClose;
+                vDispatchPacket->m_MajorCallback[IRP_MJ_CLOSE]  = DeviceClose;
                 vDispatchPacket->m_MajorCallback[IRP_MJ_DEVICE_CONTROL] = DeviceControl;
                 vDispatchPacket->m_UnloadCallback = DriverUnload;
 
@@ -190,14 +286,92 @@ namespace MBox
         return vStatus;
     }
 
-    void Owl::Uninitialize()
+    NTSTATUS Owl::Uninitialize()
     {
         CloseCommunicationPort();
+        return STATUS_SUCCESS;
     }
 
     HANDLE Owl::GetGroupHandle()
     {
         return s_DeviceGroupHandle;
+    }
+
+    NTSTATUS Owl::CreateCommunicationPort(
+        const wchar_t * aPortName,
+        UINT32 aPortNameLength,
+        void * aServerPortContext)
+    {
+        NTSTATUS vStatus = STATUS_SUCCESS;
+
+        DEVICE_OBJECT*     vDeviceObject = nullptr;
+        CommunicationPort* vCommunicationPort = nullptr;
+
+        for (;;)
+        {
+            if (m_CommunicationPort)
+            {
+                vStatus = STATUS_ALREADY_REGISTERED;
+                break;
+            }
+
+            if (nullptr == aPortName)
+            {
+                vStatus = STATUS_INVALID_PARAMETER;
+                break;
+            }
+
+            vCommunicationPort = new CommunicationPort;
+            if (nullptr == vCommunicationPort)
+            {
+                vStatus = STATUS_INSUFFICIENT_RESOURCES;
+                break;
+            }
+
+            vStatus = vCommunicationPort->Initialize(aPortName, aPortNameLength);
+            if (!NT_SUCCESS(vStatus))
+            {
+                break;
+            }
+
+            vStatus = DriverMgr::CreateDeviceObject(
+                GetGroupHandle(),
+                0,
+                &(vCommunicationPort->m_DeviceName),
+                FILE_DEVICE_UNKNOWN,
+                FILE_DEVICE_SECURE_OPEN,
+                FALSE,
+                &vDeviceObject);
+            if (!NT_SUCCESS(vStatus))
+            {
+                break;
+            }
+
+            vStatus = IoCreateSymbolicLink(&(vCommunicationPort->m_DeviceDosName), &(vCommunicationPort->m_DeviceName));
+            if (!NT_SUCCESS(vStatus))
+            {
+                break;
+            }
+
+            vDeviceObject->DeviceExtension = this;
+
+            vCommunicationPort->m_PortContext  = aServerPortContext;
+            vCommunicationPort->m_DeviceObject = vDeviceObject;
+
+            vDeviceObject->Flags |= DO_BUFFERED_IO;
+            vDeviceObject->Flags |= DO_DIRECT_IO;
+            vDeviceObject->Flags &= (~DO_DEVICE_INITIALIZING);
+
+            m_CommunicationPort = vCommunicationPort;
+            break;
+        }
+
+        if (!NT_SUCCESS(vStatus))
+        {
+            CloseCommunicationPort();
+        }
+
+        return vStatus;
     }
 
     NTSTATUS Owl::CloseCommunicationPort()
@@ -227,7 +401,7 @@ namespace MBox
         UINT32 aSendBytes,
         void * aReplyBuffer,
         UINT32 aReplyBytes,
-        PLARGE_INTEGER aTimeout)
+        UINT32 aMillisecondsTimeout)
     {
         NTSTATUS vStatus = STATUS_SUCCESS;
 
@@ -292,7 +466,11 @@ namespace MBox
 
             KeReleaseSemaphore(m_CommunicationPort->m_NotifySemaphore, IO_NO_INCREMENT, 1, FALSE);
 
-            vStatus = KeWaitForSingleObject(&vPacket->m_ReplyEvent, Executive, KernelMode, FALSE, aTimeout);
+            LARGE_INTEGER vTimeout{};
+            vStatus = KeWaitForSingleObject(
+                &vPacket->m_ReplyEvent,
+                Executive, KernelMode, FALSE,
+                Vol::DateTime::FormatTimeoutToLargeInteger(&vTimeout, aMillisecondsTimeout));
             if (!NT_SUCCESS(vStatus))
             {
                 break;
@@ -304,7 +482,10 @@ namespace MBox
                 // Timeout & Alread GetMessage
                 //
 
-                vStatus = KeWaitForSingleObject(&vPacket->m_ReplyEvent, Executive, KernelMode, FALSE, aTimeout);
+                vStatus = KeWaitForSingleObject(
+                    &vPacket->m_ReplyEvent, 
+                    Executive, KernelMode, FALSE, 
+                    Vol::DateTime::FormatTimeoutToLargeInteger(&vTimeout, aMillisecondsTimeout));
                 if (!NT_SUCCESS(vStatus))
                 {
                     break;
@@ -367,7 +548,7 @@ namespace MBox
 
         DisconnectNotifyCallbackParameter vCallackParemter;
         vCallackParemter.m_ConnectPortContext = m_CommunicationPort->m_ConnectContext;
-        m_CommunicationPort->m_Callback->m_DisconnectNotify(&vCallackParemter);
+        m_DisconnectNotifyCallback(&vCallackParemter);
 
         return STATUS_SUCCESS;
     }
@@ -446,7 +627,7 @@ namespace MBox
                 vConnectNotifyParameter.m_ConnectionContextBytes = aConnectContext->m_ContextBytes;
             }
 
-            vStatus = m_CommunicationPort->m_Callback->m_ConnectNotify(&vConnectNotifyParameter);
+            vStatus = m_ConnectNotifyCallback(&vConnectNotifyParameter);
             if (!NT_SUCCESS(vStatus))
             {
                 break;
@@ -480,13 +661,13 @@ namespace MBox
         {
             MessageNotifyCallbackParameter vCallbackParameter;
             vCallbackParameter.m_ConnectContext = m_CommunicationPort->m_ConnectContext;
-            vCallbackParameter.m_SenderBuffer = aSenderBuffer;
-            vCallbackParameter.m_SenderBytes = aSenderBytes;
-            vCallbackParameter.m_ReplyBuffer = aReplyBuffer;
-            vCallbackParameter.m_ReplyBytes = aReplyBytes;
+            vCallbackParameter.m_SenderBuffer   = aSenderBuffer;
+            vCallbackParameter.m_SenderBytes    = aSenderBytes;
+            vCallbackParameter.m_ReplyBuffer    = aReplyBuffer;
+            vCallbackParameter.m_ReplyBytes     = aReplyBytes;
             vCallbackParameter.m_ResponseReplyBytes = aResponseReplyBytes;
 
-            vStatus = m_CommunicationPort->m_Callback->m_MessageNotify(&vCallbackParameter);
+            vStatus = m_MessageNotifyCallback(&vCallbackParameter);
             if (!NT_SUCCESS(vStatus))
             {
                 break;
@@ -548,9 +729,9 @@ namespace MBox
             }
 
             RtlCopyMemory(aMessageBuffer, vPacket->m_SenderBuffer, vPacket->m_SenderBytes);
-            aMessageBuffer->m_MessageId = UINT64(vPacket);
-            aMessageBuffer->m_MessageBytes = vPacket->m_SenderBytes;
-            aMessageBuffer->m_ReplyBytes = vPacket->m_ReplyBytes;
+            aMessageBuffer->m_MessageId     = UINT64(vPacket);
+            aMessageBuffer->m_MessageBytes  = vPacket->m_SenderBytes;
+            aMessageBuffer->m_ReplyBytes    = vPacket->m_ReplyBytes;
 
             break;
         }
@@ -588,7 +769,7 @@ namespace MBox
                 ktl::lock_guard<ktl::spin_lock> vLock(m_CommunicationPort->m_PacketListLock);
 
                 auto vIterBegin = m_CommunicationPort->m_PacketList.begin();
-                auto vIterEnd = m_CommunicationPort->m_PacketList.end();
+                auto vIterEnd   = m_CommunicationPort->m_PacketList.end();
 
                 for (; vIterBegin != vIterEnd; ++vIterBegin)
                 {
@@ -624,4 +805,5 @@ namespace MBox
 
         return vStatus;
     }
+
 }

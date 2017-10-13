@@ -19,7 +19,7 @@ namespace MBox
 
         template <typename F>
         void SetMessageNotifyCallback(
-            F aCallback,
+            const F& aCallback,
             UINT32 aMessagePacketMaxBytes,
             UINT32 aReplyPacketMaxBytes)
         {
@@ -42,15 +42,13 @@ namespace MBox
         void Uninitialize();
 
         HRESULT CreateGetMessageThread();
-        void DestroyGetMessageThread(UINT32 aSecondsForWait = 5);
+        void DestroyGetMessageThread(UINT32 aSecondsForWait = INFINITE);
 
         HRESULT ConnectCommunicationPort(
             PCWSTR aPortName,
             ConnectContext * aContext);
 
         HRESULT DisconnectCommunicationPort();
-
-        HRESULT MessageNotify();
 
         HRESULT SendMessage(
             void* aSenderBuffer,
@@ -60,6 +58,9 @@ namespace MBox
             UINT32* aReturnedBytes);
 
     protected:
+        friend static unsigned __stdcall MessageNotify(void* aParameter);
+        HRESULT MessageNotify();
+
         HRESULT GetMessage(
             MessageHeader* aMessageBuffer,
             UINT32 aMessageBytes);
