@@ -54,6 +54,9 @@
     <ClCompile Include="MiniFlt.Callback.SectionContext.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MiniFlt.Helper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -96,6 +99,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MiniFlt.Callback.SectionContext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MiniFlt.Helper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

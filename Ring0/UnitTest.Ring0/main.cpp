@@ -102,12 +102,6 @@ NTSTATUS DriverEntry(
             }
         }*/
 
-        vStatus = InitializeControllers(aDriverObject);
-        if (!NT_SUCCESS(vStatus))
-        {
-            break;
-        }
-
         vStatus = MBox::MiniFlt::RegisterFilter(
             MBox::SystemVersion::Windows7,
             FLT_INSTANCE_CONTEXT,
@@ -125,6 +119,12 @@ NTSTATUS DriverEntry(
                 break;
             }
         }*/
+
+        vStatus = InitializeControllers(aDriverObject);
+        if (!NT_SUCCESS(vStatus))
+        {
+            break;
+        }
 
         vStatus = MBox::MiniFlt::StartFilter();
         if (!NT_SUCCESS(vStatus))

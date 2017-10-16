@@ -127,12 +127,6 @@ namespace MBox
                     break;
                 }
 
-                vStatus = FltStartFiltering(s_FilterHandle);
-                if (!NT_SUCCESS(vStatus))
-                {
-                    break;
-                }
-
                 break;
             }
 
@@ -156,7 +150,14 @@ namespace MBox
         {
             if (!s_FilterHandle)
             {
-                return STATUS_INVALID_HANDLE;
+                return STATUS_FLT_NOT_INITIALIZED;
+            }
+            
+            NTSTATUS vStatus = FltStartFiltering(s_FilterHandle);
+            if (STATUS_INVALID_PARAMETER != vStatus)
+            {
+                // Filtering was already started for this minifilter driver.
+                return vStatus;
             }
 
             InterlockedExchange(&s_IsStartedFilter, TRUE);
@@ -167,7 +168,7 @@ namespace MBox
         {
             if (!s_FilterHandle)
             {
-                return STATUS_INVALID_HANDLE;
+                return STATUS_FLT_NOT_INITIALIZED;
             }
 
             InterlockedExchange(&s_IsStartedFilter, FALSE);
