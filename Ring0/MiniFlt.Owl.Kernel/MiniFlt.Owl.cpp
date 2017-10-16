@@ -1,5 +1,3 @@
-#include "..\..\Ring3\MiniFlt.Owl.User\MiniFlt.Owl.h"
-#include "..\..\Ring3\MiniFlt.Owl.User\MiniFlt.Owl.h"
 #include "stdafx.h"
 #include "MiniFlt.Owl.h"
 

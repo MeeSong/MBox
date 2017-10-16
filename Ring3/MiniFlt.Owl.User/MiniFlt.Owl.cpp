@@ -16,9 +16,10 @@ namespace MBox
             std::placeholders::_1,
             std::placeholders::_2,
             std::placeholders::_3,
-            std::placeholders::_4),
-            sizeof(FILTER_MESSAGE_HEADER),
-            sizeof(FILTER_REPLY_HEADER));
+            std::placeholders::_4,
+            std::placeholders::_5),
+            0,
+            0);
 
         return S_OK;
     }
@@ -258,20 +259,22 @@ namespace MBox
                 break;
             }
 
+            UINT32 vResponseReplyBytes = 0;
             __try
             {
                 hr = m_MessageNotifyCallback(
-                    m_MessagePacket,
-                    m_MessagePacketMaxBytes,
-                    m_ReplyPacket,
-                    m_ReplyPacketMaxBytes);
+                    ++m_MessagePacket,
+                    UINT32(vOverlapped.InternalHigh) - sizeof(FILTER_MESSAGE_HEADER),
+                    ++m_ReplyPacket,
+                    m_ReplyPacketMaxBytes - sizeof(FILTER_REPLY_HEADER),
+                    &vResponseReplyBytes);
             }
             __except (EXCEPTION_EXECUTE_HANDLER)
             {
                 hr = GetExceptionCode();
             }
 
-            hr = ReplyMessage(m_ReplyPacket, m_ReplyPacketMaxBytes);
+            hr = ReplyMessage(m_ReplyPacket, vResponseReplyBytes + sizeof(FILTER_REPLY_HEADER));
             if (FAILED(hr))
             {
                 hr = m_FailedNotifyCallback(hr, false);
@@ -289,10 +292,11 @@ namespace MBox
     }
 
     HRESULT MiniFltOwl::MessageNotifyCallback(
-        PFILTER_MESSAGE_HEADER /*aSenderBuffer*/,
+        void* /*aSenderBuffer*/,
         UINT32 /*aSenderBytes*/,
-        PFILTER_REPLY_HEADER /*aReplyBuffer*/,
-        UINT32 /*aReplyBytes*/)
+        void* /*aReplyBuffer*/,
+        UINT32 /*aReplyMaxBytes*/,
+        UINT32* /*aResponseReplyBytes*/)
     {
         return E_NOTIMPL;
     }

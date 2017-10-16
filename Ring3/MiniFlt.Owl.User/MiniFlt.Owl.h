@@ -16,10 +16,11 @@ namespace MBox
             bool aIsServerClosed)>;
 
         using MessageNotifyCallback$Type = std::function<HRESULT(
-            FILTER_MESSAGE_HEADER* aSenderBuffer,
+            void* aSenderBuffer,
             UINT32 aSenderBytes,
-            FILTER_REPLY_HEADER* aReplyBuffer,
-            UINT32 aReplyBytes)>;
+            void* aReplyBuffer,
+            UINT32 aReplyMaxBytes,
+            UINT32* aResponseReplyBytes)>;
 
         template <typename F>
         void SetMessageNotifyCallback(
@@ -29,11 +30,8 @@ namespace MBox
         {
             m_MessageNotifyCallback = aCallback;
 
-            m_MessagePacketMaxBytes = (aMessagePacketMaxBytes < sizeof(FILTER_MESSAGE_HEADER))
-                ? sizeof(FILTER_MESSAGE_HEADER) : aMessagePacketMaxBytes;
-
-            m_ReplyPacketMaxBytes = (aReplyPacketMaxBytes < sizeof(FILTER_REPLY_HEADER))
-                ? sizeof(FILTER_REPLY_HEADER) : aReplyPacketMaxBytes;
+            m_MessagePacketMaxBytes = sizeof(FILTER_MESSAGE_HEADER) + aMessagePacketMaxBytes;
+            m_ReplyPacketMaxBytes   = sizeof(FILTER_REPLY_HEADER) + aReplyPacketMaxBytes;
         }
 
         template<typename F>
@@ -80,10 +78,11 @@ namespace MBox
         HRESULT MessageNotify();
 
         HRESULT MessageNotifyCallback(
-            PFILTER_MESSAGE_HEADER aSenderBuffer,
+            void* aSenderBuffer,
             UINT32 aSenderBytes,
-            PFILTER_REPLY_HEADER aReplyBuffer,
-            UINT32 aReplyBytes);
+            void* aReplyBuffer,
+            UINT32 aReplyBytes,
+            UINT32* aResponseReplyBytes);
 
     protected:
         UINT32                  m_MessagePacketMaxBytes = sizeof(FILTER_MESSAGE_HEADER);

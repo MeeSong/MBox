@@ -164,7 +164,7 @@ namespace MBox
             {
                 vStatus = vThis->ConnectHandler(
                     aIrp->RequestorMode,
-                    (ConnectContext*)aIrp->AssociatedIrp.SystemBuffer,
+                    (ConnectContextHeader*)aIrp->AssociatedIrp.SystemBuffer,
                     vIrp->Parameters.DeviceIoControl.InputBufferLength,
                     &vResponseBytes);
 
@@ -183,7 +183,8 @@ namespace MBox
                 if (vIrp->Parameters.DeviceIoControl.OutputBufferLength
                     && aIrp->MdlAddress)
                 {
-                    vReplyBuffer = MmGetSystemAddressForMdlSafe(aIrp->MdlAddress, NormalPagePriority | MdlMappingNoExecute);
+                    vReplyBuffer = MmGetSystemAddressForMdlSafe(aIrp->MdlAddress, 
+                        NormalPagePriority | MdlMappingNoExecute);
                     if (nullptr == vReplyBuffer)
                     {
                         vStatus = STATUS_INSUFFICIENT_RESOURCES;
@@ -200,13 +201,14 @@ namespace MBox
                 break;
             }
 
-            case  IoCode::KernelRequest:
+            case  IoCode::KernelMessage:
             {
                 void* vReplyBuffer = nullptr;
                 if (vIrp->Parameters.DeviceIoControl.OutputBufferLength
                     && aIrp->MdlAddress)
                 {
-                    vReplyBuffer = MmGetSystemAddressForMdlSafe(aIrp->MdlAddress, NormalPagePriority | MdlMappingNoExecute);
+                    vReplyBuffer = MmGetSystemAddressForMdlSafe(aIrp->MdlAddress, 
+                        NormalPagePriority | MdlMappingNoExecute);
                     if (nullptr == vReplyBuffer)
                     {
                         vStatus = STATUS_INSUFFICIENT_RESOURCES;
@@ -214,16 +216,16 @@ namespace MBox
                     }
                 }
 
-                vStatus = vThis->KernelRequestHandler(
+                vStatus = vThis->KernelMessageHandler(
                     (MessageHeader*)(vReplyBuffer),
                     vIrp->Parameters.DeviceIoControl.OutputBufferLength,
                     &vResponseBytes);
                 break;
             }
 
-            case  IoCode::ReplyRequest:
+            case  IoCode::ReplyKernelMessage:
             {
-                vStatus = vThis->ReplyRequestHandler(
+                vStatus = vThis->ReplyKernelMessageHandler(
                     (ReplyHeader*)(aIrp->AssociatedIrp.SystemBuffer),
                     vIrp->Parameters.DeviceIoControl.InputBufferLength,
                     &vResponseBytes);
@@ -347,7 +349,9 @@ namespace MBox
                 break;
             }
 
-            vStatus = IoCreateSymbolicLink(&(vCommunicationPort->m_DeviceDosName), &(vCommunicationPort->m_DeviceName));
+            vStatus = IoCreateSymbolicLink(
+                &(vCommunicationPort->m_DeviceDosName),
+                &(vCommunicationPort->m_DeviceName));
             if (!NT_SUCCESS(vStatus))
             {
                 break;
@@ -385,7 +389,9 @@ namespace MBox
             if (m_CommunicationPort->m_DeviceObject)
             {
                 IoDeleteSymbolicLink(&(m_CommunicationPort->m_DeviceDosName));
-                vStatus = DriverMgr::DeleteDeviceObject(GetGroupHandle(), m_CommunicationPort->m_DeviceObject);
+                vStatus = DriverMgr::DeleteDeviceObject(
+                    GetGroupHandle(), 
+                    m_CommunicationPort->m_DeviceObject);
             }
 
             m_CommunicationPort->Uninitialize();
@@ -397,9 +403,9 @@ namespace MBox
     }
 
     NTSTATUS Owl::SendMessage(
-        void * aSendBuffer,
+        void* aSendBuffer,
         UINT32 aSendBytes,
-        void * aReplyBuffer,
+        void* aReplyBuffer,
         UINT32 aReplyBytes,
         UINT32 aMillisecondsTimeout)
     {
@@ -476,7 +482,11 @@ namespace MBox
                 break;
             }
 
-            if (PacketProtocol::State::Get == vPacket->m_State)
+            if (PacketProtocol::State::Get == 
+                PacketProtocol::State(InterlockedCompareExchange(
+                    (volatile long*)&vPacket->m_State, 
+                    long(PacketProtocol::State::Send), 
+                    long(PacketProtocol::State::Get))))
             {
                 //
                 // Timeout & Alread GetMessage
@@ -555,8 +565,8 @@ namespace MBox
 
     NTSTATUS Owl::ConnectHandler(
         KPROCESSOR_MODE aAccessMode,
-        ConnectContext * aConnectContext,
-        UINT32 aParameterBytes,
+        ConnectContextHeader * aConnectContext,
+        UINT32 aConnectContextBytes,
         UINT32* aResponseReplyBytes)
     {
         NTSTATUS vStatus = STATUS_SUCCESS;
@@ -580,22 +590,22 @@ namespace MBox
                 break;
             }
 
-            if (0 == aConnectContext->m_Header.m_NotifySemaphore
-                || 0 == aConnectContext->m_Header.m_ThreadHandle)
+            if (0 == aConnectContext->m_NotifySemaphore
+                || 0 == aConnectContext->m_ThreadHandle)
             {
                 vStatus = STATUS_INVALID_PARAMETER;
                 break;
             }
 
-            if (aParameterBytes
-                < (aConnectContext->m_ContextBytes + sizeof(*aConnectContext)))
+            if (aConnectContextBytes
+                < sizeof(*aConnectContext))
             {
                 vStatus = STATUS_INVALID_PARAMETER;
                 break;
             }
 
             vStatus = ObReferenceObjectByHandle(
-                HANDLE(aConnectContext->m_Header.m_NotifySemaphore),
+                HANDLE(aConnectContext->m_NotifySemaphore),
                 SEMAPHORE_ALL_ACCESS,
                 *ExSemaphoreObjectType,
                 aAccessMode,
@@ -607,7 +617,7 @@ namespace MBox
             }
 
             vStatus = ObReferenceObjectByHandle(
-                HANDLE(aConnectContext->m_Header.m_ThreadHandle),
+                HANDLE(aConnectContext->m_ThreadHandle),
                 THREAD_ALL_ACCESS,
                 *PsThreadType,
                 aAccessMode,
@@ -621,10 +631,10 @@ namespace MBox
             ConnectNotifyCallbackParameter vConnectNotifyParameter;
             vConnectNotifyParameter.m_PortContext = m_CommunicationPort->m_PortContext;
 
-            if (aConnectContext->m_ContextBytes)
+            if (aConnectContextBytes > sizeof(*aConnectContext))
             {
-                vConnectNotifyParameter.m_ConnectionContext = aConnectContext->m_Context;
-                vConnectNotifyParameter.m_ConnectionContextBytes = aConnectContext->m_ContextBytes;
+                vConnectNotifyParameter.m_ConnectionContext         = ++aConnectContext;
+                vConnectNotifyParameter.m_ConnectionContextBytes    = aConnectContextBytes - sizeof(*aConnectContext);
             }
 
             vStatus = m_ConnectNotifyCallback(&vConnectNotifyParameter);
@@ -636,7 +646,7 @@ namespace MBox
             m_CommunicationPort->m_ConnectContext = vConnectNotifyParameter.m_ConnectContext;
             m_CommunicationPort->m_IsConnected = true;
 
-            *aResponseReplyBytes = aParameterBytes;
+            *aResponseReplyBytes = aConnectContextBytes;
             break;
         }
 
@@ -679,7 +689,7 @@ namespace MBox
         return vStatus;
     }
 
-    NTSTATUS Owl::KernelRequestHandler(
+    NTSTATUS Owl::KernelMessageHandler(
         MessageHeader * aMessageBuffer,
         UINT32 aMessageBufferBytes,
         UINT32 * aNeedBytes)
@@ -690,7 +700,7 @@ namespace MBox
         for (;;)
         {
             if (nullptr == aMessageBuffer
-                || aMessageBufferBytes < sizeof(*aMessageBuffer))
+                || aMessageBufferBytes < sizeof(MessageHeader))
             {
                 vStatus = STATUS_INVALID_PARAMETER;
                 break;
@@ -706,19 +716,16 @@ namespace MBox
                 }
 
                 vPacket = m_CommunicationPort->m_PacketList.front();
-                vPacket->m_State = PacketProtocol::State::Get;
+                InterlockedExchange((volatile long*)&vPacket->m_State, long(PacketProtocol::State::Get));
 
-                *aNeedBytes = vPacket->m_SenderBytes;
+                *aNeedBytes = vPacket->m_SenderBytes + sizeof(MessageHeader);
 
-                if (aMessageBufferBytes < vPacket->m_SenderBytes)
+                if (aMessageBufferBytes < (vPacket->m_SenderBytes + sizeof(MessageHeader)))
                 {
-                    vStatus = STATUS_BUFFER_OVERFLOW;
+                    vStatus = STATUS_BUFFER_TOO_SMALL;
 
                     aMessageBuffer->m_MessageBytes = vPacket->m_SenderBytes;
-                    aMessageBuffer->m_ReplyBytes = vPacket->m_ReplyBytes;
-                    ((ReplyHeader*)(vPacket->m_ReplyBuffer))->m_Status = vStatus;
-
-                    KeSetEvent(&vPacket->m_ReplyEvent, IO_NO_INCREMENT, FALSE);
+                    aMessageBuffer->m_ReplyBytes   = vPacket->m_ReplyBytes;
                     break;
                 }
 
@@ -728,10 +735,10 @@ namespace MBox
                 break;
             }
 
-            RtlCopyMemory(aMessageBuffer, vPacket->m_SenderBuffer, vPacket->m_SenderBytes);
             aMessageBuffer->m_MessageId     = UINT64(vPacket);
             aMessageBuffer->m_MessageBytes  = vPacket->m_SenderBytes;
             aMessageBuffer->m_ReplyBytes    = vPacket->m_ReplyBytes;
+            RtlCopyMemory(++aMessageBuffer, vPacket->m_SenderBuffer, vPacket->m_SenderBytes);
 
             break;
         }
@@ -739,7 +746,7 @@ namespace MBox
         return vStatus;
     }
 
-    NTSTATUS Owl::ReplyRequestHandler(
+    NTSTATUS Owl::ReplyKernelMessageHandler(
         ReplyHeader * aReplyBuffer,
         UINT32 aReplyBufferBytes,
         UINT32 * aNeedBytes)
@@ -749,7 +756,7 @@ namespace MBox
         for (;;)
         {
             if (nullptr == aReplyBuffer
-                || aReplyBufferBytes < sizeof(*aReplyBuffer))
+                || aReplyBufferBytes < sizeof(ReplyHeader))
             {
                 vStatus = STATUS_INVALID_PARAMETER;
                 break;
@@ -775,7 +782,7 @@ namespace MBox
                 {
                     if (vPacket == (*vIterBegin))
                     {
-                        vPacket->m_State = PacketProtocol::State::Reply;
+                        InterlockedExchange((volatile long*)&vPacket->m_State, long(PacketProtocol::State::Reply));
                         m_CommunicationPort->m_PacketList.erase(vIterBegin);
 
                         vIsFound = true;
@@ -789,16 +796,15 @@ namespace MBox
                 break;
             }
 
+            aReplyBufferBytes -= sizeof(ReplyHeader);
             if (vPacket->m_ReplyBytes < aReplyBufferBytes)
             {
-                aReplyBufferBytes = vPacket->m_ReplyBytes;
-                *aNeedBytes = aReplyBufferBytes;
-
-                vStatus = STATUS_BUFFER_OVERFLOW;
-                ((ReplyHeader*)(vPacket->m_ReplyBuffer))->m_Status = vStatus;
+                *aNeedBytes         = vPacket->m_ReplyBytes;
+                aReplyBufferBytes   = vPacket->m_ReplyBytes;
+                vStatus             = STATUS_BUFFER_OVERFLOW;
             }
 
-            RtlCopyMemory(vPacket->m_ReplyBuffer, aReplyBuffer, aReplyBufferBytes);
+            RtlCopyMemory(vPacket->m_ReplyBuffer, ++aReplyBuffer, aReplyBufferBytes);
             KeSetEvent(&vPacket->m_ReplyEvent, IO_NO_INCREMENT, FALSE);
             break;
         }

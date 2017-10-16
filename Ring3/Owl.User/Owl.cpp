@@ -18,9 +18,10 @@ namespace MBox
                 std::placeholders::_1,
                 std::placeholders::_2,
                 std::placeholders::_3,
-                std::placeholders::_4),
-                sizeof(MessageHeader),
-                sizeof(ReplyHeader));
+                std::placeholders::_4,
+                std::placeholders::_5),
+                0,
+                0);
 
             break;
         }
@@ -139,7 +140,8 @@ namespace MBox
 
     HRESULT Owl::ConnectCommunicationPort(
         PCWSTR aPortName,
-        ConnectContext * aContext)
+        ConnectContextHeader* aContext,
+        UINT32 aContextBytes)
     {
         HRESULT hr = S_OK;
         UINT32  vDosError = NOERROR;
@@ -155,7 +157,8 @@ namespace MBox
             }
 
             if (nullptr == aPortName
-                || nullptr == aContext)
+                || nullptr == aContext
+                || sizeof(ConnectContextHeader) > aContextBytes)
             {
                 vDosError = ERROR_INVALID_PARAMETER;
                 break;
@@ -190,15 +193,15 @@ namespace MBox
                 break;
             }
 
-            aContext->m_Header.m_NotifySemaphore = UINT64(m_EventHandles[EventClasses::NotifySemaphore]);
-            aContext->m_Header.m_ThreadHandle = UINT64(m_NotifyThread);
+            aContext->m_NotifySemaphore = UINT64(m_EventHandles[EventClasses::NotifySemaphore]);
+            aContext->m_ThreadHandle    = UINT64(m_NotifyThread);
 
             UINT32 vReturnBytes = 0;
             if (!DeviceIoControl(
                 m_CommunicationPort,
                 UINT32(IoCode::Connecttion),
-                aContext, aContext->m_ContextBytes + sizeof(ConnectContext),
-                aContext, aContext->m_ContextBytes + sizeof(ConnectContext),
+                aContext, aContextBytes,
+                aContext, aContextBytes,
                 (DWORD*)&vReturnBytes,
                 nullptr))
             {
@@ -323,11 +326,11 @@ namespace MBox
     }
 
     HRESULT Owl::SendMessage(
-        void * aSenderBuffer,
+        void* aSenderBuffer,
         UINT32 aSenderBytes,
-        void * aReplyBuffer,
+        void* aReplyBuffer,
         UINT32 aReplyBytes,
-        UINT32 * aReturnedBytes)
+        UINT32* aReturnedBytes)
     {
         HRESULT hr = S_OK;
 
@@ -359,7 +362,8 @@ namespace MBox
 
     HRESULT Owl::GetMessage(
         MessageHeader * aMessageBuffer,
-        UINT32 aMessageBytes)
+        UINT32 aMessageBytes,
+        UINT32* aReturnedBytes)
     {
         HRESULT hr = S_OK;
 
@@ -371,10 +375,16 @@ namespace MBox
                 break;
             }
 
+            if (sizeof(MessageHeader) > aMessageBytes)
+            {
+                hr = E_INVALIDARG;
+                break;
+            }
+
             UINT32 vReturnedBytes = 0;
             if (!DeviceIoControl(
                 m_CommunicationPort,
-                UINT32(IoCode::KernelRequest),
+                UINT32(IoCode::KernelMessage),
                 nullptr, 0,
                 aMessageBuffer, aMessageBytes,
                 (DWORD*)&vReturnedBytes,
@@ -384,6 +394,7 @@ namespace MBox
                 break;
             }
 
+            if (aReturnedBytes) *aReturnedBytes = vReturnedBytes;
             break;
         }
 
@@ -404,10 +415,16 @@ namespace MBox
                 break;
             }
 
+            if (sizeof(ReplyHeader) > aReplyBytes)
+            {
+                hr = E_INVALIDARG;
+                break;
+            }
+
             UINT32 vReturnedBytes = 0;
             if (!DeviceIoControl(
                 m_CommunicationPort,
-                UINT32(IoCode::ReplyRequest),
+                UINT32(IoCode::ReplyKernelMessage),
                 aReplyBuffer, aReplyBytes,
                 nullptr, 0,
                 (DWORD*)&vReturnedBytes,
@@ -438,23 +455,26 @@ namespace MBox
 
             RtlSecureZeroMemory(m_MessagePacket, m_MessagePacketMaxBytes);
             RtlSecureZeroMemory(m_ReplyPacket, m_ReplyPacketMaxBytes);
-            new(m_MessagePacket) MessageHeader;
-            new(m_ReplyPacket) ReplyHeader;
+            new(m_MessagePacket) MessageHeader();
+            new(m_ReplyPacket) ReplyHeader();
 
-            hr = GetMessage(m_MessagePacket, m_MessagePacketMaxBytes);
+            UINT32 vMessageBytes = 0;
+            hr = GetMessage(m_MessagePacket, m_MessagePacketMaxBytes, &vMessageBytes);
             if (FAILED(hr))
             {
                 break;
             }
 
             NTSTATUS vStatus = STATUS_SUCCESS;
+            UINT32 vResponseReplyBytes = 0;
             try
             {
                 hr = m_MessageNotifyCallback(
-                    m_MessagePacket,
-                    m_MessagePacketMaxBytes,
-                    m_ReplyPacket,
-                    m_ReplyPacketMaxBytes);
+                    ++m_MessagePacket,
+                    vMessageBytes - sizeof(MessageHeader),
+                    ++m_ReplyPacket,
+                    m_ReplyPacketMaxBytes - sizeof(ReplyHeader),
+                    &vResponseReplyBytes);
             }
             catch (...)
             {
@@ -463,7 +483,7 @@ namespace MBox
 
             m_ReplyPacket->m_MessageId = m_MessagePacket->m_MessageId;
             m_ReplyPacket->m_Status    = vStatus;
-            hr = ReplyMessage(m_ReplyPacket, m_ReplyPacketMaxBytes);
+            hr = ReplyMessage(m_ReplyPacket, vResponseReplyBytes + sizeof(ReplyHeader));
             if (FAILED(hr))
             {
                 break;
@@ -476,10 +496,11 @@ namespace MBox
     }
 
     HRESULT Owl::MessageNotifyCallback(
-        MessageHeader * /*aSenderBuffer*/,
+        void * /*aSenderBuffer*/,
         UINT32 /*aSenderBytes*/,
-        ReplyHeader * /*aReplyBuffer*/,
-        UINT32 /*aReplyBytes*/)
+        void * /*aReplyBuffer*/,
+        UINT32 /*aReplyBytes*/,
+        UINT32* /*aResponseReplyBytes*/)
     {
         return E_NOTIMPL;
     }

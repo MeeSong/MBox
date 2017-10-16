@@ -14,10 +14,11 @@ namespace MBox
             bool aIsServerClosed)>;
 
         using MessageNotifyCallback$Type = std::function<HRESULT(
-            MessageHeader* aSenderBuffer,
+            void* aSenderBuffer,
             UINT32 aSenderBytes,
-            ReplyHeader* aReplyBuffer,
-            UINT32 aReplyBytes)>;
+            void* aReplyBuffer,
+            UINT32 aReplyMaxBytes,
+            UINT32* aResponseReplyBytes) > ;
 
         template <typename F>
         void SetMessageNotifyCallback(
@@ -27,11 +28,8 @@ namespace MBox
         {
             m_MessageNotifyCallback = aCallback;
 
-            m_MessagePacketMaxBytes = (aMessagePacketMaxBytes < sizeof(MessageHeader))
-                ? sizeof(MessageHeader) : aMessagePacketMaxBytes;
-
-            m_ReplyPacketMaxBytes = (aReplyPacketMaxBytes < sizeof(ReplyHeader))
-                ? sizeof(ReplyHeader) : aReplyPacketMaxBytes;
+            m_MessagePacketMaxBytes = sizeof(MessageHeader) + aMessagePacketMaxBytes;
+            m_ReplyPacketMaxBytes   = sizeof(ReplyHeader)   + aReplyPacketMaxBytes;
         }
 
         template<typename F>
@@ -48,7 +46,8 @@ namespace MBox
 
         HRESULT ConnectCommunicationPort(
             PCWSTR aPortName,
-            ConnectContext * aContext);
+            ConnectContextHeader * aContext,
+            UINT32 aContextBytes);
 
         HRESULT DisconnectCommunicationPort();
 
@@ -59,25 +58,27 @@ namespace MBox
             UINT32 aReplyBytes,
             UINT32* aReturnedBytes);
 
-    protected:
-        static unsigned __stdcall MessageNotify(void* aParameter);
-        HRESULT MessageNotify();
-
         HRESULT GetMessage(
             MessageHeader* aMessageBuffer,
-            UINT32 aMessageBytes);
+            UINT32 aMessageBytes,
+            UINT32* aReturnedBytes);
 
         HRESULT ReplyMessage(
             ReplyHeader* aReplyBuffer,
             UINT32 aReplyBytes);
 
+    protected:
+        static unsigned __stdcall MessageNotify(void* aParameter);
+        HRESULT MessageNotify();
+
         HRESULT MessageHandler();
 
         HRESULT MessageNotifyCallback(
-            MessageHeader* aSenderBuffer,
+            void* aSenderBuffer,
             UINT32 aSenderBytes,
-            ReplyHeader* aReplyBuffer,
-            UINT32 aReplyBytes);
+            void* aReplyBuffer,
+            UINT32 aReplyBytes,
+            UINT32* aResponseReplyBytes);
 
     protected:
         UINT32                      m_MessagePacketMaxBytes = sizeof(MessageHeader);

@@ -15,7 +15,7 @@ namespace MBox
     protected:
         struct PacketProtocol
         {
-            enum class State : UINT32
+            enum class State : long
             {
                 Send,
                 Get,
@@ -134,7 +134,7 @@ namespace MBox
 
         NTSTATUS ConnectHandler(
             KPROCESSOR_MODE aAccessMode,
-            ConnectContext* aConnectContext,
+            ConnectContextHeader* aConnectContext,
             UINT32 aParameterBytes,
             UINT32* aResponseReplyBytes);
 
@@ -145,12 +145,12 @@ namespace MBox
             UINT32 aReplyBytes,
             UINT32* aResponseReplyBytes);
 
-        NTSTATUS KernelRequestHandler(
+        NTSTATUS KernelMessageHandler(
             MessageHeader* aMessageBuffer,
             UINT32 aMessageBufferBytes,
             UINT32* aNeedBytes);
 
-        NTSTATUS ReplyRequestHandler(
+        NTSTATUS ReplyKernelMessageHandler(
             ReplyHeader* aReplyBuffer,
             UINT32 aReplyBufferBytes,
             UINT32* aNeedBytes);
