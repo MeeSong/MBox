@@ -26,16 +26,14 @@ namespace MBox
         
         struct ReplyHeader
         {
+            NTSTATUS    m_Status    = 0;
             UINT64      m_MessageId = 0;
-            NTSTATUS    m_Status    = 0; // sizeof(NTSTATUS) == sizeof(UINT32)
-            UINT32      m_Reserve   = 0;
         };
 
         struct MessageHeader
         {
-            UINT64  m_MessageId     = 0;
-            UINT32  m_MessageBytes  = 0;
             UINT32  m_ReplyBytes    = 0;
+            UINT64  m_MessageId     = 0;
         };
 #pragma pack(pop)
 

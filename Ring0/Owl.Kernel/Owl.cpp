@@ -719,13 +719,12 @@ namespace MBox
                 InterlockedExchange((volatile long*)&vPacket->m_State, long(PacketProtocol::State::Get));
 
                 *aNeedBytes = vPacket->m_SenderBytes + sizeof(MessageHeader);
+                aMessageBuffer->m_MessageId  = UINT64(vPacket);
+                aMessageBuffer->m_ReplyBytes = vPacket->m_ReplyBytes + sizeof(ReplyHeader);
 
                 if (aMessageBufferBytes < (vPacket->m_SenderBytes + sizeof(MessageHeader)))
                 {
                     vStatus = STATUS_BUFFER_TOO_SMALL;
-
-                    aMessageBuffer->m_MessageBytes = vPacket->m_SenderBytes;
-                    aMessageBuffer->m_ReplyBytes   = vPacket->m_ReplyBytes;
                     break;
                 }
 
@@ -735,11 +734,7 @@ namespace MBox
                 break;
             }
 
-            aMessageBuffer->m_MessageId     = UINT64(vPacket);
-            aMessageBuffer->m_MessageBytes  = vPacket->m_SenderBytes;
-            aMessageBuffer->m_ReplyBytes    = vPacket->m_ReplyBytes;
             RtlCopyMemory(++aMessageBuffer, vPacket->m_SenderBuffer, vPacket->m_SenderBytes);
-
             break;
         }
 
@@ -799,7 +794,7 @@ namespace MBox
             aReplyBufferBytes -= sizeof(ReplyHeader);
             if (vPacket->m_ReplyBytes < aReplyBufferBytes)
             {
-                *aNeedBytes         = vPacket->m_ReplyBytes;
+                *aNeedBytes         = vPacket->m_ReplyBytes + sizeof(ReplyHeader);
                 aReplyBufferBytes   = vPacket->m_ReplyBytes;
                 vStatus             = STATUS_BUFFER_OVERFLOW;
             }

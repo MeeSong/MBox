@@ -259,14 +259,29 @@ namespace MBox
                 break;
             }
 
+            auto vMessagePacket = ++m_MessagePacket;
+            auto vReplyPacket   = ++m_ReplyPacket;
+            auto vMessageBytes  = UINT32(vOverlapped.InternalHigh - sizeof(FILTER_MESSAGE_HEADER));
+            auto vReplyBytes    = UINT32(m_ReplyPacketMaxBytes - sizeof(FILTER_REPLY_HEADER));
+
+            if ((m_MessagePacket->ReplyLength - sizeof(FILTER_REPLY_HEADER)) < vReplyBytes)
+            {
+                vReplyBytes = m_MessagePacket->ReplyLength - sizeof(FILTER_REPLY_HEADER);
+            }
+            else if (0 == m_MessagePacket->ReplyLength)
+            {
+                vReplyBytes  = 0;
+                vReplyPacket = nullptr;
+            }
+
             UINT32 vResponseReplyBytes = 0;
             __try
             {
                 hr = m_MessageNotifyCallback(
-                    ++m_MessagePacket,
-                    UINT32(vOverlapped.InternalHigh) - sizeof(FILTER_MESSAGE_HEADER),
-                    ++m_ReplyPacket,
-                    m_ReplyPacketMaxBytes - sizeof(FILTER_REPLY_HEADER),
+                    vMessagePacket,
+                    vMessageBytes,
+                    vReplyPacket,
+                    vReplyBytes,
                     &vResponseReplyBytes);
             }
             __except (EXCEPTION_EXECUTE_HANDLER)
@@ -274,6 +289,8 @@ namespace MBox
                 hr = GetExceptionCode();
             }
 
+            m_ReplyPacket->MessageId = m_MessagePacket->MessageId;
+            m_ReplyPacket->Status    = NTSTATUS_FROM_WIN32(hr);
             hr = ReplyMessage(m_ReplyPacket, vResponseReplyBytes + sizeof(FILTER_REPLY_HEADER));
             if (FAILED(hr))
             {

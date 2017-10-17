@@ -465,24 +465,38 @@ namespace MBox
                 break;
             }
 
-            NTSTATUS vStatus = STATUS_SUCCESS;
+            vMessageBytes       -= sizeof(MessageHeader);
+            auto vMessagePacket = ++m_MessagePacket;
+            auto vReplyPacket   = ++m_ReplyPacket;
+            auto vReplyBytes    = UINT32(m_ReplyPacketMaxBytes - sizeof(ReplyHeader));
+
+            if ((m_MessagePacket->m_ReplyBytes - sizeof(ReplyHeader)) < vReplyBytes)
+            {
+                vReplyBytes = m_MessagePacket->m_ReplyBytes - sizeof(ReplyHeader);
+            }
+            else if (0 == m_MessagePacket->m_ReplyBytes)
+            {
+                vReplyBytes  = 0;
+                vReplyPacket = nullptr;
+            }
+
             UINT32 vResponseReplyBytes = 0;
-            try
+            __try
             {
                 hr = m_MessageNotifyCallback(
-                    ++m_MessagePacket,
-                    vMessageBytes - sizeof(MessageHeader),
-                    ++m_ReplyPacket,
-                    m_ReplyPacketMaxBytes - sizeof(ReplyHeader),
+                    vMessagePacket,
+                    vMessageBytes,
+                    vReplyPacket,
+                    vReplyBytes,
                     &vResponseReplyBytes);
             }
-            catch (...)
+            __except (EXCEPTION_EXECUTE_HANDLER)
             {
-                vStatus = 0xC0000001L; // STATUS_UNSUCCESSFUL;
+                hr = GetExceptionCode();
             }
 
             m_ReplyPacket->m_MessageId = m_MessagePacket->m_MessageId;
-            m_ReplyPacket->m_Status    = vStatus;
+            m_ReplyPacket->m_Status    = NTSTATUS_FROM_WIN32(hr);
             hr = ReplyMessage(m_ReplyPacket, vResponseReplyBytes + sizeof(ReplyHeader));
             if (FAILED(hr))
             {
