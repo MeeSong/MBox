@@ -734,7 +734,10 @@ namespace MBox
                 break;
             }
 
-            RtlCopyMemory(++aMessageBuffer, vPacket->m_SenderBuffer, vPacket->m_SenderBytes);
+            RtlCopyMemory(
+                PVOID(UINT_PTR(aMessageBuffer) + sizeof(*aMessageBuffer)),
+                vPacket->m_SenderBuffer,
+                vPacket->m_SenderBytes);
             break;
         }
 
@@ -799,7 +802,11 @@ namespace MBox
                 vStatus             = STATUS_BUFFER_OVERFLOW;
             }
 
-            RtlCopyMemory(vPacket->m_ReplyBuffer, ++aReplyBuffer, aReplyBufferBytes);
+            RtlCopyMemory(
+                vPacket->m_ReplyBuffer, 
+                PVOID(UINT_PTR(aReplyBuffer) + sizeof(*aReplyBuffer)),
+                aReplyBufferBytes);
+
             KeSetEvent(&vPacket->m_ReplyEvent, IO_NO_INCREMENT, FALSE);
             break;
         }

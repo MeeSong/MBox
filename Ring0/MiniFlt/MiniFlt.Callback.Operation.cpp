@@ -17,7 +17,7 @@ namespace MBox
             PVOID*                /*aCompletionContext*/)
         {
             NTSTATUS vStatus = STATUS_SUCCESS; 
-            FLT_PREOP_CALLBACK_STATUS vFltStatus = FLT_PREOP_SUCCESS_NO_CALLBACK;
+            FLT_PREOP_CALLBACK_STATUS vFltStatus = FLT_PREOP_SUCCESS_WITH_CALLBACK;
 
             if (FALSE == IsStartedFilter()
                 || nullptr == aData
@@ -31,7 +31,7 @@ namespace MBox
             vParameter.m_FltCallbackData    = aData;
             vParameter.m_FltObjects         = aFltObjects;
             vParameter.m_FltCompletionContext = nullptr;
-            vParameter.m_PreOperationStatus = FLT_PREOP_SUCCESS_NO_CALLBACK;
+            vParameter.m_PreOperationStatus = vFltStatus;
 
             //
             // Context
@@ -465,7 +465,7 @@ namespace MBox
             vParameter.m_FltObjects             = aFltObjects;
             vParameter.m_FltCompletionContext   = &vFltCompletionContext;
             vParameter.m_PostOperationFlags     = aFlags;
-            vParameter.m_PostOperationStatus    = FLT_POSTOP_FINISHED_PROCESSING;
+            vParameter.m_PostOperationStatus    = vFltStatus;
 
             //
             // Context

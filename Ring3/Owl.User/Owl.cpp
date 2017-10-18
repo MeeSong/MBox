@@ -286,7 +286,7 @@ namespace MBox
             }
             else if (EventClasses::DriverExit == vWaitResult)
             {
-                hr = HRESULT_FROM_WIN32(ERROR_SERVER_DISABLED);
+                hr = ERROR_FLT_NO_WAITER_FOR_REPLY;
                 hr = m_FailedNotifyCallback(hr, true);
                 if (SUCCEEDED(hr))
                 {
@@ -462,12 +462,18 @@ namespace MBox
             hr = GetMessage(m_MessagePacket, m_MessagePacketMaxBytes, &vMessageBytes);
             if (FAILED(hr))
             {
+                hr = m_FailedNotifyCallback(hr, bool(HRESULT_FROM_WIN32(ERROR_INVALID_HANDLE) == hr));
+                if (SUCCEEDED(hr))
+                {
+                    continue;
+                }
+
                 break;
             }
 
-            vMessageBytes       -= sizeof(MessageHeader);
-            auto vMessagePacket = ++m_MessagePacket;
-            auto vReplyPacket   = ++m_ReplyPacket;
+            vMessageBytes      -= sizeof(MessageHeader);
+            auto vMessagePacket = PVOID(UINT_PTR(m_MessagePacket) + sizeof(m_MessagePacket));
+            auto vReplyPacket   = PVOID(UINT_PTR(m_ReplyPacket) + sizeof(m_ReplyPacket));
             auto vReplyBytes    = UINT32(m_ReplyPacketMaxBytes - sizeof(ReplyHeader));
 
             if ((m_MessagePacket->m_ReplyBytes - sizeof(ReplyHeader)) < vReplyBytes)

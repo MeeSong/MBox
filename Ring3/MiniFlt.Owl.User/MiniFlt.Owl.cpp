@@ -243,14 +243,9 @@ namespace MBox
                     hr = HRESULT_FROM_WIN32(GetLastError());
                 }
             }
-
-            if (HRESULT_FROM_WIN32(ERROR_INVALID_HANDLE) == hr)
+            if (FAILED(hr) )
             {
-                hr = m_FailedNotifyCallback(hr, true);
-            }
-            else if (S_OK != hr)
-            {
-                hr = m_FailedNotifyCallback(hr, false);
+                hr = m_FailedNotifyCallback(hr, bool(HRESULT_FROM_WIN32(ERROR_INVALID_HANDLE) == hr));
                 if (SUCCEEDED(hr))
                 {
                     continue;
@@ -259,8 +254,8 @@ namespace MBox
                 break;
             }
 
-            auto vMessagePacket = ++m_MessagePacket;
-            auto vReplyPacket   = ++m_ReplyPacket;
+            auto vMessagePacket = PVOID(UINT_PTR(m_MessagePacket) + sizeof(*m_MessagePacket));
+            auto vReplyPacket   = PVOID(UINT_PTR(m_ReplyPacket) + sizeof(*m_ReplyPacket));
             auto vMessageBytes  = UINT32(vOverlapped.InternalHigh - sizeof(FILTER_MESSAGE_HEADER));
             auto vReplyBytes    = UINT32(m_ReplyPacketMaxBytes - sizeof(FILTER_REPLY_HEADER));
 
@@ -272,6 +267,12 @@ namespace MBox
             {
                 vReplyBytes  = 0;
                 vReplyPacket = nullptr;
+            }
+
+            if (0 == vOverlapped.InternalHigh)
+            {
+                vMessageBytes = 0;
+                vMessagePacket = nullptr;
             }
 
             UINT32 vResponseReplyBytes = 0;

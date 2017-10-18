@@ -154,7 +154,8 @@ namespace MBox
             }
             
             NTSTATUS vStatus = FltStartFiltering(s_FilterHandle);
-            if (STATUS_INVALID_PARAMETER != vStatus)
+            if (!NT_SUCCESS(vStatus)
+                && STATUS_INVALID_PARAMETER != vStatus)
             {
                 // Filtering was already started for this minifilter driver.
                 return vStatus;
