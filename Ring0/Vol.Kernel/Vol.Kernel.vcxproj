@@ -29,6 +29,7 @@
     <ClInclude Include="Vol.Device.Macro.h" />
     <ClInclude Include="Vol.Memory.h" />
     <ClInclude Include="Vol.Module.h" />
+    <ClInclude Include="Vol.Object.Event.h" />
     <ClInclude Include="Vol.Object.h" />
     <ClInclude Include="Vol.Paths.h" />
     <ClInclude Include="Vol.PE.h" />
@@ -48,6 +49,7 @@
     <ClCompile Include="Vol.Memory.cpp" />
     <ClCompile Include="Vol.Module.cpp" />
     <ClCompile Include="Vol.Object.cpp" />
+    <ClCompile Include="Vol.Object.Event.cpp" />
     <ClCompile Include="Vol.Paths.cpp" />
     <ClCompile Include="Vol.PE.cpp" />
     <ClCompile Include="Vol.Process.cpp" />

@@ -99,9 +99,10 @@ namespace MBox
     {
         NTSTATUS vStatus = STATUS_SUCCESS;
 
-        if (nullptr == aClientPort)
+        if (nullptr == aClientPort
+            || nullptr == *aClientPort)
         {
-            return STATUS_INVALID_PARAMETER_1;
+            return STATUS_INVALID_HANDLE;
         }
 
         for (;;)
@@ -168,7 +169,7 @@ namespace MBox
             ConnectNotifyCallbackParameter vConnectNotifyParameter;
             vConnectNotifyParameter.m_ClientPort        = aClientPort;
             vConnectNotifyParameter.m_ServerPortContext = m_ServerPortContext;
-            vConnectNotifyParameter.m_ClientProcessId   = vConnectNotifyParameter.m_ClientProcessId;
+            vConnectNotifyParameter.m_ClientProcessId   = vConnectCookie->m_ClientProcessId;
             vConnectNotifyParameter.m_ConnectionContext = aConnectionContext;
             vConnectNotifyParameter.m_ConnectionContextBytes = aSizeOfContext;
 
@@ -223,7 +224,7 @@ namespace MBox
     {
         if (nullptr == aConnectionCookie)
         {
-            return STATUS_INVALID_PARAMETER_2;
+            return STATUS_INVALID_PARAMETER_1;
         }
 
         auto vConnectionCookie = (ConnectionCookie*)aConnectionCookie;

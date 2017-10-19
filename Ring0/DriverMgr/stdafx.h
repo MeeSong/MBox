@@ -9,6 +9,7 @@
 
 
 #include <wdm.h>
+#include <ntstrsafe.h>
 #include <KTL\KTL.Memory.New.h>
 
 #include <Common\MBox.Macro.h>

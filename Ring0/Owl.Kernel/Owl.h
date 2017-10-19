@@ -29,7 +29,8 @@ namespace MBox
             UINT32  m_ReplyBytes    = 0;
 
             volatile State m_State  = State::Send;
-            KEVENT  m_ReplyEvent{};
+            NTSTATUS m_Status       = STATUS_SUCCESS;
+            KEVENT   m_ReplyEvent{};
 
             NTSTATUS Initialize(
                 void * aSendBuffer,
@@ -46,11 +47,12 @@ namespace MBox
             UNICODE_STRING  m_DeviceName    = {};
             UNICODE_STRING  m_DeviceDosName = {};
 
+            HANDLE          m_ClientProcessId = nullptr;
             PETHREAD        m_UserThread      = nullptr;
             PKSEMAPHORE     m_NotifySemaphore = nullptr;
 
-            void*           m_PortContext    = nullptr;
-            void*           m_ConnectContext = nullptr;
+            void*           m_ServerPortContext = nullptr;
+            void*           m_ClientPortContext = nullptr;
 
             ktl::list<PacketProtocol*>  m_PacketList;
             ktl::spin_lock              m_PacketListLock;
@@ -64,21 +66,22 @@ namespace MBox
     public:
         struct ConnectNotifyCallbackParameter
         {
-            void*   m_PortContext       = nullptr;
-            void*   m_ConnectContext    = nullptr;
+            void*   m_ServerPortContext = nullptr;
+            void*   m_ClientPortContext = nullptr;
 
+            HANDLE  m_ClientProcessId   = nullptr;
             void*   m_ConnectionContext = nullptr;
             UINT32  m_ConnectionContextBytes = 0;
         };
 
         struct DisconnectNotifyCallbackParameter
         {
-            void*  m_ConnectPortContext = nullptr;
+            void*  m_ClientPortContext  = nullptr;
         };
 
         struct MessageNotifyCallbackParameter
         {
-            void*   m_ConnectContext    = nullptr;
+            void*   m_ClientPortContext = nullptr;
             void*   m_SenderBuffer      = nullptr;
             UINT32  m_SenderBytes       = 0;
             void*   m_ReplyBuffer       = nullptr;

@@ -132,6 +132,9 @@ namespace MBox
         NTSTATUS NTAPI PsResumeProcess(
             PEPROCESS aProcess);
 
+        HANDLE NTAPI PsGetCurrentProcessId();
+        HANDLE NTAPI PsGetCurrentThreadId();
+
         // Get parent Pid
         HANDLE NTAPI PsGetProcessInheritedFromUniqueProcessId(
             PEPROCESS aProcess);

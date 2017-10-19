@@ -94,7 +94,6 @@ namespace MBox
         enum EventClasses : UINT32
         {
             ThreadExit,         // WAIT_OBJECT_0
-            DriverExit,
             NotifySemaphore,
             Max
         };

@@ -1,8 +1,6 @@
 #include "stdafx.h"
-#include <Vol.Kernel\Vol.Security.SecurityDescriptor.h>
-
-#include <ntstrsafe.h>
 #include "DriverMgr.h"
+#include <Vol.Kernel\Vol.Object.Event.h>
 
 namespace MBox
 {
@@ -46,7 +44,10 @@ namespace MBox
 
         static void DriverUnload(DRIVER_OBJECT *aDriverObject)
         {
-            ZwSetEvent(s_DriverUnloadEvent, nullptr);
+            if (s_DriverUnloadEvent)
+            {
+                ZwSetEvent(s_DriverUnloadEvent, nullptr);
+            }
 
             if (s_PreUnload)
             {
@@ -190,11 +191,11 @@ namespace MBox
             DriverUnload$Type aPreUnload,
             void * aPreUnloadContext,
             DriverUnload$Type aPostUnload,
-            void * aPostUnloadContext)
+            void * aPostUnloadContext,
+            UNICODE_STRING* aUnloadEventName)
         {
             NTSTATUS vStatus = STATUS_SUCCESS;
 
-            MBox::SecurityDescriptor* vSecurityDescriptor = nullptr;
             for (;;)
             {
                 if (true == s_IsInitialize)
@@ -209,32 +210,49 @@ namespace MBox
                     break;
                 }
 
-                UNICODE_STRING vObjectName = RTL_CONSTANT_STRING((L"\\BaseNamedObjects" MBox$DriverMgr$DriverExitEventName$Macro));
-                vStatus = MBox::Vol::Security::BuildSecurityDescriptor(
-                    L"D:P(A;CIOI;GRGX;;;WD)",
-                    &vSecurityDescriptor);
-                if (!NT_SUCCESS(vStatus))
+                if (aUnloadEventName)
                 {
-                    break;
-                }
+                    UNICODE_STRING vEventDirectoryName = RTL_CONSTANT_STRING(L"\\BaseNamedObjects");
+                    UNICODE_STRING vEventName{};
 
-                OBJECT_ATTRIBUTES vObjectAttributes{};
-                InitializeObjectAttributes(
-                    &vObjectAttributes,
-                    &vObjectName,
-                    OBJ_FORCE_ACCESS_CHECK | OBJ_CASE_INSENSITIVE,
-                    nullptr,
-                    vSecurityDescriptor);
+                    USHORT vEventNameBytes = sizeof(L'\0')
+                        + vEventDirectoryName.Length
+                        + aUnloadEventName->Length;
 
-                vStatus = ZwCreateEvent(
-                    &s_DriverUnloadEvent,
-                    EVENT_ALL_ACCESS,
-                    (ObjectAttributes*)(&vObjectAttributes),
-                    EventType::NotificationEvent,
-                    FALSE);
-                if (!NT_SUCCESS(vStatus))
-                {
-                    break;
+                    vEventName.Buffer = PWCH(new(POOL_TYPE::PagedPool) unsigned char[vEventNameBytes] {});
+                    if (nullptr == vEventName.Buffer)
+                    {
+                        vStatus = STATUS_INSUFFICIENT_RESOURCES;
+                        break;
+                    }
+                    vEventName.Length = 0;
+                    vEventName.MaximumLength = vEventNameBytes;
+
+                    for (;;)
+                    {
+                        vStatus = RtlUnicodeStringCopy(&vEventName, &vEventDirectoryName);
+                        if (!NT_SUCCESS(vStatus))
+                        {
+                            break;
+                        }
+
+                        vStatus = RtlUnicodeStringCat(&vEventName, aUnloadEventName);
+                        if (!NT_SUCCESS(vStatus))
+                        {
+                            break;
+                        }
+
+                        vStatus = Vol::Object::CreateOnlyWaitEvent(&s_DriverUnloadEvent, &vEventName);
+                        break;
+                    }
+                    delete[](unsigned char*)(vEventName.Buffer);
+                    vEventName.Buffer = nullptr;
+                    vEventName.Length = vEventName.MaximumLength = 0;
+
+                    if (!NT_SUCCESS(vStatus))
+                    {
+                        break;
+                    }
                 }
 
                 s_DeviceGroupList = new DeviceGroupList$Type;
@@ -272,8 +290,6 @@ namespace MBox
                 s_IsInitialize  = true;
                 break;
             }
-
-            MBox::Vol::Security::FreeSecurityDescriptor(vSecurityDescriptor);
 
             if (!NT_SUCCESS(vStatus))
             {

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <Microsoft\MBox.Object.h>
+#include <Microsoft\MBox.Process.h>
 #include <KTL\KTL.Memory.SharedPtr.h>
 #include <KTL\KTL.Containers.List.h>
 #include <KTL\KTL.Multithreading.LockHelper.h>
@@ -359,7 +360,7 @@ namespace MBox
 
             vDeviceObject->DeviceExtension = this;
 
-            vCommunicationPort->m_PortContext  = aServerPortContext;
+            vCommunicationPort->m_ServerPortContext  = aServerPortContext;
             vCommunicationPort->m_DeviceObject = vDeviceObject;
 
             vDeviceObject->Flags |= DO_BUFFERED_IO;
@@ -423,7 +424,7 @@ namespace MBox
 
             if (false == m_CommunicationPort->m_IsConnected)
             {
-                vStatus = STATUS_CONNECTION_DISCONNECTED;
+                vStatus = STATUS_PORT_DISCONNECTED;
                 break;
             }
 
@@ -431,7 +432,7 @@ namespace MBox
             {
                 DisconnectHandler();
 
-                vStatus = STATUS_CONNECTION_DISCONNECTED;
+                vStatus = STATUS_PORT_DISCONNECTED;
                 break;
             }
 
@@ -517,8 +518,11 @@ namespace MBox
                         break;
                     }
                 }
+
+                vPacket->m_Status = vStatus;
             }
 
+            vStatus = vPacket->m_Status;
             break;
         }
 
@@ -548,7 +552,7 @@ namespace MBox
             for (auto vItem : m_CommunicationPort->m_PacketList)
             {
                 auto vReplyHeader = (ReplyHeader*)(vItem->m_ReplyBuffer);
-                vReplyHeader->m_Status = STATUS_CONNECTION_DISCONNECTED;
+                vReplyHeader->m_Status = STATUS_PORT_DISCONNECTED;
 
                 KeSetEvent(&vItem->m_ReplyEvent, IO_NO_INCREMENT, FALSE);
             }
@@ -557,7 +561,7 @@ namespace MBox
         }
 
         DisconnectNotifyCallbackParameter vCallackParemter;
-        vCallackParemter.m_ConnectPortContext = m_CommunicationPort->m_ConnectContext;
+        vCallackParemter.m_ClientPortContext = m_CommunicationPort->m_ClientPortContext;
         m_DisconnectNotifyCallback(&vCallackParemter);
 
         return STATUS_SUCCESS;
@@ -565,8 +569,8 @@ namespace MBox
 
     NTSTATUS Owl::ConnectHandler(
         KPROCESSOR_MODE aAccessMode,
-        ConnectContextHeader * aConnectContext,
-        UINT32 aConnectContextBytes,
+        ConnectContextHeader * aConnectionContext,
+        UINT32 aConnectionContextBytes,
         UINT32* aResponseReplyBytes)
     {
         NTSTATUS vStatus = STATUS_SUCCESS;
@@ -584,28 +588,30 @@ namespace MBox
                 DisconnectHandler();
             }
 
-            if (nullptr == aConnectContext)
+            if (nullptr == aConnectionContext)
             {
                 vStatus = STATUS_INVALID_PARAMETER;
                 break;
             }
 
-            if (0 == aConnectContext->m_NotifySemaphore
-                || 0 == aConnectContext->m_ThreadHandle)
+            if (0 == aConnectionContext->m_NotifySemaphore
+                || 0 == aConnectionContext->m_ThreadHandle)
             {
                 vStatus = STATUS_INVALID_PARAMETER;
                 break;
             }
 
-            if (aConnectContextBytes
-                < sizeof(*aConnectContext))
+            if (aConnectionContextBytes
+                < sizeof(*aConnectionContext))
             {
                 vStatus = STATUS_INVALID_PARAMETER;
                 break;
             }
+
+            m_CommunicationPort->m_ClientProcessId = PsGetCurrentProcessId();
 
             vStatus = ObReferenceObjectByHandle(
-                HANDLE(aConnectContext->m_NotifySemaphore),
+                HANDLE(aConnectionContext->m_NotifySemaphore),
                 SEMAPHORE_ALL_ACCESS,
                 *ExSemaphoreObjectType,
                 aAccessMode,
@@ -617,7 +623,7 @@ namespace MBox
             }
 
             vStatus = ObReferenceObjectByHandle(
-                HANDLE(aConnectContext->m_ThreadHandle),
+                HANDLE(aConnectionContext->m_ThreadHandle),
                 THREAD_ALL_ACCESS,
                 *PsThreadType,
                 aAccessMode,
@@ -629,12 +635,13 @@ namespace MBox
             }
 
             ConnectNotifyCallbackParameter vConnectNotifyParameter;
-            vConnectNotifyParameter.m_PortContext = m_CommunicationPort->m_PortContext;
+            vConnectNotifyParameter.m_ServerPortContext = m_CommunicationPort->m_ServerPortContext;
+            vConnectNotifyParameter.m_ClientProcessId   = m_CommunicationPort->m_ClientProcessId;
 
-            if (aConnectContextBytes > sizeof(*aConnectContext))
+            if (aConnectionContextBytes > sizeof(*aConnectionContext))
             {
-                vConnectNotifyParameter.m_ConnectionContext         = ++aConnectContext;
-                vConnectNotifyParameter.m_ConnectionContextBytes    = aConnectContextBytes - sizeof(*aConnectContext);
+                vConnectNotifyParameter.m_ConnectionContext         = ++aConnectionContext;
+                vConnectNotifyParameter.m_ConnectionContextBytes    = aConnectionContextBytes - sizeof(*aConnectionContext);
             }
 
             vStatus = m_ConnectNotifyCallback(&vConnectNotifyParameter);
@@ -643,10 +650,10 @@ namespace MBox
                 break;
             }
 
-            m_CommunicationPort->m_ConnectContext = vConnectNotifyParameter.m_ConnectContext;
+            m_CommunicationPort->m_ClientPortContext = vConnectNotifyParameter.m_ClientPortContext;
             m_CommunicationPort->m_IsConnected = true;
 
-            *aResponseReplyBytes = aConnectContextBytes;
+            *aResponseReplyBytes = aConnectionContextBytes;
             break;
         }
 
@@ -670,7 +677,7 @@ namespace MBox
         for (;;)
         {
             MessageNotifyCallbackParameter vCallbackParameter;
-            vCallbackParameter.m_ConnectContext = m_CommunicationPort->m_ConnectContext;
+            vCallbackParameter.m_ClientPortContext = m_CommunicationPort->m_ClientPortContext;
             vCallbackParameter.m_SenderBuffer   = aSenderBuffer;
             vCallbackParameter.m_SenderBytes    = aSenderBytes;
             vCallbackParameter.m_ReplyBuffer    = aReplyBuffer;
@@ -724,7 +731,7 @@ namespace MBox
 
                 if (aMessageBufferBytes < (vPacket->m_SenderBytes + sizeof(MessageHeader)))
                 {
-                    vStatus = STATUS_BUFFER_TOO_SMALL;
+                    vStatus = STATUS_FLT_BUFFER_TOO_SMALL;
                     break;
                 }
 
@@ -762,12 +769,12 @@ namespace MBox
 
             if (0 == aReplyBuffer->m_MessageId)
             {
-                vStatus = STATUS_INVALID_HANDLE;
+                vStatus = STATUS_FLT_NO_WAITER_FOR_REPLY;
                 break;
             }
 
-            bool vIsFound = false;
-            auto vPacket = (PacketProtocol*)aReplyBuffer->m_MessageId;
+            bool vIsFound   = false;
+            auto vPacket    = (PacketProtocol*)aReplyBuffer->m_MessageId;
 
             do
             {
@@ -790,16 +797,18 @@ namespace MBox
             } while (false);
             if (false == vIsFound)
             {
-                vStatus = STATUS_INVALID_HANDLE;
+                vStatus = STATUS_FLT_NO_WAITER_FOR_REPLY;
                 break;
             }
 
+            vPacket->m_Status = aReplyBuffer->m_Status;
             aReplyBufferBytes -= sizeof(ReplyHeader);
             if (vPacket->m_ReplyBytes < aReplyBufferBytes)
             {
                 *aNeedBytes         = vPacket->m_ReplyBytes + sizeof(ReplyHeader);
                 aReplyBufferBytes   = vPacket->m_ReplyBytes;
                 vStatus             = STATUS_BUFFER_OVERFLOW;
+                vPacket->m_Status   = vStatus;
             }
 
             RtlCopyMemory(

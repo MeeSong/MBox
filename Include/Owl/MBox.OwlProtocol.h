@@ -17,7 +17,7 @@ namespace MBox
             ReplyKernelMessage  = CTL_CODE(FILE_DEVICE_UNKNOWN, BeginCode + 5, METHOD_IN_DIRECT, FILE_ANY_ACCESS),
         };
 
-#pragma pack(push, 4)
+#pragma pack(push, 8)
         struct ConnectContextHeader
         {
             IN  UINT64 m_ThreadHandle    = 0;

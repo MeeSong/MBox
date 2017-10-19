@@ -33,6 +33,7 @@ namespace MBox
 
             void DeferenceCurrentUserSid(
                 PSID aSid);
+
         }
     }
 }

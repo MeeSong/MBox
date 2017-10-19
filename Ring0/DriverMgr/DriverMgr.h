@@ -8,8 +8,6 @@ namespace MBox
 {
     namespace DriverMgr
     {
-#define MBox$DriverMgr$DriverExitEventName$Macro    L"\\DriverMgr{C509B8DF-71E2-473A-99C7-3ACD90ECAE74}"
-
         using DriverUnload$Type = NTSTATUS(*)(DRIVER_OBJECT* aDriverObject, void* aContext);
 
         struct DispatchCallbackPacket
@@ -43,7 +41,8 @@ namespace MBox
             DriverUnload$Type aPreUnload,
             void* aPreUnloadContext,
             DriverUnload$Type aPostUnload,
-            void* aPostUnloadContext);
+            void* aPostUnloadContext,
+            UNICODE_STRING* aUnloadEventName = nullptr); /* E.g \Namespace_DriverUnloadEvent{GUID} */
 
         void Uninitialize();
 

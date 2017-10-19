@@ -5,8 +5,6 @@
 
 namespace MBox
 {
-#define MBox$DriverMgr$DriverExitEventName$Macro    L"\\DriverMgr{C509B8DF-71E2-473A-99C7-3ACD90ECAE74}"
-
     HRESULT Owl::Initialize()
     {
         HRESULT hr = S_OK;
@@ -61,17 +59,7 @@ namespace MBox
                     break;
                 }
             }
-
-            m_EventHandles[EventClasses::DriverExit] = OpenEventW(
-                EventQueryState | Synchronize,
-                FALSE,
-                (L"Global" MBox$DriverMgr$DriverExitEventName$Macro));
-            if (nullptr == m_EventHandles[EventClasses::DriverExit])
-            {
-                vDosError = GetLastError();
-                break;
-            }
-
+            
             m_EventHandles[EventClasses::NotifySemaphore] = CreateSemaphoreW(nullptr, 0, LONG_MAX, nullptr);
             if (nullptr == m_EventHandles[EventClasses::NotifySemaphore])
             {
@@ -282,17 +270,6 @@ namespace MBox
             if (EventClasses::ThreadExit == vWaitResult)
             {
                 hr = S_OK;
-                break;
-            }
-            else if (EventClasses::DriverExit == vWaitResult)
-            {
-                hr = ERROR_FLT_NO_WAITER_FOR_REPLY;
-                hr = m_FailedNotifyCallback(hr, true);
-                if (SUCCEEDED(hr))
-                {
-                    continue;
-                }
-
                 break;
             }
             else if (EventClasses::NotifySemaphore == vWaitResult)

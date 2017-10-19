@@ -243,9 +243,14 @@ namespace MBox
                     hr = HRESULT_FROM_WIN32(GetLastError());
                 }
             }
-            if (FAILED(hr) )
+            if (0 == m_MessagePacket->MessageId)
             {
-                hr = m_FailedNotifyCallback(hr, bool(HRESULT_FROM_WIN32(ERROR_INVALID_HANDLE) == hr));
+                // Driver unload.
+                hr = E_HANDLE;
+            }
+            if (FAILED(hr))
+            {
+                hr = m_FailedNotifyCallback(hr, bool(E_HANDLE == hr));
                 if (SUCCEEDED(hr))
                 {
                     continue;
@@ -254,10 +259,10 @@ namespace MBox
                 break;
             }
 
-            auto vMessagePacket = PVOID(UINT_PTR(m_MessagePacket) + sizeof(*m_MessagePacket));
-            auto vReplyPacket   = PVOID(UINT_PTR(m_ReplyPacket) + sizeof(*m_ReplyPacket));
-            auto vMessageBytes  = UINT32(vOverlapped.InternalHigh - sizeof(FILTER_MESSAGE_HEADER));
-            auto vReplyBytes    = UINT32(m_ReplyPacketMaxBytes - sizeof(FILTER_REPLY_HEADER));
+            auto vMessagePacket = PVOID(UINT_PTR(m_MessagePacket)   + sizeof(*m_MessagePacket));
+            auto vReplyPacket   = PVOID(UINT_PTR(m_ReplyPacket)     + sizeof(*m_ReplyPacket));
+            auto vMessageBytes  = UINT32(vOverlapped.InternalHigh   - sizeof(FILTER_MESSAGE_HEADER));
+            auto vReplyBytes    = UINT32(m_ReplyPacketMaxBytes      - sizeof(FILTER_REPLY_HEADER));
 
             if ((m_MessagePacket->ReplyLength - sizeof(FILTER_REPLY_HEADER)) < vReplyBytes)
             {
