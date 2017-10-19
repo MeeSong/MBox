@@ -463,6 +463,8 @@ namespace MBox
                 vReplyPacket = nullptr;
             }
 
+#pragma prefast(push)
+#pragma prefast(disable:6320, "Catch all. Call ReplyMessage.")
             UINT32 vResponseReplyBytes = 0;
             __try
             {
@@ -477,6 +479,7 @@ namespace MBox
             {
                 hr = GetExceptionCode();
             }
+#pragma prefast(pop)
 
             m_ReplyPacket->m_MessageId = m_MessagePacket->m_MessageId;
             m_ReplyPacket->m_Status    = NTSTATUS_FROM_WIN32(hr);

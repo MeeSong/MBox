@@ -2,9 +2,9 @@
 
 #ifdef NTDDI_VERSION
 #undef NTDDI_VERSION
-#define NTDDI_VERSION   0x0A000003
+#define NTDDI_VERSION   WDK_NTDDI_VERSION
 #else
-#define NTDDI_VERSION   0x0A000003
+#define NTDDI_VERSION   WDK_NTDDI_VERSION
 #endif
 
 #include <fltKernel.h>

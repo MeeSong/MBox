@@ -200,8 +200,9 @@ namespace ktl
                 return nullptr;
             }
 
-            usize vIndex = 0;
-            for (;vIndex <= aStringCharCount - aSubStringCharCount; ++vIndex)
+            isize vIndex = 0;
+            isize vMaxIndex = aStringCharCount - aSubStringCharCount;
+            for (;vIndex <= vMaxIndex; ++vIndex)
             {
                 if (string_same(
                     aString + vIndex, aSubStringCharCount,
@@ -228,8 +229,8 @@ namespace ktl
                 return nullptr;
             }
 
-            usize vIndex = 0;
-            usize vMaxIndex = aStringCharCount - aSubStringCharCount;
+            isize vIndex = 0;
+            isize vMaxIndex = aStringCharCount - aSubStringCharCount;
             for (; vIndex <= vMaxIndex; ++vIndex)
             {
                 if (string_same_case_insensitive(
@@ -257,7 +258,7 @@ namespace ktl
                 return nullptr;
             }
 
-            usize vIndex = (aStringCharCount - aSubStringCharCount);
+            isize vIndex = (aStringCharCount - aSubStringCharCount);
             for (; vIndex >=0; --vIndex)
             {
                 if (string_same(
@@ -285,7 +286,7 @@ namespace ktl
                 return nullptr;
             }
 
-            usize vIndex = (aStringCharCount - aSubStringCharCount);
+            isize vIndex = (aStringCharCount - aSubStringCharCount);
             for (; vIndex >= 0; --vIndex)
             {
                 if (string_same_case_insensitive(

@@ -879,6 +879,8 @@ namespace MBox
                         break;
                     }
 
+#pragma prefast(push)
+#pragma prefast(disable:6320, "Catch all.")
                     __try
                     {
                         UINT32 vNeedBytes = 0;
@@ -908,13 +910,14 @@ namespace MBox
                     }
                     __except (EXCEPTION_EXECUTE_HANDLER)
                     {
-                        hr = E_UNEXPECTED;
+                        hr = GetExceptionCode();
                         break;
                     }
 
                     *aSecurityDescriptor = vSecurityDescriptor;
                     break;
                 }
+#pragma prefast(pop)
 
                 if (FAILED(hr))
                 {

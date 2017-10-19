@@ -221,8 +221,7 @@ namespace MBox
             RtlSecureZeroMemory(m_ReplyPacket, m_ReplyPacketMaxBytes);
 
             hr = GetMessage(m_MessagePacket, m_MessagePacketMaxBytes, &vOverlapped);
-            if (ERROR_IO_PENDING == hr
-                || HRESULT_FROM_WIN32(ERROR_IO_PENDING) == hr)
+            if (HRESULT_FROM_WIN32(ERROR_IO_PENDING) == hr)
             {
                 auto vWaitResult = WaitForMultipleObjects(
                     UINT32(EventClasses::Max),
@@ -280,6 +279,8 @@ namespace MBox
                 vMessagePacket = nullptr;
             }
 
+#pragma prefast(push)
+#pragma prefast(disable:6320, "Catch all. Call ReplyMessage.")
             UINT32 vResponseReplyBytes = 0;
             __try
             {
@@ -294,6 +295,7 @@ namespace MBox
             {
                 hr = GetExceptionCode();
             }
+#pragma prefast(pop)
 
             m_ReplyPacket->MessageId = m_MessagePacket->MessageId;
             m_ReplyPacket->Status    = NTSTATUS_FROM_WIN32(hr);

@@ -4,6 +4,9 @@ namespace ktl
 {
     inline namespace multithreading
     {
+
+#pragma prefast(push)
+#pragma prefast(disable:28167 28122, "I known.")
         namespace ShimsApi
         {
             KIRQL __stdcall ExAcquireSpinLockExclusiveShims(PEX_SPIN_LOCK aExSpinLock)
@@ -14,8 +17,8 @@ namespace ktl
                 if (nullptr == sExAcquireSpinLockExclusive)
                 {
                     UNICODE_STRING vRoutineName = RTL_CONSTANT_STRING(L"ExAcquireSpinLockExclusive");
-                    auto vRoutine = MmGetSystemRoutineAddress(&vRoutineName);
-                    InterlockedExchangePointer((void* volatile *)(&sExAcquireSpinLockExclusive), vRoutine);
+                    auto vRoutine = MmGetSystemRoutineAddress(&vRoutineName); 
+                    sExAcquireSpinLockExclusive = (ExAcquireSpinLockExclusive$Fun)vRoutine;
                 }
 
                 if (sExAcquireSpinLockExclusive)
@@ -37,7 +40,7 @@ namespace ktl
                 {
                     UNICODE_STRING vRoutineName = RTL_CONSTANT_STRING(L"ExReleaseSpinLockExclusive");
                     auto vRoutine = MmGetSystemRoutineAddress(&vRoutineName);
-                    InterlockedExchangePointer((void* volatile *)(&sExReleaseSpinLockExclusive), vRoutine);
+                    sExReleaseSpinLockExclusive = (ExReleaseSpinLockExclusive$Fun)vRoutine;
                 }
 
                 if (sExReleaseSpinLockExclusive)
@@ -57,7 +60,7 @@ namespace ktl
                 {
                     UNICODE_STRING vRoutineName = RTL_CONSTANT_STRING(L"ExAcquireSpinLockShared");
                     auto vRoutine = MmGetSystemRoutineAddress(&vRoutineName);
-                    InterlockedExchangePointer((void* volatile *)(&sExAcquireSpinLockShared), vRoutine);
+                    sExAcquireSpinLockShared = (ExAcquireSpinLockShared$Fun)vRoutine;
                 }
 
                 if (sExAcquireSpinLockShared)
@@ -79,7 +82,7 @@ namespace ktl
                 {
                     UNICODE_STRING vRoutineName = RTL_CONSTANT_STRING(L"ExReleaseSpinLockShared");
                     auto vRoutine = MmGetSystemRoutineAddress(&vRoutineName);
-                    InterlockedExchangePointer((void* volatile *)(&sExReleaseSpinLockShared), vRoutine);
+                    sExReleaseSpinLockShared = (ExReleaseSpinLockShared$Fun)vRoutine;
                 }
 
                 if (sExReleaseSpinLockShared)
@@ -99,7 +102,7 @@ namespace ktl
                 {
                     UNICODE_STRING vRoutineName = RTL_CONSTANT_STRING(L"ExTryConvertSharedSpinLockExclusive");
                     auto vRoutine = MmGetSystemRoutineAddress(&vRoutineName);
-                    InterlockedExchangePointer((void* volatile *)(&sExTryConvertSharedSpinLockExclusive), vRoutine);
+                    sExTryConvertSharedSpinLockExclusive = (ExTryConvertSharedSpinLockExclusive$Fun)vRoutine;
                 }
 
                 if (sExTryConvertSharedSpinLockExclusive)
@@ -111,5 +114,7 @@ namespace ktl
             }
 
         }
+#pragma prefast(pop)
+
     }
 }

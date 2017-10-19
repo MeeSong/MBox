@@ -1516,7 +1516,7 @@ LONG WINAPI DetourTransactionCommitEx(_Out_opt_ PVOID **pppFailedPointer)
 #endif // DETOURS_ARM
         }
         else {
-            DETOUR_TRACE(("detours: pbTramp =%p, pbRemain=%p, pbDetour=%p, cbRestore=%d\n",
+            DETOUR_TRACE(("detours: pbTramp =%p, pbRemain=%p, pbDetour=%p, cbRestore=%u\n",
                           o->pTrampoline,
                           o->pTrampoline->pbRemain,
                           o->pTrampoline->pbDetour,
@@ -1995,7 +1995,7 @@ LONG WINAPI DetourAttachEx(_Inout_ PVOID *ppPointer,
                 pTrampoline->rAlign[n].obTrampoline == 0) {
                 break;
             }
-            DETOUR_TRACE((" %d/%d",
+            DETOUR_TRACE((" %u/%u",
                           pTrampoline->rAlign[n].obTarget,
                           pTrampoline->rAlign[n].obTrampoline
                           ));

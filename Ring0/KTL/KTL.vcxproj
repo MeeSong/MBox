@@ -121,24 +121,28 @@
     <IntDir>$(ProjectName).dir\$(Configuration)\$(Platform)\</IntDir>
     <TargetName>$(TargetName.Replace(' ','')).X86</TargetName>
     <RunCodeAnalysis>true</RunCodeAnalysis>
+    <CodeAnalysisRuleSet>..\..\..\..\..\..\Program Files (x86)\Windows Kits\10\CodeAnalysis\DriverMinimumRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)..\Output\Library\$(Configuration)\</OutDir>
     <IntDir>$(ProjectName).dir\$(Configuration)\$(Platform)\</IntDir>
     <TargetName>$(TargetName.Replace(' ','')).X86</TargetName>
     <RunCodeAnalysis>true</RunCodeAnalysis>
+    <CodeAnalysisRuleSet>..\..\..\..\..\..\Program Files (x86)\Windows Kits\10\CodeAnalysis\DriverMinimumRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)..\Output\Library\$(Configuration)\</OutDir>
     <IntDir>$(ProjectName).dir\$(Configuration)\$(Platform)\</IntDir>
     <TargetName>$(TargetName.Replace(' ','')).X64</TargetName>
     <RunCodeAnalysis>true</RunCodeAnalysis>
+    <CodeAnalysisRuleSet>..\..\..\..\..\..\Program Files (x86)\Windows Kits\10\CodeAnalysis\DriverMinimumRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)..\Output\Library\$(Configuration)\</OutDir>
     <IntDir>$(ProjectName).dir\$(Configuration)\$(Platform)\</IntDir>
     <TargetName>$(TargetName.Replace(' ','')).X64</TargetName>
     <RunCodeAnalysis>true</RunCodeAnalysis>
+    <CodeAnalysisRuleSet>..\..\..\..\..\..\Program Files (x86)\Windows Kits\10\CodeAnalysis\DriverMinimumRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
