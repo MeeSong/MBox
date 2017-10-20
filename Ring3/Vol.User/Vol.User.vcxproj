@@ -108,6 +108,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <EnablePREfast>true</EnablePREfast>
       <DisableSpecificWarnings>6031</DisableSpecificWarnings>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -128,6 +129,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <EnablePREfast>true</EnablePREfast>
       <DisableSpecificWarnings>6031</DisableSpecificWarnings>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -150,6 +152,7 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <EnablePREfast>true</EnablePREfast>
       <DisableSpecificWarnings>6031</DisableSpecificWarnings>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -174,6 +177,7 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <EnablePREfast>true</EnablePREfast>
       <DisableSpecificWarnings>6031</DisableSpecificWarnings>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -194,6 +198,8 @@
     <ClInclude Include="Vol.Service.Controller.h" />
     <ClInclude Include="Vol.Service.h" />
     <ClInclude Include="Vol.Service.Installer.h" />
+    <ClInclude Include="Vol.Process.h" />
+    <ClInclude Include="Vol.System.h" />
     <ClInclude Include="Vol.ThreadPool.h" />
   </ItemGroup>
   <ItemGroup>
@@ -203,12 +209,14 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Vol.Process.cpp" />
     <ClCompile Include="Vol.Security.cpp" />
     <ClCompile Include="Vol.Security.SecurityDescriptor.cpp" />
     <ClCompile Include="Vol.Service.Base.cpp" />
     <ClCompile Include="Vol.Service.Controller.cpp" />
     <ClCompile Include="Vol.Service.cpp" />
     <ClCompile Include="Vol.Service.Installer.cpp" />
+    <ClCompile Include="Vol.System.cpp" />
     <ClCompile Include="Vol.ThreadPool.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

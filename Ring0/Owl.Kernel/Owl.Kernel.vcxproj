@@ -115,6 +115,7 @@
       <EnablePREfast>true</EnablePREfast>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Lib>
       <AdditionalDependencies>DriverMgr.X86.lib</AdditionalDependencies>
@@ -127,6 +128,7 @@
       <EnablePREfast>true</EnablePREfast>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Lib>
       <AdditionalDependencies>DriverMgr.X86.lib</AdditionalDependencies>
@@ -139,6 +141,7 @@
       <EnablePREfast>true</EnablePREfast>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Lib>
       <AdditionalDependencies>DriverMgr.X64.lib</AdditionalDependencies>
@@ -151,6 +154,7 @@
       <EnablePREfast>true</EnablePREfast>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Lib>
       <AdditionalDependencies>DriverMgr.X64.lib</AdditionalDependencies>
