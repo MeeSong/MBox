@@ -22,6 +22,15 @@ namespace MBox
                 RegistryMax,
             };
 
+            enum RegistryElementSizeLimits : UINT32
+            {
+                MaxKeyNameLength    = 256,
+                MaxValueNameLength  = 16384,
+                MaxValueSize        = 1024 * 1024 * 1024,
+                MinTreeDeep         = 32,
+                MaxTreeDeep         = 512,
+            };
+
         public:
             NTSTATUS Attach(HANDLE aKeyHandle);
 

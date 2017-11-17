@@ -8,6 +8,18 @@ namespace MBox
     {
         namespace Helper
         {
+            __forceinline void ParseIRPCreateOptions(
+                UINT32 aOptions, 
+                UINT32* aAccessMask,
+                UINT32* aCreateOptions)
+            {
+                // The high 8 bits correspond to the value of the `CreateDisposition` parameter of ZwCreateFile,
+                // and the low 24 bits correspond to the value of the `CreateOptions` parameter of ZwCreateFile.
+
+                if (aAccessMask)    *aAccessMask    = (aOptions & 0xFF000000ui32) >> 24;
+                if (aCreateOptions) *aCreateOptions = (aOptions & 0x00FFFFFFui32);
+            }
+
             NTSTATUS QueryDeviceBusType(
                 PCFLT_RELATED_OBJECTS aFltObject,
                 STORAGE_BUS_TYPE* aBusType,

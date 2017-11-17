@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2002
+VisualStudioVersion = 15.0.27004.2005
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KTL", "..\Ring0\KTL\KTL.vcxproj", "{C740164F-02EF-4DF7-BEA2-3042FD9823EC}"
 EndProject
@@ -46,12 +46,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Microsoft", "Microsoft", "{
 		..\Include\Microsoft\MBox.Images.PE.h = ..\Include\Microsoft\MBox.Images.PE.h
 		..\Include\Microsoft\MBox.Memory.Information.h = ..\Include\Microsoft\MBox.Memory.Information.h
 		..\Include\Microsoft\Mbox.Module.Loader.h = ..\Include\Microsoft\Mbox.Module.Loader.h
+		..\Include\Microsoft\MBox.Network.h = ..\Include\Microsoft\MBox.Network.h
 		..\Include\Microsoft\MBox.Network.Socket.h = ..\Include\Microsoft\MBox.Network.Socket.h
 		..\Include\Microsoft\MBox.Object.Directory.h = ..\Include\Microsoft\MBox.Object.Directory.h
 		..\Include\Microsoft\MBox.Object.h = ..\Include\Microsoft\MBox.Object.h
 		..\Include\Microsoft\MBox.Object.Job.h = ..\Include\Microsoft\MBox.Object.Job.h
 		..\Include\Microsoft\MBox.Object.Synchronize.h = ..\Include\Microsoft\MBox.Object.Synchronize.h
 		..\Include\Microsoft\MBox.Process.h = ..\Include\Microsoft\MBox.Process.h
+		..\Include\Microsoft\MBox.Registry.h = ..\Include\Microsoft\MBox.Registry.h
 		..\Include\Microsoft\MBox.Runtime.h = ..\Include\Microsoft\MBox.Runtime.h
 		..\Include\Microsoft\MBox.Security.h = ..\Include\Microsoft\MBox.Security.h
 		..\Include\Microsoft\MBox.Security.Macro.h = ..\Include\Microsoft\MBox.Security.Macro.h

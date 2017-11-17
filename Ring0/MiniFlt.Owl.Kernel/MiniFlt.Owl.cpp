@@ -234,7 +234,7 @@ namespace MBox
             aInputBufferLength,
             aOutputBuffer,
             aOutputBufferLength,
-            aReturnOutputBufferLength);
+            (PUINT32)aReturnOutputBufferLength);
     }
 
     NTSTATUS MiniFltOwl::MessageNotifyCallback(

@@ -242,7 +242,7 @@ namespace MBox
                     hr = HRESULT_FROM_WIN32(GetLastError());
                 }
             }
-            if (0 == m_MessagePacket->MessageId)
+            if (0 == m_MessagePacket->MessageId && 0 == vOverlapped.InternalHigh)
             {
                 // Driver unload.
                 hr = E_HANDLE;

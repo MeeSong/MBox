@@ -3,7 +3,7 @@
 
 namespace MBox::Vol::System
 {
-    BOOLEAN Is64BitSystem();
+    bool Is64BitSystem();
 
-    inline BOOLEAN Is32BitSystem() { return (!Is64BitSystem()); };
+    inline bool Is32BitSystem() { return (!Is64BitSystem()); };
 }

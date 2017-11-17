@@ -5,10 +5,10 @@
 
 namespace MBox::Vol::System
 {
-    BOOLEAN Is64BitSystem()
+    bool Is64BitSystem()
     {
 #ifdef _AMD64_
-        return BOOLEAN(sizeof(size_t) == sizeof(__int64));
+        return bool(sizeof(size_t) == sizeof(__int64));
 #else
         // 32-bit programs run on both 32-bit and 64-bit Windows
         BOOLEAN vIs64Bit = FALSE;

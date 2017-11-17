@@ -191,6 +191,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Vol.Device.Disk.h" />
+    <ClInclude Include="Vol.Device.Volume.h" />
+    <ClInclude Include="Vol.Registry.h" />
     <ClInclude Include="Vol.Security.h" />
     <ClInclude Include="Vol.Security.Sddl.h" />
     <ClInclude Include="Vol.Security.SecurityDescriptor.h" />
@@ -209,7 +212,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Vol.Device.Disk.cpp" />
+    <ClCompile Include="Vol.Device.Volume.cpp" />
     <ClCompile Include="Vol.Process.cpp" />
+    <ClCompile Include="Vol.Registry.cpp" />
     <ClCompile Include="Vol.Security.cpp" />
     <ClCompile Include="Vol.Security.SecurityDescriptor.cpp" />
     <ClCompile Include="Vol.Service.Base.cpp" />
