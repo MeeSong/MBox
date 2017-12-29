@@ -65,15 +65,41 @@ namespace MBox
         Quad                    m_Body;       // 这个位置就是 Object
     };
 
+    enum class ObjectAttributesMask : UINT32
+    {
+        Inherit                         = 0x00000002,
+        Permanent                       = 0x00000010,
+        Exclusive                       = 0x00000020,
+        CaseInsensitive                 = 0x00000040,
+        OpenIf                          = 0x00000080,
+        OpenLink                        = 0x00000100,
+        KernelHandle                    = 0x00000200,
+        ForceAccessCheck                = 0x00000400,
+        IgnoreImpersonatedDevicemap     = 0x00000800,
+        DontReparse                     = 0x00001000,
+        ValidAttributes                 = 0x00001FF2,
+    };
+
     struct ObjectAttributes
     {
-        ULONG m_Length;
-        HANDLE m_RootDirectory;
-        UnicodeString* m_ObjectName;
-        ULONG m_Attributes;
-        PVOID m_SecurityDescriptor;        // Points to type SECURITY_DESCRIPTOR
-        PVOID m_SecurityQualityOfService;  // Points to type SECURITY_QUALITY_OF_SERVICE
+        UINT32 Length;
+        HANDLE RootDirectory;
+        const UnicodeString* ObjectName;
+        UINT32 Attributes;
+        PVOID SecurityDescriptor;        // Points to type SECURITY_DESCRIPTOR
+        PVOID SecurityQualityOfService;  // Points to type SECURITY_QUALITY_OF_SERVICE
     };
+
+#ifndef InitializeObjectAttributes
+#define InitializeObjectAttributes( p, n, a, r, s ) {   \
+    (p)->Length = sizeof( ObjectAttributes );           \
+    (p)->RootDirectory = r;                             \
+    (p)->Attributes = a;                                \
+    (p)->ObjectName = n;                                \
+    (p)->SecurityDescriptor = s;                        \
+    (p)->SecurityQualityOfService = NULL;               \
+    }
+#endif
 
     extern"C"
     {
@@ -135,6 +161,9 @@ namespace MBox
             HANDLE aHandle,
             BOOLEAN aAlertable,
             PLARGE_INTEGER aTimeout);
+
+        NTSTATUS NTAPI ZwClose(
+            HANDLE aHandle);
 
     }
 }

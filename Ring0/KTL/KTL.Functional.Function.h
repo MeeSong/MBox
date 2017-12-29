@@ -376,7 +376,7 @@ namespace ktl
 
         template<typename _Functor, typename... _ArgTypes>
         class _Function_handler<void(_ArgTypes...), reference_wrapper<_Functor>>
-            : public _Function_base::base_manager<_Functor>
+            : public _Function_base::_Reference_manager<_Functor>
         {
             using _Base = _Function_base::_Reference_manager<_Functor>;
 
@@ -391,7 +391,7 @@ namespace ktl
 
         template<typename _Class, typename _Member, typename... _ArgTypes>
         class _Function_handler<void(_ArgTypes...), _Member _Class::*>
-            : public _Function_base::base_manager<typename _Simple_type_wrapper<_Member _Class::*>>
+            : public _Function_base::base_manager<_Simple_type_wrapper<_Member _Class::*>>
         {
             using _Functor = _Member _Class::*;
             using _Wrapper = _Simple_type_wrapper<_Functor>;

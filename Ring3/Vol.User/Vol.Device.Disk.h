@@ -32,10 +32,15 @@ namespace MBox::Vol::Device
         UINT32 aShareMode = 0);
 
     void DiskClose(
-        HANDLE aDisk);
+        HANDLE& aDisk);
 
     HRESULT DiskRefreshProperties(
         HANDLE aDisk);
 
     HRESULT IsExistsDisk(UINT32 aDiskNumber, bool* aIsExists);
+
+    HRESULT GetDiskGeometry(HANDLE aDisk, DISK_GEOMETRY& aGeometry);
+
+    HRESULT GetSectorSize(HANDLE aDisk, UINT32& aSectorSize);
+
 }

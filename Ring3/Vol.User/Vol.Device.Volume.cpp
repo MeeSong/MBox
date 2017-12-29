@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Vol.Device.Volume.h"
+#include "Vol.Symboliclinks.h"
 
 
 namespace MBox::Vol::Device
@@ -158,7 +159,7 @@ namespace MBox::Vol::Device
 
         for (;;)
         {
-            wchar_t vVolumeName[] = L"\\\\.\\HarddiskVolume\0\0\0\0\0\0\0\0";
+            wchar_t vVolumeName[32]{};
             hr = StringCchPrintfW(vVolumeName, ARRAYSIZE(vVolumeName), L"\\\\.\\HarddiskVolume%u", aVolumeNumber);
             if (FAILED(hr))
             {
@@ -193,9 +194,9 @@ namespace MBox::Vol::Device
         return hr;
     }
 
-    void VolumeClose(HANDLE aVolume)
+    void VolumeClose(HANDLE& aVolume)
     {
-        return (void)CloseHandle(aVolume);
+        if(aVolume) CloseHandle(aVolume), aVolume = nullptr;
     }
 
     HRESULT GetDiskNumber(HANDLE aVolume, UINT32* aDiskNumber)
@@ -264,6 +265,268 @@ namespace MBox::Vol::Device
             &vReturnedBytes, nullptr))
         {
             hr = HRESULT_FROM_WIN32(GetLastError());
+        }
+
+        return hr;
+    }
+
+    HRESULT FormatEx(
+        LPCWSTR     aDriverRoot,
+        MEDIA_TYPE  aMediaType,
+        FmifsFileSystem aFileSystem,
+        LPCWSTR     aLabel,
+        BOOLEAN     aQuickFormat,
+        UINT32      aClusterSize,
+        FmifsCallback aCallback)
+    {
+        static FmifsFormatEx sFormatEx = nullptr;
+        static wchar_t* sFileSystem[]  = 
+        {
+            L"NTFS",
+            L"FAT",
+            L"FAT32",
+            L"UDF",
+            L"EXFAT",
+            L"ReFS",
+        };
+        
+        HRESULT hr = S_OK;
+
+        for (;;)
+        {
+            if (sFormatEx)
+            {
+                sFormatEx(aDriverRoot, aMediaType, sFileSystem[static_cast<UINT32>(aFileSystem)],
+                    aLabel, aQuickFormat, aClusterSize, aCallback);
+                break;
+            }
+
+            auto vDll = GetModuleHandleW(L"fmifs.dll");
+            if (nullptr == vDll)
+            {
+                wchar_t vDllPath[MAX_PATH]{};
+                if (GetSystemDirectoryW(vDllPath, ARRAYSIZE(vDllPath)))
+                {
+                    StringCchCatW(vDllPath, ARRAYSIZE(vDllPath), L"\\fmifs.dll");
+                }
+                else
+                {
+                    StringCchCopyW(vDllPath, ARRAYSIZE(vDllPath), L"C:\\Windows\\System32\\fmifs.dll");
+                }
+
+                // Don't FreeLibrary
+                vDll = LoadLibraryW(vDllPath);
+                if (nullptr == vDll)
+                {
+                    hr = HRESULT_FROM_WIN32(GetLastError());
+                    break;
+                }
+            }
+
+            sFormatEx = reinterpret_cast<FmifsFormatEx>(GetProcAddress(vDll, "FormatEx"));
+            if (nullptr == sFormatEx)
+            {
+                hr = HRESULT_FROM_WIN32(GetLastError());
+                break;
+            }
+
+            sFormatEx(aDriverRoot, aMediaType, sFileSystem[static_cast<UINT32>(aFileSystem)],
+                aLabel, aQuickFormat, aClusterSize, aCallback);
+            break;
+        }
+
+        return hr;
+    }
+
+    HRESULT GetVolumeName(wchar_t aLetter, wchar_t * aVolumeName, UINT32 aCharCount)
+    {
+        HRESULT hr = S_OK;
+
+        wchar_t vDriveLetterAndSlash[] = L"?:\\";
+        vDriveLetterAndSlash[0] = aLetter;
+
+        if (!GetVolumeNameForVolumeMountPointW(vDriveLetterAndSlash, aVolumeName, aCharCount))
+        {
+            hr = HRESULT_FROM_WIN32(GetLastError());
+        }
+
+        return hr;
+    }
+
+    HRESULT GetDriveLetter(wchar_t & aLetter, LPCWSTR aVolumeName)
+    {
+        HRESULT hr = S_OK;
+
+        DWORD vNeedCount = 0;
+        wchar_t vDriveLetter[64]{};
+        if (!GetVolumePathNamesForVolumeNameW(aVolumeName, vDriveLetter, ARRAYSIZE(vDriveLetter), &vNeedCount))
+        {
+            hr = HRESULT_FROM_WIN32(GetLastError());
+            return hr;
+        }
+
+        if (iswalpha(vDriveLetter[0]))
+        {
+            aLetter = vDriveLetter[0];
+        }
+
+        return hr;
+    }
+
+    HRESULT SetDriveLetter(wchar_t aLetter, LPCWSTR aVolumeName)
+    {
+        HRESULT hr = S_OK;
+
+        wchar_t vDriveLetterAndSlash[] = L"?:\\";
+        vDriveLetterAndSlash[0] = aLetter;
+
+        if (!SetVolumeMountPointW(vDriveLetterAndSlash, aVolumeName))
+        {
+            hr = HRESULT_FROM_WIN32(GetLastError());
+            return hr;
+        }
+
+        return hr;
+    }
+
+    HRESULT SetDriveLetterForDeviceName(wchar_t aLetter, LPCWSTR aDeviceName)
+    {
+        HRESULT hr = S_OK;
+
+        for (;;)
+        {
+            wchar_t vDriveLetter[] = L"?:";
+            vDriveLetter[0] = aLetter;
+            
+            if (!DefineDosDeviceW(DDD_RAW_TARGET_PATH, vDriveLetter, aDeviceName))
+            {
+                hr = HRESULT_FROM_WIN32(GetLastError());
+                break;
+            }
+
+            wchar_t vVolumeName[MAX_PATH]{};
+            hr = GetVolumeName(aLetter, vVolumeName, ARRAYSIZE(vVolumeName));
+
+            // DefineDosDevice must be called to remove the temporary symbolic link
+            DefineDosDeviceW(DDD_RAW_TARGET_PATH | DDD_REMOVE_DEFINITION | DDD_EXACT_MATCH_ON_REMOVE,
+                vDriveLetter, aDeviceName);
+
+            if (FAILED(hr))
+            {
+                break;
+            }
+
+            hr = SetDriveLetter(aLetter, vVolumeName);
+            if (FAILED(hr))
+            {
+                break;
+            }
+
+            break;
+        }
+
+        return hr;
+    }
+
+    HRESULT DeleteDriveLetter(wchar_t aLetter)
+    {
+        HRESULT hr = S_OK;
+
+        wchar_t vDriveLetterAndSlash[] = L"?:\\";
+        vDriveLetterAndSlash[0] = aLetter;
+
+        if (!DeleteVolumeMountPointW(vDriveLetterAndSlash))
+        {
+            hr = HRESULT_FROM_WIN32(GetLastError());
+            return hr;
+        }
+
+        return hr;
+    }
+
+    HRESULT ChangeDriveLetter(wchar_t aSourceLetter, wchar_t aTargetLetter)
+    {
+        HRESULT hr = S_OK;
+
+        wchar_t vVolumeName[MAX_PATH]{};
+
+        hr = GetVolumeName(aSourceLetter, vVolumeName, ARRAYSIZE(vVolumeName));
+        if (FAILED(hr))
+        {
+            return hr;
+        }
+
+        hr = DeleteDriveLetter(aSourceLetter);
+        if (FAILED(hr))
+        {
+            return hr;
+        }
+
+        hr = SetDriveLetter(aTargetLetter, vVolumeName);
+        if (FAILED(hr))
+        {
+            return hr;
+        }
+
+        return hr;
+    }
+
+    HRESULT GetPartitionIndex(wchar_t aLetter, UINT32& aDiskNumber, UINT32& aPartitionNumber)
+    {
+        HRESULT hr = S_OK;
+
+        for (;;)
+        {
+            wchar_t vDriveLetter[] = L"?:";
+            vDriveLetter[0] = aLetter;
+
+            wchar_t vDeviceName[32]{};
+            if (!QueryDosDevice(vDriveLetter, vDeviceName, ARRAYSIZE(vDeviceName)))
+            {
+                hr = HRESULT_FROM_WIN32(GetLastError());
+                break;
+            }
+
+            for (UINT32 i = 0; i < constexpr('z' - 'a'); ++i)
+            {
+                for (UINT32 j = 0; j < constexpr('z' - 'a'); ++j)
+                {
+                    wchar_t vPartitionName[32]{};
+                    hr = StringCchPrintfW(vPartitionName, ARRAYSIZE(vPartitionName), L"\\Device\\Harddisk%u\\Partition%u", i, j);
+                    if (FAILED(hr)) continue;
+
+                    UnicodeString vSymlink{};
+                    vSymlink.Buffer = vPartitionName;
+                    vSymlink.Length = static_cast<UINT16>(wcslen(vPartitionName) * sizeof(wchar_t));
+                    vSymlink.MaximumLength = sizeof(vPartitionName);
+
+                    UnicodeString* vDeviceName2 = nullptr;
+                    hr = Symboliclinks::ReferenceSymboliclinkObjectName(&vDeviceName2, &vSymlink);
+                    if (FAILED(hr))
+                    {
+                        break;
+                    }
+
+                    if (0 == _wcsicmp(vDeviceName, vDeviceName2->Buffer))
+                    {
+                        aDiskNumber         = i;
+                        aPartitionNumber    = j;
+
+                        Symboliclinks::DeferenceSymboliclinkObjectName(vDeviceName2);
+                        hr = S_OK;
+                        break;
+                    }
+
+                    Symboliclinks::DeferenceSymboliclinkObjectName(vDeviceName2);
+                }
+
+                if (SUCCEEDED(hr))
+                {
+                    break;
+                }
+            }
+            
+            break;
         }
 
         return hr;

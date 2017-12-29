@@ -57,6 +57,9 @@
     <ClInclude Include="Vol.Device.Volume.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Vol.Symboliclinks.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -96,6 +99,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Vol.Device.Volume.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Vol.Symboliclinks.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

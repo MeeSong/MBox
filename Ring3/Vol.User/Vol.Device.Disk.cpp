@@ -158,9 +158,9 @@ namespace MBox::Vol::Device
         return hr;
     }
 
-    void DiskClose(HANDLE aDisk)
+    void DiskClose(HANDLE& aDisk)
     {
-        if (aDisk) CloseHandle(aDisk);
+        if (aDisk) CloseHandle(aDisk), aDisk = nullptr;
     }
 
     HRESULT DiskRefreshProperties(HANDLE aDisk)
@@ -188,10 +188,47 @@ namespace MBox::Vol::Device
         auto hr = DiskOpen(&vDisk, aDiskNumber, FILE_ANY_ACCESS, FILE_SHARE_READ | FILE_SHARE_WRITE);
         if (SUCCEEDED(hr))
         {
-            DiskClose(vDisk), vDisk = nullptr;
+            DiskClose(vDisk);
             *aIsExists = true;
         }
 
+        return hr;
+    }
+
+    HRESULT GetDiskGeometry(HANDLE aDisk, DISK_GEOMETRY & aGeometry)
+    {
+        HRESULT hr = S_OK;
+
+        aGeometry = {};
+
+        DWORD vReturnBytes = 0;
+        if (!DeviceIoControl(
+            aDisk, IOCTL_DISK_GET_DRIVE_GEOMETRY, 
+            nullptr, 0, 
+            &aGeometry, sizeof(aGeometry), 
+            &vReturnBytes, nullptr))
+        {
+            hr = HRESULT_FROM_WIN32(GetLastError());
+            return hr;
+        }
+
+        return hr;
+    }
+
+    HRESULT GetSectorSize(HANDLE aDisk, UINT32 & aSectorSize)
+    {
+        HRESULT hr =S_OK;
+
+        aSectorSize = 512;
+
+        DISK_GEOMETRY vGeometry{};
+        hr = GetDiskGeometry(aDisk, vGeometry);
+        if (FAILED(hr))
+        {
+            return hr;
+        }
+
+        aSectorSize = vGeometry.BytesPerSector;
         return hr;
     }
 

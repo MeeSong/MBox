@@ -137,6 +137,7 @@
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)..\Output\Library\Debug\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <TreatLibWarningAsErrors>true</TreatLibWarningAsErrors>
+      <AdditionalDependencies>ntdll.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -202,6 +203,7 @@
     <ClInclude Include="Vol.Service.h" />
     <ClInclude Include="Vol.Service.Installer.h" />
     <ClInclude Include="Vol.Process.h" />
+    <ClInclude Include="Vol.Symboliclinks.h" />
     <ClInclude Include="Vol.System.h" />
     <ClInclude Include="Vol.ThreadPool.h" />
   </ItemGroup>
@@ -222,6 +224,7 @@
     <ClCompile Include="Vol.Service.Controller.cpp" />
     <ClCompile Include="Vol.Service.cpp" />
     <ClCompile Include="Vol.Service.Installer.cpp" />
+    <ClCompile Include="Vol.Symboliclinks.cpp" />
     <ClCompile Include="Vol.System.cpp" />
     <ClCompile Include="Vol.ThreadPool.cpp" />
   </ItemGroup>

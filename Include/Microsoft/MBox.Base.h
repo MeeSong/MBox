@@ -56,9 +56,9 @@ namespace MBox
 
     struct UnicodeString
     {
-        UINT16   m_Length;
-        UINT16   m_MaximumLength;
-        wchar_t* m_Buffer;
+        UINT16   Length;
+        UINT16   MaximumLength;
+        wchar_t* Buffer;
     };
 
     struct ClientId
